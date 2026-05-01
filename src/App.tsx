@@ -44,6 +44,7 @@ import ObsidianGraphPanel from "./components/panes/ObsidianGraphPanel";
 import RunningProcessesPanel from "./components/panes/RunningProcessesPanel";
 import SubscriptionLedgerPanel from "./components/panes/SubscriptionLedgerPanel";
 import SessionReportPanel from "./components/panes/SessionReportPanel";
+import PowerMetricsPanel from "./components/panes/PowerMetricsPanel";
 
 const POLL_MS = 12_000;
 const DEFAULT_NODE: ConsoleNodeId = "hermes";
@@ -76,6 +77,7 @@ const CELLS: Record<string, CellSpec> = {
   ledger: { area: "ledger", title: "TASK_LEDGER", accent: "rgba(208, 241, 0, 0.6)" },
   subscriptions: { area: "subscriptions", title: "SUBSCRIPTIONS", accent: "rgba(180, 160, 255, 0.6)" },
   report: { area: "report", title: "SESSION_REPORT", accent: "rgba(208, 241, 0, 0.7)" },
+  power: { area: "power", title: "POWER_METRICS", accent: "rgba(208, 241, 0, 0.85)" },
   search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)" },
   graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)" },
   subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)" },
@@ -349,6 +351,7 @@ export default function App() {
         )}
 
         {cell("report", <SessionReportPanel />)}
+        {cell("power", <PowerMetricsPanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
         {cell("search", <CodeSearchPanel />)}
         {cell("graph", <ObsidianGraphPanel />)}

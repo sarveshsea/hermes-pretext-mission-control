@@ -8,13 +8,15 @@
 // the model fails, the worker still posts a deterministic event so the
 // dashboard never goes quiet.
 
+import { execFile } from "node:child_process";
 import { appendHermesEvent, getHermesEvents } from "./hermesEvents.mjs";
 import { listTasks, addTask, updateTask } from "./taskLedger.mjs";
 import { postThemedItem } from "./themedSurfaces.mjs";
 import { writeNote } from "./obsidian.mjs";
 import { safeSnippet } from "./redaction.mjs";
 import { spawnSubagent, updateSubagent, listSubagents } from "./subagents.mjs";
-import { createProposal } from "./proposals.mjs";
+import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
+import { ROOTS } from "./config.mjs";
 
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
@@ -105,27 +107,26 @@ const WORKERS = [
       "Pull from your training (you don't have live web). Pick something fresh-feeling and angle-able for a sports app. " +
       'Return JSON: {"thinking": "<one sentence>", "league": "<NFL|NBA|MLS|NCAA|MLB>", "headline": "<≤ 140 chars>", "source": "<imagined outlet name>"}.'
   },
+  // Note: the old `executor` and `selfimprove` workers were removed. Their job
+  // (turning a task into a shell pipeline) produced 100% rejection because the
+  // model can't produce real diffs through freeform shell. They are replaced
+  // by the chained pipeline worker (server/pipelineWorker.mjs) which uses
+  // structured kind:"edit" proposals + playbooks instead.
   {
-    id: "executor",
-    label: "executor",
-    intervalMs: 55_000,
+    id: "closer",
+    label: "closer",
+    intervalMs: 30_000,
     mission: "general",
-    system:
-      "You are the EXECUTOR worker. Your job is to turn an OPEN LEDGER TASK into a concrete shell command that will produce a real diff. " +
-      "Look at the open tasks, pick the most actionable one, and write a SAFE shell pipeline (no rm, no sudo, no curl|sh, no chmod) that edits a file under /Users/sarveshchidambaram/Desktop/Projects/Other/pretext. " +
-      "Examples: `cd /Users/...pretext && printf '\\n## %s - <title>\\n\\n- <line>\\n' \"$(date +%Y-%m-%d)\" >> CHANGELOG.md && git add CHANGELOG.md && git commit -m '<title>' && git push` " +
-      "Or: `cd /Users/...pretext && sed -i '' 's/old/new/' src/styles.css && git add -A && git commit -m '<title>' && git push`. " +
-      'Return JSON: {"thinking": "<one sentence>", "task_id": "<id from list>", "title": "<≤ 80 chars matching the diff>", "rationale": "<≤ 120 chars>", "command": "<exact shell pipeline ending with git push>"}.'
+    deterministic: true,
+    system: "Deterministic worker — no LLM call. Closes tasks whose titles match recent commit subjects; archives stale opens."
   },
   {
-    id: "selfimprove",
-    label: "selfimprove",
-    intervalMs: 70_000,
-    mission: "pretext",
-    system:
-      "You are the SELFIMPROVE worker. Propose ONE small visible refinement to the Pretext dashboard itself — a CSS tweak, a copy edit, a new column in a pane, a typography refinement. The change should help Sarvesh see what Hermes is doing more clearly. " +
-      "Output a SAFE shell pipeline (sed -i '' or printf >>). Files under src/ or server/ only. Always end with git add + git commit + git push. " +
-      'Return JSON: {"thinking": "<one sentence>", "title": "<≤ 80 chars>", "rationale": "<≤ 120 chars>", "command": "<exact pipeline>"}.'
+    id: "dedup",
+    label: "dedup",
+    intervalMs: 60_000,
+    mission: "general",
+    deterministic: true,
+    system: "Deterministic worker — no LLM call. Merges open tasks with near-identical titles to keep the ledger small."
   }
 ];
 
@@ -225,17 +226,110 @@ async function callOllamaJson({ model, system, user }) {
 }
 
 async function buildUserContext(missionFilter) {
-  const [tasks, events] = await Promise.all([
+  const [tasks, events, shared] = await Promise.all([
     listTasks({ status: "open" }),
-    getHermesEvents(15)
+    getHermesEvents(8),
+    getSharedContext()
   ]);
-  const recent = events.slice(0, 6).map((e) => `${e.createdAt.slice(11, 19)} ${e.type} ${(e.content || "").slice(0, 60)}`).join("\n");
+  const sharedBlock = formatSharedContextBlock(shared);
+  const recent = events.slice(0, 4).map((e) => `${e.createdAt.slice(11, 19)} ${e.type} ${(e.content || "").slice(0, 60)}`).join("\n");
   const taskLines = tasks
     .filter((t) => !missionFilter || t.mission === missionFilter || t.mission === "general")
-    .slice(0, 5)
+    .slice(0, 3)
     .map((t) => `- [${t.mission}] ${t.title} (id=${t.id})`)
     .join("\n") || "(no open tasks in your mission)";
-  return `Recent events:\n${recent}\n\nOpen tasks:\n${taskLines}\n\nProduce ONE JSON object as instructed.`;
+  return `${sharedBlock}\n\nRecent events:\n${recent}\n\nYour mission's open tasks:\n${taskLines}\n\nProduce ONE JSON object as instructed.`;
+}
+
+// --- Deterministic worker helpers (closer + dedup) ---
+
+function execGit(args) {
+  return new Promise((resolve) => {
+    execFile(
+      "git",
+      args,
+      { cwd: ROOTS.project, timeout: 4000, maxBuffer: 256 * 1024 },
+      (error, stdout) => {
+        resolve({ ok: !error, stdout: (stdout || "").toString().trim() });
+      }
+    );
+  });
+}
+
+function tokenize(s) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length >= 4); // skip short words like "the", "for"
+}
+
+async function runCloserTick() {
+  const open = await listTasks({ status: "open" });
+  if (!open.length) return "no open tasks";
+  const log = await execGit(["log", "-50", "--pretty=format:%h|%s"]);
+  const commits = (log.stdout || "")
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const idx = line.indexOf("|");
+      return { sha: line.slice(0, idx), subject: line.slice(idx + 1) };
+    });
+  const STALE_MS = 30 * 60_000;
+  const now = Date.now();
+  let closed = 0;
+  let abandoned = 0;
+  for (const task of open) {
+    const titleTokens = new Set(tokenize(task.title));
+    if (titleTokens.size >= 3) {
+      for (const c of commits) {
+        const subjectTokens = new Set(tokenize(c.subject));
+        let overlap = 0;
+        for (const t of titleTokens) if (subjectTokens.has(t)) overlap += 1;
+        if (overlap >= 3) {
+          await updateTask(task.id, {
+            status: "done",
+            note: `shipped via ${c.sha} (closer match: "${safeSnippet(c.subject, 80)}")`
+          });
+          closed += 1;
+          break;
+        }
+      }
+    }
+    // Stale-archive: open >30min, no notes, no recent commit match.
+    if (
+      task.status === "open" &&
+      (!task.notes || task.notes.length === 0) &&
+      now - new Date(task.updatedAt).getTime() > STALE_MS
+    ) {
+      await updateTask(task.id, { status: "abandoned", note: "stale, no progress (closer)" });
+      abandoned += 1;
+    }
+  }
+  return `closer closed=${closed} abandoned=${abandoned} (of ${open.length} open)`;
+}
+
+async function runDedupTick() {
+  const open = await listTasks({ status: "open" });
+  if (open.length < 3) return `dedup: only ${open.length} open tasks, skipping`;
+  const buckets = new Map();
+  for (const task of open) {
+    const key = (task.title || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).slice(0, 5).join(" ");
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(task);
+  }
+  let merged = 0;
+  for (const [, group] of buckets) {
+    if (group.length < 2) continue;
+    // Keep the OLDEST (first created); merge the rest.
+    const sorted = group.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    const keeper = sorted[0];
+    for (const dupe of sorted.slice(1)) {
+      await updateTask(dupe.id, { status: "abandoned", note: `merged into ${keeper.id} (dedup bucket)` });
+      merged += 1;
+    }
+  }
+  return `dedup merged=${merged} (of ${open.length} open, ${buckets.size} buckets)`;
 }
 
 async function runWorker(spec) {
@@ -246,6 +340,34 @@ async function runWorker(spec) {
   status.cycles += 1;
   const sessionId = `swarm_${spec.id}`;
   await ensureSubagent(spec, status);
+
+  // Deterministic workers (closer/dedup) skip the LLM entirely.
+  if (spec.deterministic) {
+    try {
+      let summary;
+      if (spec.id === "closer") summary = await runCloserTick();
+      else if (spec.id === "dedup") summary = await runDedupTick();
+      else summary = "deterministic worker without handler";
+      status.lastResult = summary;
+      status.lastResultAt = new Date().toISOString();
+      status.lastError = null;
+      await appendHermesEvent({
+        type: "mission_update",
+        role: "system",
+        content: `[${spec.label}] ${summary}`,
+        sessionId
+      });
+      if (status.subagentId) {
+        void updateSubagent(status.subagentId, { result: summary, status: "running" }).catch(() => {});
+      }
+    } catch (err) {
+      status.lastError = err?.message || "tick failed";
+    } finally {
+      status.inFlight = false;
+    }
+    return;
+  }
+
   try {
     await appendHermesEvent({
       type: "model_call",
@@ -388,37 +510,6 @@ async function runWorker(spec) {
               sessionId
             });
             resultSummary = `critique [${safeSnippet(target, 30)}]: ${safeSnippet(critique, 60)}`;
-          }
-          break;
-        }
-        case "executor":
-        case "selfimprove": {
-          const command = result.parsed.command || "";
-          const title = result.parsed.title || "";
-          const rationale = result.parsed.rationale || "";
-          // Server-side safety: never let the executor escape the project dir
-          // or run anything destructive. The proposal validator will also gate.
-          const looksDestructive = /\b(rm\s+-rf|sudo|chmod\s|curl\s+[^|]*\|\s*(sh|bash)|wget\s+[^|]*\|\s*(sh|bash)|dd\s+if=|mkfs)\b/.test(command);
-          if (!command || !title) {
-            resultSummary = `${spec.id}: model returned no command/title`;
-            break;
-          }
-          if (looksDestructive) {
-            resultSummary = `${spec.id}: refused destructive command pattern`;
-            break;
-          }
-          try {
-            const proposal = await createProposal({
-              title: safeSnippet(title, 200),
-              rationale: safeSnippet(rationale || `swarm:${spec.id}`, 600),
-              kind: "shell",
-              command: safeSnippet(command, 800),
-              autoSafe: true,
-              sessionId
-            });
-            resultSummary = `+ proposal ${proposal.id} ${proposal.status}: ${safeSnippet(title, 50)}`;
-          } catch (e) {
-            resultSummary = `${spec.id}: proposal create failed — ${e?.message || "unknown"}`;
           }
           break;
         }

@@ -115,7 +115,7 @@ button {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "health      health      health      cadence     cadence     cadence     sparkline   sparkline   sparkline   perf        perf        perf"
-    "report      report      report      report      report      report      report      report      report      report      report      report"
+    "report      report      report      report      report      report      power       power       power       power       power       power"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"
@@ -1486,6 +1486,61 @@ option {
 .inspector-card input {
   position: relative;
   color: var(--color-ice-veil);
+}
+
+.power-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+.power-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  flex: 1;
+}
+.power-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.power-num {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.power-num-on {
+  color: rgb(208, 241, 0);
+  text-shadow: 0 0 12px rgba(208, 241, 0, 0.35);
+}
+.power-num-off {
+  color: rgba(255, 255, 255, 0.25);
+}
+.power-suffix {
+  font-size: 16px;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+.power-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 4px;
+}
+.power-detail {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 1024px) {

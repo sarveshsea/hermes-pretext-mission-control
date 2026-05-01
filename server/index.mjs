@@ -60,6 +60,9 @@ import { getContinuousWorkerStatus, startContinuousWorker } from "./continuousWo
 import { getSwarmStatus, startWorkerSwarm } from "./workerSwarm.mjs";
 import { getEventArchiveStatus, startEventArchive } from "./eventArchive.mjs";
 import { generateSessionReport } from "./sessionReport.mjs";
+import { listPlaybooks } from "./playbookLoader.mjs";
+import { getPipelineStatus, startPipelineWorker } from "./pipelineWorker.mjs";
+import { getPowerMetrics } from "./powerMetrics.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
@@ -226,6 +229,9 @@ async function apiRoute(req, res) {
   if (req.method === "POST" && url.pathname === "/api/hermes/proposal") {
     return sendJson(res, 201, await createProposal(await readJsonBody(req)));
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/playbooks") {
+    return sendJson(res, 200, { playbooks: await listPlaybooks() });
+  }
   if (req.method === "GET" && url.pathname === "/api/hermes/proposals") {
     return sendJson(res, 200, await getProposals());
   }
@@ -377,6 +383,13 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/swarm") {
     return sendJson(res, 200, getSwarmStatus());
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/pipeline") {
+    return sendJson(res, 200, getPipelineStatus());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/power-metrics") {
+    const minutes = Number(url.searchParams.get("minutes") || 60);
+    return sendJson(res, 200, await getPowerMetrics({ windowMinutes: Math.min(Math.max(minutes, 5), 720) }));
+  }
   if (req.method === "GET" && url.pathname === "/api/hermes/event-archive") {
     return sendJson(res, 200, getEventArchiveStatus());
   }
@@ -502,6 +515,7 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   // Disable the old single-worker and run the parallel swarm instead.
   if (process.env.PRETEXT_LEGACY_WORKER === "true") startContinuousWorker();
   startWorkerSwarm();
+  startPipelineWorker();
   startEventArchive();
 
   // Auto-generate an hourly session report on the hour, mirroring to the vault

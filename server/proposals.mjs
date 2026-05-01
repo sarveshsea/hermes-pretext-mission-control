@@ -192,7 +192,15 @@ export async function createProposal(input = {}) {
     decidedAt: null,
     decision: null,
     declineReason: null,
-    runResult: null
+    runResult: null,
+    // edit-kind fields
+    filePath: kind === "edit" && input.filePath ? String(input.filePath).slice(0, 400) : null,
+    find: kind === "edit" && typeof input.find === "string" ? input.find.slice(0, 4000) : null,
+    replace: kind === "edit" && typeof input.replace === "string" ? input.replace.slice(0, 4000) : null,
+    content: kind === "edit" && typeof input.content === "string" ? input.content.slice(0, 20000) : null,
+    allowCreate: kind === "edit" && input.allowCreate === true,
+    overwrite: kind === "edit" && input.overwrite === true,
+    playbookId: kind === "edit" && input.playbookId ? String(input.playbookId).slice(0, 60) : null
   };
 
   // Validation gate: reject pure no-op proposals so the model can't pad its
@@ -229,6 +237,60 @@ export async function createProposal(input = {}) {
     extra: { kind: proposal.kind, rationale: proposal.rationale }
   });
   return proposal;
+}
+
+async function applyEditProposal(proposal) {
+  const started = Date.now();
+  try {
+    const target = path.join(ROOTS.project, proposal.filePath);
+    if (!target.startsWith(ROOTS.project + path.sep)) {
+      return { exitCode: 1, error: "filePath escapes project root", durationMs: Date.now() - started };
+    }
+    let original = null;
+    try {
+      original = await fs.readFile(target, "utf8");
+    } catch {
+      original = null;
+    }
+    if (proposal.find) {
+      if (original === null) return { exitCode: 1, error: `file does not exist: ${proposal.filePath}`, durationMs: Date.now() - started };
+      const idx = original.indexOf(proposal.find);
+      if (idx === -1) return { exitCode: 1, error: "find string not found at apply time (file changed since preview)", durationMs: Date.now() - started };
+      const next = original.indexOf(proposal.find, idx + proposal.find.length);
+      if (next !== -1) return { exitCode: 1, error: "find string is no longer unique", durationMs: Date.now() - started };
+      const updated = original.slice(0, idx) + proposal.replace + original.slice(idx + proposal.find.length);
+      await fs.writeFile(target, updated, "utf8");
+    } else if (typeof proposal.content === "string") {
+      if (original !== null && !proposal.overwrite) {
+        return { exitCode: 1, error: "file already exists; overwrite not set", durationMs: Date.now() - started };
+      }
+      await fs.mkdir(path.dirname(target), { recursive: true });
+      await fs.writeFile(target, proposal.content, "utf8");
+    } else {
+      return { exitCode: 1, error: "edit proposal has no find/replace or content", durationMs: Date.now() - started };
+    }
+    const add = await execGit(["add", "--", proposal.filePath]);
+    if (!add.ok) return { exitCode: 1, error: `git add failed: ${safeSnippet(add.stderr, 200)}`, durationMs: Date.now() - started };
+    const commitMsg = `${safeSnippet(proposal.title, 80)}\n\n${safeSnippet(proposal.rationale || "Hermes edit proposal", 240)}`;
+    const commit = await execGit(["commit", "-m", commitMsg]);
+    if (!commit.ok) {
+      // No-op commit can happen if the find/replace was already applied between
+      // preview and apply. Surface as failed rather than silent.
+      return { exitCode: 1, error: `git commit failed: ${safeSnippet(commit.stderr || commit.stdout, 200)}`, durationMs: Date.now() - started };
+    }
+    const sha = await execGit(["rev-parse", "--short", "HEAD"]);
+    const push = await execGit(["push"]);
+    return {
+      exitCode: 0,
+      sha: (sha.stdout || "").trim(),
+      durationMs: Date.now() - started,
+      pushed: push.ok,
+      pushOutput: safeSnippet(push.stderr || push.stdout || "", 600),
+      output: safeSnippet(`applied to ${proposal.filePath}`, 200)
+    };
+  } catch (error) {
+    return { exitCode: 1, error: error?.message || "apply failed", durationMs: Date.now() - started };
+  }
 }
 
 export async function decideProposal(id, { decision, reason } = {}) {
@@ -276,6 +338,10 @@ export async function decideProposal(id, { decision, reason } = {}) {
       proposal.runResult = { error: error?.message || "run failed" };
       proposal.status = "failed";
     }
+  }
+  if (decision === "confirmed" && proposal.kind === "edit") {
+    proposal.runResult = await applyEditProposal(proposal);
+    proposal.status = proposal.runResult?.exitCode === 0 ? "applied" : "failed";
   }
   await persist();
   await appendMarkdown(proposal);
