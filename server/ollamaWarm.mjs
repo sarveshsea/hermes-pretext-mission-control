@@ -12,12 +12,13 @@ let timer = null;
 let lastPingAt = null;
 let lastPingResult = "boot";
 
+let consecutiveFails = new Map();
+
 async function pingModel(model) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000);
-    // A 1-token generation is cheap (<100ms once loaded) but forces Ollama to
-    // honor the keep_alive timer. Empty-prompt requests don't reset the timer.
+    // 120s timeout — Ollama can be busy when the swarm is hammering it.
+    const timeout = setTimeout(() => controller.abort(), 120_000);
     const res = await fetch(`${OLLAMA_BASE}/api/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,10 +32,18 @@ async function pingModel(model) {
       signal: controller.signal
     });
     clearTimeout(timeout);
-    if (!res.ok) return `${model}:${res.status}`;
+    if (!res.ok) {
+      consecutiveFails.set(model, (consecutiveFails.get(model) || 0) + 1);
+      return `${model}:${res.status}`;
+    }
+    consecutiveFails.set(model, 0);
     return `${model}:ok`;
   } catch (error) {
-    return `${model}:err(${error?.name || "fetch"})`;
+    const fails = (consecutiveFails.get(model) || 0) + 1;
+    consecutiveFails.set(model, fails);
+    // Only surface as error after 3 consecutive failures — single timeouts
+    // when Ollama is mid-generation are normal.
+    return fails >= 3 ? `${model}:err(${error?.name || "fetch"})` : `${model}:busy`;
   }
 }
 

@@ -120,7 +120,7 @@ const WORKERS = [
   {
     id: "selfimprove",
     label: "selfimprove",
-    intervalMs: 120_000,
+    intervalMs: 70_000,
     mission: "pretext",
     system:
       "You are the SELFIMPROVE worker. Propose ONE small visible refinement to the Pretext dashboard itself — a CSS tweak, a copy edit, a new column in a pane, a typography refinement. The change should help Sarvesh see what Hermes is doing more clearly. " +
@@ -350,6 +350,44 @@ async function runWorker(spec) {
               headline: safeSnippet(headline, 280)
             });
             resultSummary = `+ sports_radar [${league}] ${item.id}: ${safeSnippet(headline, 60)}`;
+          }
+          break;
+        }
+        case "planner": {
+          const subtasks = Array.isArray(result.parsed.subtasks) ? result.parsed.subtasks : [];
+          const parent = result.parsed.parent_title || "";
+          const planMission = result.parsed.mission || "general";
+          if (parent && subtasks.length) {
+            const parentTask = await addTask({
+              title: `Plan: ${safeSnippet(parent, 160)}`,
+              mission: planMission,
+              createdBy: "swarm:planner",
+              notes: [`subtasks: ${subtasks.length}`]
+            });
+            for (const st of subtasks.slice(0, 6)) {
+              await addTask({
+                title: safeSnippet(String(st), 160),
+                mission: planMission,
+                createdBy: "swarm:planner",
+                notes: [`parent: ${parentTask.id}`]
+              });
+            }
+            resultSummary = `+ plan ${parentTask.id} (${subtasks.length} subtasks): ${safeSnippet(parent, 50)}`;
+          }
+          break;
+        }
+        case "critic": {
+          const target = result.parsed.target || "";
+          const critique = result.parsed.critique || "";
+          const suggestion = result.parsed.suggestion || "";
+          if (target && critique) {
+            await appendHermesEvent({
+              type: "mission_update",
+              role: "assistant",
+              content: `[critic] ${target}: ${critique}${suggestion ? ` → ${suggestion}` : ""}`,
+              sessionId
+            });
+            resultSummary = `critique [${safeSnippet(target, 30)}]: ${safeSnippet(critique, 60)}`;
           }
           break;
         }

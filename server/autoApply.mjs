@@ -2,8 +2,8 @@ import { getCadence } from "./scheduler.mjs";
 import { decideProposal, getPendingProposals } from "./proposals.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 
-const TICK_MS = 30_000;
-const MAX_PER_TICK = 3;
+const TICK_MS = 10_000;
+const MAX_PER_TICK = 5;
 
 const SAFE_CMD_RE =
   /^(?:cd\s+\S+(?:\s*&&\s*)?)?(?:printf|echo|sed -i\s+'[^']*'\s+|cat\s|ls\s|git\s+(?:add|commit|push|status|diff)\b|pretty=)[\s\S]*$/;
