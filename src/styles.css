@@ -100,11 +100,11 @@ button {
 
 .bento-stage {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 360px;
+  grid-template-columns: 240px minmax(0, 1fr) 380px;
   grid-template-rows: 44px minmax(0, 1fr);
   grid-template-areas:
     "topbar topbar topbar"
-    "rail   grid   canvas";
+    "rail   grid   ops";
   gap: 8px;
   padding: 8px;
   overflow: hidden;
@@ -168,6 +168,307 @@ button {
   overflow: hidden;
   background: var(--color-deep-cosmos);
 }
+
+/* ===== Ops stage — replaces the JARVIS canvas ====================
+   3 zones, top-to-bottom:
+     1. HermesStatusCard (compact)
+     2. PipelineRiver (Sankey-ish horizontal flow)
+     3. LiveTimeline (scrolling agent decisions)
+   Information density >> dot-and-label sparseness. */
+
+.ops-stage {
+  grid-area: ops;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(17, 17, 20, 0.4);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* HermesStatusCard */
+
+.hermes-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid rgba(208, 241, 0, 0.22);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(208, 241, 0, 0.06), rgba(208, 241, 0, 0.01)),
+    rgba(17, 17, 20, 0.65);
+}
+.hermes-card-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.hermes-card-mark {
+  font-size: var(--t-row);
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: var(--color-chartreuse-pulse);
+}
+.hermes-card-rate {
+  font-size: var(--t-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-chartreuse-pulse);
+}
+.hermes-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2) var(--s-4);
+}
+.hermes-card-cell {
+  min-width: 0;
+}
+.hermes-card-key {
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hermes-card-val {
+  font-size: var(--t-row);
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hermes-card-val.warn { color: rgb(255, 200, 90); }
+.hermes-card-headline {
+  font-size: var(--t-meta);
+  color: var(--text-base);
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-top: var(--s-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hermes-card-prompt {
+  color: var(--color-chartreuse-pulse);
+  margin-right: var(--s-2);
+}
+
+/* PipelineRiver */
+
+.pipeline-river {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(17, 17, 20, 0.5);
+}
+.pipeline-river-empty {
+  padding: var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: var(--t-meta);
+}
+.pipeline-river-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.pipeline-river-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.pipeline-river-summary {
+  font-size: var(--t-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  text-align: right;
+}
+.pipeline-river-grid {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  height: 70px;
+}
+.pr-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+.pr-bar-track {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 2px;
+  position: relative;
+}
+.pr-bar-fill {
+  width: 100%;
+  border-radius: 2px;
+  background: var(--text-faint);
+  position: relative;
+  transition: height 200ms ease;
+}
+.pr-tone-ok .pr-bar-fill {
+  background: linear-gradient(180deg, var(--color-chartreuse-pulse), rgba(208, 241, 0, 0.4));
+  box-shadow: 0 0 12px rgba(208, 241, 0, 0.4);
+}
+.pr-tone-warn .pr-bar-fill {
+  background: linear-gradient(180deg, rgb(255, 200, 90), rgba(255, 200, 90, 0.3));
+}
+.pr-tone-alert .pr-bar-fill {
+  background: linear-gradient(180deg, rgb(255, 110, 110), rgba(255, 110, 110, 0.3));
+}
+.pr-tone-muted .pr-bar-fill {
+  background: rgba(255, 255, 255, 0.18);
+}
+.pr-count {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--t-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+}
+.pr-label {
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--s-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pr-arrow {
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid rgba(255, 255, 255, 0.18);
+}
+
+/* LiveTimeline */
+
+.live-timeline-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  min-height: 0;
+}
+.live-timeline-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.live-timeline-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.live-timeline-count {
+  font-size: var(--t-label);
+  font-variant-numeric: tabular-nums;
+}
+.live-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  padding: var(--s-2);
+  min-height: 0;
+}
+.tl-row {
+  display: grid;
+  grid-template-columns: 60px 70px 1fr;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: 3px var(--s-3);
+  border: 0;
+  background: transparent;
+  border-left: 2px solid transparent;
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  text-align: left;
+  cursor: pointer;
+  transition: background 80ms;
+  border-radius: 2px;
+  min-width: 0;
+}
+.tl-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.tl-time {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-label);
+  color: var(--text-faint);
+}
+.tl-phase {
+  font-size: var(--t-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tl-body {
+  color: var(--text-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.tl-row.tone-pick { border-left-color: rgba(140, 200, 255, 0.5); }
+.tl-row.tone-pick .tl-phase { color: rgb(140, 200, 255); }
+.tl-row.tone-concretize { border-left-color: rgba(180, 160, 255, 0.5); }
+.tl-row.tone-concretize .tl-phase { color: rgb(180, 160, 255); }
+.tl-row.tone-search { border-left-color: rgba(160, 240, 200, 0.5); }
+.tl-row.tone-search .tl-phase { color: rgb(160, 240, 200); }
+.tl-row.tone-playbook { border-left-color: rgba(255, 200, 120, 0.5); }
+.tl-row.tone-playbook .tl-phase { color: rgb(255, 200, 120); }
+.tl-row.tone-submit,
+.tl-row.tone-plan { border-left-color: var(--color-chartreuse-pulse); }
+.tl-row.tone-submit .tl-phase,
+.tl-row.tone-plan .tl-phase { color: var(--color-chartreuse-pulse); }
+.tl-row.tone-abandon { border-left-color: rgb(255, 200, 90); opacity: 0.85; }
+.tl-row.tone-abandon .tl-phase { color: rgb(255, 200, 90); }
+.tl-row.tone-thinking { border-left-color: rgba(180, 160, 255, 0.4); }
+.tl-row.tone-thinking .tl-phase { color: rgb(180, 160, 255); }
+.tl-row.tone-model { border-left-color: rgba(140, 200, 255, 0.3); }
+.tl-row.tone-model .tl-phase { color: rgba(140, 200, 255, 0.7); }
+.tl-row.tone-mission { border-left-color: rgba(208, 241, 0, 0.4); }
+.tl-row.tone-error { border-left-color: rgb(255, 110, 110); }
+.tl-row.tone-error .tl-phase { color: rgb(255, 110, 110); }
+
 
 .bento-canvas-stage .pretext-console-canvas {
   position: absolute;

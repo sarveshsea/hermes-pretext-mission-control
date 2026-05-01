@@ -16,7 +16,9 @@ import {
   type RunRequest
 } from "./api";
 import { buildConsoleNodes, type ConsoleNodeId } from "./consoleModel";
-import PretextConsole from "./components/PretextConsole";
+import HermesStatusCard from "./components/HermesStatusCard";
+import PipelineRiver from "./components/PipelineRiver";
+import LiveTimeline from "./components/LiveTimeline";
 import PretextDock from "./components/PretextDock";
 import InspectorOverlay from "./components/InspectorOverlay";
 import DiffPreviewOverlay from "./components/DiffPreviewOverlay";
@@ -423,21 +425,11 @@ export default function App() {
         )}
       </div>
 
-      <div className="bento-canvas-stage">
-        <PretextConsole payload={payload} nodes={nodes} activeNode={activeNode} liveEvents={liveEvents} />
-        <div className="node-layer" aria-label="Hermes console nodes">
-          {nodes.map((node) => (
-            <button
-              key={node.id}
-              className={`node-hotspot ${node.id === activeNode ? "node-hotspot-active" : ""}`}
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
-              onClick={() => setActiveNode(node.id)}
-              aria-label={`Focus ${node.label}`}
-              aria-pressed={node.id === activeNode}
-            />
-          ))}
-        </div>
-      </div>
+      <aside className="ops-stage" aria-label="Hermes operator surface">
+        <HermesStatusCard payload={payload} eventCount={liveEvents.length} />
+        <PipelineRiver />
+        <LiveTimeline events={liveEvents} onSelect={setInspectedEvent} />
+      </aside>
 
       {liveIntents.length > 0 && (
         <aside className="intent-dock" aria-label="Pending public actions">
