@@ -3,15 +3,26 @@
     {
       "id": "task_momikamd_sh4o7x",
       "title": "verify task ledger",
-      "status": "open",
+      "status": "advanced",
       "mission": "design",
       "createdBy": "hermes",
       "createdAt": "2026-05-01T06:10:22.021Z",
-      "updatedAt": "2026-05-01T11:27:30.956Z",
+      "updatedAt": "2026-05-01T11:27:40.810Z",
       "notes": [
         "smoke test",
+        "auto commit proposal queued",
         "auto commit proposal queued"
       ]
+    },
+    {
+      "id": "task_momvn6vc_q0vcbt",
+      "title": "run typecheck",
+      "status": "open",
+      "mission": "design",
+      "createdBy": "hermes",
+      "createdAt": "2026-05-01T12:16:32.136Z",
+      "updatedAt": "2026-05-01T12:16:32.136Z",
+      "notes": []
     }
   ]
 }

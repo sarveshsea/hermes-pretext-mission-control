@@ -28,7 +28,7 @@
     {
       "id": "prop_momtvvqf_oahtmb",
       "createdAt": "2026-05-01T11:27:18.375Z",
-      "status": "pending",
+      "status": "applied",
       "kind": "shell",
       "title": "auto: commit dirty",
       "rationale": "auto commit",
@@ -38,10 +38,40 @@
       "sessionId": null,
       "autoSafe": true,
       "autoAppliedAt": null,
-      "decidedAt": null,
-      "decision": null,
+      "decidedAt": "2026-05-01T11:27:39.435Z",
+      "decision": "confirmed",
       "declineReason": null,
-      "runResult": null
+      "runResult": {
+        "id": "req_momtwbzf_zh7qis",
+        "status": "completed",
+        "exitCode": 0,
+        "durationMs": 44,
+        "output": "[main b2ebbcc] auto: commit dirty 4 files changed, 141 insertions(+) create mode 100644 .claude/settings.json create mode 100644 data/improvement-proposals.json create mode 100644 data/morning-cursor.json create mode 100644 data/task-ledger.json"
+      }
+    },
+    {
+      "id": "prop_momvn6vg_ojdl03",
+      "createdAt": "2026-05-01T12:16:32.140Z",
+      "status": "applied",
+      "kind": "shell",
+      "title": "run typecheck",
+      "rationale": "ensure TS integrity",
+      "command": "npm run typecheck",
+      "argv": null,
+      "cwd": "/Users/sarveshchidambaram/Desktop/Projects/Other/pretext",
+      "sessionId": null,
+      "autoSafe": true,
+      "autoAppliedAt": null,
+      "decidedAt": "2026-05-01T12:16:39.617Z",
+      "decision": "confirmed",
+      "declineReason": null,
+      "runResult": {
+        "id": "req_momvncn5_xzgbjx",
+        "status": "completed",
+        "exitCode": 0,
+        "durationMs": 827,
+        "output": "> hermes-pretext-mission-control@0.1.0 typecheck > tsc --noEmit"
+      }
     }
   ]
 }
