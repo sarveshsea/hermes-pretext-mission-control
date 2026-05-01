@@ -28,7 +28,7 @@ export default function GoalsPanel() {
   if (goals.length === 0) return <div className="muted">no goals defined · edit ~/.hermes/memories/goals.md</div>;
 
   return (
-    <div className="goals-pane">
+    <div className="goals-pane" data-testid="pane-goals">
       {goals.map((g) => {
         // Parse "X / Y" or freeform progress.
         const m = (g.progress || "").match(/^(\d+)\s*\/\s*(\d+)/);
