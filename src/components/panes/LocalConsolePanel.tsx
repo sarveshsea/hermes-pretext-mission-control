@@ -1,6 +1,12 @@
 import type { LocalMessage } from "../../api";
 
 export default function LocalConsolePanel({ messages }: { messages: LocalMessage[] }) {
+  return (
+    <div className="pane" id="pane-local">
+      {/* Original content goes here */}
+    </div>
+  );
+}
   if (!messages.length) return <div className="muted">no local messages</div>;
   return (
     <ul className="row-list">
