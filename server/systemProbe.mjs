@@ -42,7 +42,21 @@ async function probeOllama() {
   }
 }
 
-async function probeProcess(pgrepPattern) {
+async function probeProcess(pgrepPattern, opts = {}) {
+  // For the dashboard itself we know our own PID directly (no pgrep needed).
+  // Pass {selfPid: process.pid} to short-circuit.
+  if (opts.selfPid) {
+    const ps = await execFileAsync("ps", ["-p", String(opts.selfPid), "-o", "etime=,command="]);
+    if (!ps.ok || !ps.stdout.trim()) return { running: true, pid: opts.selfPid, etimeSec: null, command: null };
+    const line = ps.stdout.trim();
+    const etimeStr = line.split(/\s+/)[0] || "";
+    return {
+      running: true,
+      pid: opts.selfPid,
+      etimeSec: parseEtime(etimeStr),
+      command: line.slice(etimeStr.length).trim().slice(0, 240)
+    };
+  }
   const result = await execFileAsync("pgrep", ["-f", pgrepPattern]);
   if (!result.ok || !result.stdout.trim()) return { running: false, pid: null, etimeSec: null, command: null };
   const pid = Number(result.stdout.trim().split("\n")[0]);
@@ -139,7 +153,7 @@ export async function probeSystem({ force = false } = {}) {
   const [ollama, gateway, dashboard, disk, memory, vault, channel] = await Promise.all([
     probeOllama(),
     probeProcess("hermes_cli.main gateway"),
-    probeProcess("node server/index.mjs"),
+    probeProcess("node server/index.mjs", { selfPid: process.pid }),
     probeDisk(),
     probeMemory(),
     probeVault(),

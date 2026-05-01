@@ -1,17 +1,21 @@
 :root {
-  --color-midnight-navy: #1b2540;
-  --color-deep-cosmos: #001033;
+  --color-bg: #0a0a0c;
+  --color-surface: #111114;
+  --color-surface-2: #16161a;
+  --color-deep-cosmos: #0a0a0c;
   --color-chartreuse-pulse: #d0f100;
-  --color-ice-veil: #e0f6ff;
+  --color-ice-veil: #ededf0;
+  --color-slate-ink: #7a7a83;
+  --color-midnight-navy: #1b2540;
   --color-ghost-canvas: #f8f9fc;
   --color-pure-surface: #ffffff;
-  --color-slate-ink: #6b7184;
-  --line: rgba(224, 246, 255, 0.18);
-  --panel: rgba(0, 16, 51, 0.78);
-  --panel-strong: rgba(0, 16, 51, 0.92);
+  --line: rgba(255, 255, 255, 0.18);
+  --line-strong: rgba(255, 255, 255, 0.28);
+  --panel: rgba(17, 17, 20, 0.86);
+  --panel-strong: rgba(17, 17, 20, 0.94);
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   color: var(--color-ice-veil);
-  background: var(--color-deep-cosmos);
+  background: var(--color-bg);
   font-family: var(--mono);
   font-synthesis: none;
   text-rendering: geometricPrecision;
@@ -152,12 +156,21 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line) !important;
   border-radius: 4px;
   background: var(--panel-strong);
   overflow: hidden;
   min-width: 0;
   min-height: 0;
+  resize: both;
+}
+
+.bento-cell:hover {
+  border-color: var(--line-strong) !important;
+}
+
+.bento-cell::-webkit-resizer {
+  background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.32) 50%);
 }
 
 .bento-header {
@@ -169,10 +182,15 @@ button {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .bento-title {
-  color: var(--color-chartreuse-pulse);
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .bento-body {
@@ -183,6 +201,12 @@ button {
   line-height: 1.45;
   min-width: 0;
   min-height: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.bento-body * {
+  max-width: 100%;
 }
 
 /* Running processes rail */

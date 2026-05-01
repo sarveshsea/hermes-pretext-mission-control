@@ -11,15 +11,29 @@ function pickMissionLine(events) {
 }
 
 function summarizeThinking(events) {
-  return events
-    .filter((event) => event.type === "telegram_out" || event.type === "thinking" || event.type === "model_call")
-    .slice(0, 6)
-    .map((event) => ({
-      id: event.id,
-      at: event.createdAt,
-      type: event.type,
-      content: event.content
-    }));
+  // Prefer real reasoning events; fall back to recent run_request / mission_update
+  // so the THINKING pane is never empty just because the model didn't call
+  // bridge.thinking() this tick.
+  const primary = events.filter(
+    (event) =>
+      event.type === "telegram_out" ||
+      event.type === "thinking" ||
+      event.type === "model_call" ||
+      event.type === "model_result"
+  );
+  const fallback = events.filter(
+    (event) =>
+      event.type === "mission_update" ||
+      event.type === "iteration_tick" ||
+      event.type === "run_request"
+  );
+  const out = primary.length >= 3 ? primary : [...primary, ...fallback];
+  return out.slice(0, 8).map((event) => ({
+    id: event.id,
+    at: event.createdAt,
+    type: event.type,
+    content: event.content
+  }));
 }
 
 function summarizeTools(events) {
