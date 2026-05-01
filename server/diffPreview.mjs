@@ -150,13 +150,37 @@ export async function previewProposedEdit({
     const diffStat = await execFileAsync("git", ["-C", sandbox, "diff", "--no-color", "--stat", "--cached"]);
     const diffFull = await execFileAsync("git", ["-C", sandbox, "diff", "--no-color", "--cached"]);
     const stat = (diffStat.stdout || "").trim();
+
+    // Pre-commit gate: typecheck the sandbox. node_modules isn't in the
+    // shared clone, so we symlink the live tree's node_modules in. This is
+    // safe because tsc only reads it. Skip for non-TS files (.md, .json,
+    // .css) where typecheck has nothing to verify and just slows us down.
+    const skipTypecheck = process.env.PRETEXT_PRECOMMIT_TYPECHECK === "false";
+    const isTsFile = /\.(ts|tsx|mts)$/.test(normalized);
+    let typecheck = { ok: true, skipped: true };
+    if (isTsFile && !skipTypecheck) {
+      try {
+        await fs.symlink(path.join(ROOTS.project, "node_modules"), path.join(sandbox, "node_modules"));
+      } catch {
+        // ignore — symlink may already exist if rerun
+      }
+      const tc = await execFileAsync("npx", ["tsc", "--noEmit"], { cwd: sandbox, timeout: 45_000 });
+      typecheck = {
+        ok: tc.ok,
+        skipped: false,
+        exitCode: tc.code,
+        stderrTail: safeSnippet((tc.stderr || tc.stdout || "").trim().split("\n").slice(-12).join("\n"), 1200)
+      };
+    }
+
     return {
       ok: true,
       diffStat: safeSnippet(stat, 8000),
       diff: diffFull.stdout.length > MAX_DIFF_BYTES
         ? `${diffFull.stdout.slice(0, MAX_DIFF_BYTES)}\n…[truncated]`
         : diffFull.stdout,
-      reason: stat ? "preview applied" : "no change"
+      reason: stat ? "preview applied" : "no change",
+      typecheck
     };
   } finally {
     void rmrf(sandbox).catch(() => {});

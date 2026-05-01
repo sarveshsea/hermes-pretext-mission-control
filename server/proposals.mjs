@@ -131,6 +131,15 @@ async function validateProposalActuallyChanges(proposal) {
       if (!preview.ok) return { ok: false, reason: `edit preview failed: ${preview.reason}` };
       const stat = (preview.diffStat || "").trim();
       if (!stat) return { ok: false, reason: "edit preview produced no diff" };
+      // Pre-commit gate: sandbox typecheck. Catches malformed JSX, orphan
+      // returns, dangling braces, type errors — BEFORE the live commit.
+      // Skipped for non-TS files (preview returns {skipped:true}).
+      if (preview.typecheck && preview.typecheck.skipped !== true && preview.typecheck.ok === false) {
+        return {
+          ok: false,
+          reason: `typecheck regression in sandbox: ${preview.typecheck.stderrTail || `exit ${preview.typecheck.exitCode}`}`
+        };
+      }
       return { ok: true, preview };
     } catch (error) {
       return { ok: false, reason: `edit preview error: ${error?.message || "unknown"}` };
@@ -247,6 +256,16 @@ async function runTypecheckPostApply() {
   });
 }
 
+const REGRESSIONS_LOG = path.join(ROOTS.project, "data/regressions.jsonl");
+async function appendRegression(entry) {
+  try {
+    await fs.mkdir(path.dirname(REGRESSIONS_LOG), { recursive: true });
+    await fs.appendFile(REGRESSIONS_LOG, JSON.stringify({ ts: new Date().toISOString(), ...entry }) + "\n", "utf8");
+  } catch {
+    // best-effort
+  }
+}
+
 async function applyEditProposal(proposal) {
   const started = Date.now();
   try {
@@ -288,45 +307,66 @@ async function applyEditProposal(proposal) {
     }
     const sha = await execGit(["rev-parse", "--short", "HEAD"]);
     const push = await execGit(["push"]);
-    // Post-apply validation: typecheck. If it fails, append a follow-up task so
-    // Sarvesh sees the regression. Don't auto-revert (riskier than visibility).
+    // Post-apply belt-and-suspenders: even though previewProposedEdit
+    // already typechecks in the sandbox, run tsc one more time on the live
+    // tree. If it fails (rare — only happens if the sandbox skipped or
+    // missed something), AUTO-REVERT the commit + push the revert. The
+    // dashboard self-heals within ~30s.
     const tc = await runTypecheckPostApply();
-    let followupTaskId = null;
+    let revertedSha = null;
     if (!tc.ok) {
       try {
-        const { addTask } = await import("./taskLedger.mjs");
-        const followup = await addTask({
-          title: `Fix typecheck regression introduced by ${proposal.id}`,
-          mission: "autofix",
-          createdBy: "post-apply",
-          tags: ["regression"],
-          notes: [
-            `proposal: ${proposal.id} (${proposal.title})`,
-            `commit: ${(sha.stdout || "").trim()}`,
-            `tsc stderr tail: ${tc.stderr.slice(-400) || tc.stdout.slice(-400)}`
-          ]
-        });
-        followupTaskId = followup.id;
+        const revert = await execGit(["revert", "HEAD", "--no-edit"]);
+        if (revert.ok) {
+          const revertSha = await execGit(["rev-parse", "--short", "HEAD"]);
+          revertedSha = (revertSha.stdout || "").trim();
+          await execGit(["push"]).catch(() => {});
+          await appendRegression({
+            proposalId: proposal.id,
+            badSha: (sha.stdout || "").trim(),
+            revertSha: revertedSha,
+            stderrTail: tc.stderr.slice(-1000) || tc.stdout.slice(-1000),
+            filePath: proposal.filePath,
+            title: proposal.title
+          });
+          await appendHermesEvent({
+            type: "error",
+            role: "system",
+            content: `post-apply tsc failed → AUTO-REVERTED ${(sha.stdout || "").trim()} via ${revertedSha}`,
+            intent: proposal.id,
+            extra: { badSha: (sha.stdout || "").trim(), revertSha: revertedSha }
+          });
+        } else {
+          await appendHermesEvent({
+            type: "error",
+            role: "system",
+            content: `post-apply tsc failed AND auto-revert failed: ${safeSnippet(revert.stderr, 200)}`,
+            intent: proposal.id
+          });
+        }
+      } catch (error) {
         await appendHermesEvent({
           type: "error",
           role: "system",
-          content: `post-apply typecheck regression — opened follow-up ${followup.id}`,
-          intent: proposal.id,
-          extra: { followupTaskId, exitCode: tc.exitCode }
+          content: `post-apply auto-revert error: ${error?.message || "unknown"}`,
+          intent: proposal.id
         });
-      } catch {
-        // best-effort
       }
     }
     return {
-      exitCode: 0,
+      exitCode: revertedSha ? 1 : 0,
       sha: (sha.stdout || "").trim(),
+      revertedSha,
       durationMs: Date.now() - started,
       pushed: push.ok,
       pushOutput: safeSnippet(push.stderr || push.stdout || "", 600),
-      output: safeSnippet(`applied to ${proposal.filePath}${followupTaskId ? ` — typecheck regression, follow-up ${followupTaskId}` : ""}`, 240),
-      typecheck: { ok: tc.ok, exitCode: tc.exitCode },
-      followupTaskId
+      output: safeSnippet(
+        revertedSha
+          ? `applied to ${proposal.filePath} then AUTO-REVERTED via ${revertedSha} (typecheck failed)`
+          : `applied to ${proposal.filePath}`,
+        260
+      ),
+      typecheck: { ok: tc.ok, exitCode: tc.exitCode }
     };
   } catch (error) {
     return { exitCode: 1, error: error?.message || "apply failed", durationMs: Date.now() - started };
@@ -381,8 +421,8 @@ export async function decideProposal(id, { decision, reason } = {}) {
   }
   if (decision === "confirmed" && proposal.kind === "edit") {
     proposal.runResult = await applyEditProposal(proposal);
-    if (proposal.runResult?.exitCode !== 0) proposal.status = "failed";
-    else if (proposal.runResult?.followupTaskId) proposal.status = "applied-with-followup";
+    if (proposal.runResult?.revertedSha) proposal.status = "applied-then-reverted";
+    else if (proposal.runResult?.exitCode !== 0) proposal.status = "failed";
     else proposal.status = "applied";
   }
   await persist();
