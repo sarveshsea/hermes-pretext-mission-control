@@ -212,14 +212,36 @@ export async function linkGraph({ depth = 4, force = false } = {}) {
   return value;
 }
 
+// Paths the watcher must ignore to avoid feedback loops with our own writers.
+// Each of these is appended to by server modules (obsidianLogger, taskLedger,
+// proposals, publicIntents, morningBrief). If we emit memory_write for our own
+// writes, the resulting event creates another write, which fires the watcher,
+// which creates another event, etc.
+const WATCHER_IGNORE_RE = [
+  /^Hermes Logs\//,
+  /^Hermes Tasks\.md$/,
+  /^Hermes Proposals\.md$/,
+  /^Reflections\.md$/,
+  /^Review Queues\/Public Actions\.md$/,
+  /^Review Queues\/Local Console\.md$/,
+  /^Review Queues\/Improvement Loop\.md$/
+];
+
+let lastWatchEmitAt = 0;
+const WATCH_DEBOUNCE_MS = 500;
+
 export function startObsidianWatcher() {
   if (watcherStarted) return;
   watcherStarted = true;
   try {
     fsWatch(ROOTS.agent, { recursive: true }, (eventType, filename) => {
       if (!filename || !filename.endsWith(".md")) return;
+      if (WATCHER_IGNORE_RE.some((re) => re.test(filename))) return;
       vaultCache = { value: null, at: 0 };
       graphCache = { value: null, at: 0 };
+      const now = Date.now();
+      if (now - lastWatchEmitAt < WATCH_DEBOUNCE_MS) return;
+      lastWatchEmitAt = now;
       void appendHermesEvent({
         type: "memory_write",
         role: "system",

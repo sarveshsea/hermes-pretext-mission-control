@@ -2,9 +2,9 @@ import { execFile } from "node:child_process";
 import os from "node:os";
 
 const TTL_MS = 4_000;
-const ACTIVE_INTERVAL_MS = 600_000;
-const IDLE_INTERVAL_MS = 180_000;
-const ASLEEP_INTERVAL_MS = 60_000;
+const ACTIVE_INTERVAL_MS = 300_000;
+const IDLE_INTERVAL_MS = 90_000;
+const ASLEEP_INTERVAL_MS = 45_000;
 
 let cache = { value: null, at: 0 };
 let lastTransitionAt = Date.now();
