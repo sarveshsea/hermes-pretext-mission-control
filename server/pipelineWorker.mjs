@@ -171,36 +171,36 @@ async function concretizePhase({ task, sessionId, sharedBlock, indexBlock }) {
   };
 }
 
-async function searchPhase({ task, concretize, sessionId, sharedBlock, indexBlock }) {
-  // If we already have search results cached, reuse them.
-  if (task.pipelineState?.search?.matches?.length) {
-    await emit("search", `cached matches=${task.pipelineState.search.matches.length}`, sessionId);
-    return { ok: true, ...task.pipelineState.search };
-  }
-  const system =
-    "You are the SEARCH phase. Output a search pattern + glob targeted at the concrete file. " +
-    'Return JSON: {"thinking": "<one sentence>", "search_pattern": "<rg pattern, ≤ 80 chars, must be a string LITERALLY present in the target file>", "file_glob": "<glob>"}.';
-  const user =
-    `${sharedBlock}\n\n${indexBlock}\n\n` +
-    `Task: ${task.title}\nConcrete target: ${concretize.file_path} (${concretize.target_change})\n\n` +
-    `Pick a substring that is verbatim present in ${concretize.file_path}. Prefer specific identifiers (className, component name, function name) over generic words.`;
-  await appendHermesEvent({ type: "model_call", role: "assistant", content: `[pipeline:search] ${task.id}`, sessionId, model: SEARCH_MODEL });
-  const { parsed, latencyMs } = await callOllama({ system, user, model: SEARCH_MODEL });
-  const pattern = parsed.search_pattern || "";
-  const glob = parsed.file_glob || concretize.file_path;
-  if (parsed.thinking) {
-    await appendHermesEvent({ type: "thinking", role: "assistant", content: `[pipeline:search] ${parsed.thinking}`, sessionId, model: SEARCH_MODEL });
-  }
-  if (!pattern) return { ok: false, reason: "search returned no pattern" };
-  let results;
+// readFileContext: when concretize already produced a real file_path, we
+// don't need an LLM-driven search. Just read the file directly and produce
+// "matches" the playbook phase can ground on. Saves an Ollama call AND
+// always succeeds when the file exists.
+async function readFileContext({ concretize, sessionId }) {
+  if (!concretize?.file_path) return { ok: false, reason: "no file_path from concretize" };
+  const { promises: fs } = await import("node:fs");
+  const path = await import("node:path");
+  const { ROOTS } = await import("./config.mjs");
+  const target = path.default.join(ROOTS.project, concretize.file_path);
+  let text;
   try {
-    results = await searchCode({ pattern, fileGlob: glob, maxResults: 6 });
+    text = await fs.readFile(target, "utf8");
   } catch (error) {
-    return { ok: false, reason: `searchCode failed: ${error?.message}` };
+    return { ok: false, reason: `cannot read ${concretize.file_path}: ${error?.message || "unknown"}` };
   }
-  await emit("search", `pattern="${pattern}" matches=${results.matches.length}`, sessionId, { latencyMs, model: SEARCH_MODEL });
-  if (!results.matches.length) return { ok: false, reason: `0 matches for "${pattern}" in ${glob}` };
-  return { ok: true, pattern, glob, matches: results.matches };
+  if (!text) return { ok: false, reason: `${concretize.file_path} is empty` };
+  // Synthesize "matches" by chunking the file into representative lines:
+  // first 30 lines + any line ≥ 30 chars. Caps at ~40 lines so the prompt
+  // stays small.
+  const lines = text.split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length && out.length < 40; i += 1) {
+    const line = lines[i];
+    if (i < 30 || line.length >= 30) {
+      out.push({ file: concretize.file_path, line: i + 1, snippet: line.slice(0, 240) });
+    }
+  }
+  await emit("search", `read ${concretize.file_path} — ${lines.length} lines (${out.length} surfaced)`, sessionId);
+  return { ok: true, pattern: "(file-direct)", glob: concretize.file_path, matches: out, fullText: text };
 }
 
 async function playbookPhase({ task, concretize, search, sessionId, sharedBlock, indexBlock, journalBlock }) {
@@ -326,8 +326,9 @@ async function runPipelineTick() {
       return;
     }
 
-    // Search phase (skipped if cached).
-    const search = await searchPhase({ task, concretize, sessionId, sharedBlock, indexBlock });
+    // Search phase: when concretize gave us a real file, skip the LLM search
+    // and read the file directly. This is the cheap path that always works.
+    const search = await readFileContext({ concretize, sessionId });
     if (!search.ok) {
       // Persist the partial state so next tick resumes from search instead of redoing concretize.
       await updateTask(task.id, {
