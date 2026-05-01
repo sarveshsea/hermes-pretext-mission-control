@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+// Placeholder for button finding logic
 
 type Match = { file: string; line: number; column: number; snippet: string };
 
