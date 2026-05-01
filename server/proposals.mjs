@@ -239,6 +239,14 @@ export async function createProposal(input = {}) {
   return proposal;
 }
 
+async function runTypecheckPostApply() {
+  return new Promise((resolve) => {
+    execFile("npm", ["run", "typecheck"], { cwd: ROOTS.project, timeout: 60_000, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
+      resolve({ ok: !error, exitCode: error?.code ?? 0, stdout: (stdout || "").slice(-1500), stderr: (stderr || "").slice(-1500) });
+    });
+  });
+}
+
 async function applyEditProposal(proposal) {
   const started = Date.now();
   try {
@@ -280,13 +288,45 @@ async function applyEditProposal(proposal) {
     }
     const sha = await execGit(["rev-parse", "--short", "HEAD"]);
     const push = await execGit(["push"]);
+    // Post-apply validation: typecheck. If it fails, append a follow-up task so
+    // Sarvesh sees the regression. Don't auto-revert (riskier than visibility).
+    const tc = await runTypecheckPostApply();
+    let followupTaskId = null;
+    if (!tc.ok) {
+      try {
+        const { addTask } = await import("./taskLedger.mjs");
+        const followup = await addTask({
+          title: `Fix typecheck regression introduced by ${proposal.id}`,
+          mission: "autofix",
+          createdBy: "post-apply",
+          tags: ["regression"],
+          notes: [
+            `proposal: ${proposal.id} (${proposal.title})`,
+            `commit: ${(sha.stdout || "").trim()}`,
+            `tsc stderr tail: ${tc.stderr.slice(-400) || tc.stdout.slice(-400)}`
+          ]
+        });
+        followupTaskId = followup.id;
+        await appendHermesEvent({
+          type: "error",
+          role: "system",
+          content: `post-apply typecheck regression — opened follow-up ${followup.id}`,
+          intent: proposal.id,
+          extra: { followupTaskId, exitCode: tc.exitCode }
+        });
+      } catch {
+        // best-effort
+      }
+    }
     return {
       exitCode: 0,
       sha: (sha.stdout || "").trim(),
       durationMs: Date.now() - started,
       pushed: push.ok,
       pushOutput: safeSnippet(push.stderr || push.stdout || "", 600),
-      output: safeSnippet(`applied to ${proposal.filePath}`, 200)
+      output: safeSnippet(`applied to ${proposal.filePath}${followupTaskId ? ` — typecheck regression, follow-up ${followupTaskId}` : ""}`, 240),
+      typecheck: { ok: tc.ok, exitCode: tc.exitCode },
+      followupTaskId
     };
   } catch (error) {
     return { exitCode: 1, error: error?.message || "apply failed", durationMs: Date.now() - started };
@@ -341,7 +381,9 @@ export async function decideProposal(id, { decision, reason } = {}) {
   }
   if (decision === "confirmed" && proposal.kind === "edit") {
     proposal.runResult = await applyEditProposal(proposal);
-    proposal.status = proposal.runResult?.exitCode === 0 ? "applied" : "failed";
+    if (proposal.runResult?.exitCode !== 0) proposal.status = "failed";
+    else if (proposal.runResult?.followupTaskId) proposal.status = "applied-with-followup";
+    else proposal.status = "applied";
   }
   await persist();
   await appendMarkdown(proposal);

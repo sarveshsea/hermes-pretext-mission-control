@@ -61,12 +61,15 @@ import { getSwarmStatus, startWorkerSwarm } from "./workerSwarm.mjs";
 import { getEventArchiveStatus, startEventArchive } from "./eventArchive.mjs";
 import { generateSessionReport } from "./sessionReport.mjs";
 import { listPlaybooks } from "./playbookLoader.mjs";
-import { getPipelineStatus, startPipelineWorker } from "./pipelineWorker.mjs";
+import { getPipelineStatus, startPipelineWorker, resetPipelineCadence } from "./pipelineWorker.mjs";
 import { getPowerMetrics } from "./powerMetrics.mjs";
+import { getOllamaQueueStatus } from "./ollamaQueue.mjs";
+// Importing ollamaHealth registers its setHealthHook side-effect.
+import { getOllamaHealthStatus } from "./ollamaHealth.mjs";
 import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
-import { batchConcretizeLedger, seedDogfoodTasks } from "./maintenance.mjs";
+import { batchConcretizeLedger, seedDogfoodTasks, seedMultiStepPlans } from "./maintenance.mjs";
 import { readGoals } from "./goals.mjs";
 import { getPaneSummaries } from "./paneSummaries.mjs";
 import {
@@ -392,6 +395,12 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/pipeline") {
     return sendJson(res, 200, getPipelineStatus());
   }
+  if (req.method === "POST" && url.pathname === "/api/hermes/pipeline/cadence/reset") {
+    return sendJson(res, 200, resetPipelineCadence());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/ollama-queue") {
+    return sendJson(res, 200, { ...getOllamaQueueStatus(), health: getOllamaHealthStatus() });
+  }
   if (req.method === "GET" && url.pathname === "/api/hermes/power-metrics") {
     const minutes = Number(url.searchParams.get("minutes") || 60);
     return sendJson(res, 200, await getPowerMetrics({ windowMinutes: Math.min(Math.max(minutes, 5), 720) }));
@@ -413,6 +422,9 @@ async function apiRoute(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/seed-dogfood") {
     return sendJson(res, 200, await seedDogfoodTasks());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/seed-plans") {
+    return sendJson(res, 200, await seedMultiStepPlans());
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/goals") {
     return sendJson(res, 200, { goals: await readGoals() });

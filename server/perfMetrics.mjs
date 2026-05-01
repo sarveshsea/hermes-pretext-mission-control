@@ -1,5 +1,6 @@
 import { execFile } from "node:child_process";
 import os from "node:os";
+import { runOllama } from "./ollamaQueue.mjs";
 
 const TTL_MS = 5_000;
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
@@ -33,14 +34,12 @@ async function probeOllamaSpeed(model = "gemma4:e4b") {
   // tokens/sec by running a 1-token completion and reading the eval_duration field
   try {
     const start = Date.now();
-    const res = await fetch(`${OLLAMA_BASE}/api/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model, prompt: ".", stream: false, options: { num_predict: 12, temperature: 0 } }),
-      signal: AbortSignal.timeout(8000)
+    const data = await runOllama({
+      model,
+      endpoint: "/api/generate",
+      timeoutMs: 8000,
+      body: { prompt: ".", stream: false, options: { num_predict: 12, temperature: 0 } }
     });
-    if (!res.ok) return null;
-    const data = await res.json();
     const wallMs = Date.now() - start;
     const evalCount = data.eval_count || 0;
     const evalDurationNs = data.eval_duration || 0;

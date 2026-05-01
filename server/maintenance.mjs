@@ -5,19 +5,18 @@
 import { listTasks, addTask, updateTask } from "./taskLedger.mjs";
 import { getCodeIndex, renderIndexBlock } from "./codeIndex.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
+import { runOllama } from "./ollamaQueue.mjs";
+import { createPlan } from "./harness.mjs";
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
-const CONCRETIZE_MODEL = process.env.PRETEXT_PIPELINE_CONCRETIZE_MODEL || "gpt-oss:20b";
+const CONCRETIZE_MODEL = process.env.PRETEXT_PIPELINE_CONCRETIZE_MODEL || "gemma4:e4b";
 
 async function concretizeOne(task, indexBlock) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60_000);
   try {
-    const res = await fetch(`${OLLAMA_BASE}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: CONCRETIZE_MODEL,
+    const data = await runOllama({
+      model: CONCRETIZE_MODEL,
+      endpoint: "/api/chat",
+      timeoutMs: 90_000,
+      body: {
         keep_alive: "24h",
         stream: false,
         format: "json",
@@ -32,11 +31,8 @@ async function concretizeOne(task, indexBlock) {
           },
           { role: "user", content: `${indexBlock}\n\nTask: [${task.mission}] ${task.title}` }
         ]
-      }),
-      signal: controller.signal
+      }
     });
-    if (!res.ok) return null;
-    const data = await res.json();
     const text = data.message?.content || data.message?.thinking || "";
     try {
       return JSON.parse(text);
@@ -49,8 +45,6 @@ async function concretizeOne(task, indexBlock) {
     }
   } catch {
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -106,6 +100,36 @@ export async function batchConcretizeLedger({ limit = 50 } = {}) {
 }
 
 const DOGFOOD_TASKS = [
+  {
+    title: "Add data-testid to GoalsPanel root",
+    mission: "design",
+    file_path: "src/components/panes/GoalsPanel.tsx",
+    target_change: "add data-testid=\"pane-goals\" to the outer .goals-pane div"
+  },
+  {
+    title: "Add data-testid to PlaybookScoreboardPanel root",
+    mission: "design",
+    file_path: "src/components/panes/PlaybookScoreboardPanel.tsx",
+    target_change: "add data-testid=\"pane-playbook-scoreboard\" to the outer .playbook-scoreboard div"
+  },
+  {
+    title: "Add data-testid to RunningProcessesPanel root",
+    mission: "design",
+    file_path: "src/components/panes/RunningProcessesPanel.tsx",
+    target_change: "add data-testid=\"pane-running-processes\" to the outermost JSX element"
+  },
+  {
+    title: "Add aria-label to refresh button in CodeSearchPanel",
+    mission: "design",
+    file_path: "src/components/panes/CodeSearchPanel.tsx",
+    target_change: "add aria-label to any unlabeled <button> in this file"
+  },
+  {
+    title: "Add id anchor to LocalConsolePanel for #pane-local",
+    mission: "design",
+    file_path: "src/components/panes/LocalConsolePanel.tsx",
+    target_change: "add id=\"pane-local\" to the outermost JSX element"
+  },
   {
     title: "Add data-testid to PowerMetricsPanel pane root",
     mission: "design",
@@ -184,6 +208,90 @@ export async function seedDogfoodTasks() {
       notes: ["dogfood seed — pipeline should ship this"]
     });
     created.push({ id: task.id, title: task.title });
+  }
+  return { created };
+}
+
+// Multi-step plan seeds. The pipeline's planAdvance phase reads task.plan_id
+// and advances ONE step per tick, so multi-tick work compounds across hours.
+const PLAN_SEEDS = [
+  {
+    intent: "Audit Material Design 3 + record findings + write Obsidian note",
+    mission: "design",
+    steps: [
+      "code_search 'material' across src to see what already references it",
+      "read existing Antimetal.md + Raycast.md notes for shape",
+      "write Agent/Design Library/Material-3.md with Posture/Color/Type/Spacing/Motion sections",
+      "commit with title 'Material 3 design audit note'"
+    ]
+  },
+  {
+    intent: "Drain task ledger duplicates and tag survivors",
+    mission: "general",
+    steps: [
+      "list all open tasks; bucket by first 5 lowercased title tokens",
+      "abandon all but oldest in each bucket >2",
+      "tag survivors as edit-shaped or needs_design"
+    ]
+  },
+  {
+    intent: "Buzzr launch readiness sweep",
+    mission: "buzzr",
+    steps: [
+      "list 5 underserved micro-fan communities (NCAA conference fans, NHL niche, MLS supporter groups)",
+      "draft tweet for each via post_buzzr_draft",
+      "compile shortlist into Agent/Buzzr/Launch-Shortlist.md",
+      "open contact-add tasks for top 10 handles"
+    ]
+  },
+  {
+    intent: "Memoire app: 5 design system audits",
+    mission: "memoire",
+    steps: [
+      "audit Day One (journaling)",
+      "audit Notion (capture)",
+      "audit Obsidian (linking)",
+      "audit Daylio (mood tracking)",
+      "synthesize Agent/Memoire Audits/Synthesis.md"
+    ]
+  },
+  {
+    intent: "Add data-testid to 6 remaining panes for E2E",
+    mission: "design",
+    steps: [
+      "edit ThemedSurfacesPanel — add data-testid",
+      "edit MissionPanel — add data-testid",
+      "edit MemoryPanel — add data-testid",
+      "edit GitStatePanel — add data-testid",
+      "edit ChangelogPanel — add data-testid",
+      "edit ImprovementLoopPanel — add data-testid"
+    ]
+  }
+];
+
+export async function seedMultiStepPlans() {
+  const created = [];
+  for (const seed of PLAN_SEEDS) {
+    try {
+      const plan = await createPlan({
+        intent: seed.intent,
+        mission: seed.mission,
+        steps: seed.steps
+      });
+      // Create a parent task that references the plan_id so the pipeline picks it up.
+      const task = await addTask({
+        title: `Plan: ${seed.intent.slice(0, 80)}`,
+        mission: seed.mission,
+        createdBy: "maintenance:plan-seed",
+        tags: ["multi-step", "plan-parent"],
+        notes: [`plan_id: ${plan.id}`, `${seed.steps.length} steps`]
+      });
+      // Stash plan_id on the task so pickTask can find it.
+      await updateTask(task.id, { pipelineState: { phase: "plan", plan_id: plan.id, currentStep: 0, updatedAt: new Date().toISOString() } });
+      created.push({ planId: plan.id, taskId: task.id, intent: seed.intent });
+    } catch (error) {
+      created.push({ error: error?.message || "plan create failed", intent: seed.intent });
+    }
   }
   return { created };
 }

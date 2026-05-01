@@ -19,14 +19,13 @@ import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { ROOTS } from "./config.mjs";
 import { runOllama } from "./ollamaQueue.mjs";
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
 
 const WORKERS = [
   {
     id: "observer",
     label: "observer",
-    intervalMs: 18_000,
+    intervalMs: 90_000,
     mission: "general",
     system:
       "You are the OBSERVER worker. Watch the dashboard's recent events and state. " +
@@ -36,7 +35,7 @@ const WORKERS = [
   {
     id: "design",
     label: "design",
-    intervalMs: 35_000,
+    intervalMs: 110_000,
     mission: "design",
     system:
       "You are the DESIGN worker. Propose ONE small dashboard visual refinement to add as a task. " +
@@ -46,7 +45,7 @@ const WORKERS = [
   {
     id: "buzzr",
     label: "buzzr",
-    intervalMs: 45_000,
+    intervalMs: 130_000,
     mission: "buzzr",
     system:
       "You are the BUZZR copywriter. Draft ONE punchy launch tweet for Buzzr — a mobile sports app for micro-fan communities (NFL/NBA/MLS). " +
@@ -56,7 +55,7 @@ const WORKERS = [
   {
     id: "memoire",
     label: "memoire",
-    intervalMs: 55_000,
+    intervalMs: 150_000,
     mission: "memoire",
     system:
       "You are the MEMOIRE audit worker. Suggest ONE design system or app to audit for Memoire (a memory/journal app). " +
@@ -65,7 +64,7 @@ const WORKERS = [
   {
     id: "autofix",
     label: "autofix",
-    intervalMs: 35_000,
+    intervalMs: 110_000,
     mission: "autofix",
     system:
       "You are the AUTOFIX worker. Look at recent run_result and error events; pick a small, concrete fix idea. " +
@@ -74,7 +73,7 @@ const WORKERS = [
   {
     id: "obsidian",
     label: "obsidian",
-    intervalMs: 55_000,
+    intervalMs: 150_000,
     mission: "obsidian",
     system:
       "You are the OBSIDIAN gardener. Suggest ONE small vault improvement (index note, link cleanup, new section). " +
@@ -83,7 +82,7 @@ const WORKERS = [
   {
     id: "planner",
     label: "planner",
-    intervalMs: 50_000,
+    intervalMs: 140_000,
     mission: "general",
     system:
       "You are the PLANNER. Read the open ledger and recent events; identify ONE multi-step plan that breaks a large task into 3-5 sub-tasks. " +
@@ -92,7 +91,7 @@ const WORKERS = [
   {
     id: "critic",
     label: "critic",
-    intervalMs: 40_000,
+    intervalMs: 120_000,
     mission: "general",
     system:
       "You are the CRITIC. Look at recent thinking and proposals; flag ONE thing that is unclear, redundant, or low-value. " +
@@ -101,7 +100,7 @@ const WORKERS = [
   {
     id: "sports",
     label: "sports",
-    intervalMs: 40_000,
+    intervalMs: 120_000,
     mission: "sports",
     system:
       "You are the SPORTS RADAR worker. Surface ONE notable storyline from a major league (NFL / NBA / MLS / NCAA / MLB). " +
@@ -277,24 +276,38 @@ async function runCloserTick() {
   const now = Date.now();
   let closed = 0;
   let abandoned = 0;
+  // Tightened heuristic: require BOTH ≥6 token overlap AND a literal substring
+  // match (commit subject contains the first 20 chars of the title, or commit
+  // body references the task ID). The previous threshold of 3 over-matched on
+  // dogfood tasks like "Add data-testid to PowerMetricsPanel" closing on any
+  // commit with "data-testid" / "Panel" / "Add".
   for (const task of open) {
     const titleTokens = new Set(tokenize(task.title));
-    if (titleTokens.size >= 3) {
-      for (const c of commits) {
-        const subjectTokens = new Set(tokenize(c.subject));
-        let overlap = 0;
-        for (const t of titleTokens) if (subjectTokens.has(t)) overlap += 1;
-        if (overlap >= 3) {
-          await updateTask(task.id, {
-            status: "done",
-            note: `shipped via ${c.sha} (closer match: "${safeSnippet(c.subject, 80)}")`
-          });
-          closed += 1;
-          break;
+    let matched = null;
+    if (titleTokens.size >= 4) {
+      const titleSlice = (task.title || "").trim().slice(0, 14).toLowerCase();
+      if (titleSlice.length >= 12) {
+        for (const c of commits) {
+          const subjectLower = c.subject.toLowerCase();
+          if (!subjectLower.includes(titleSlice)) continue;
+          const subjectTokens = new Set(tokenize(c.subject));
+          let overlap = 0;
+          for (const t of titleTokens) if (subjectTokens.has(t)) overlap += 1;
+          if (overlap >= 6) {
+            matched = c;
+            break;
+          }
         }
       }
     }
-    // Stale-archive: open >30min, no notes, no recent commit match.
+    if (matched) {
+      await updateTask(task.id, {
+        status: "done",
+        note: `shipped via ${matched.sha} (closer match: "${safeSnippet(matched.subject, 80)}")`
+      });
+      closed += 1;
+      continue;
+    }
     if (
       task.status === "open" &&
       (!task.notes || task.notes.length === 0) &&

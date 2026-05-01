@@ -20,6 +20,7 @@ import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { getCodeIndex, renderIndexBlock } from "./codeIndex.mjs";
 import { appendJournal, formatJournalForPrompt, readJournalTail } from "./pipelineJournal.mjs";
 import { runOllama } from "./ollamaQueue.mjs";
+import { getPlan, recordStepResult, reflect } from "./harness.mjs";
 import { safeSnippet } from "./redaction.mjs";
 // Phase-specific models. Default to gemma4:e4b across all phases so we don't
 // fight the swarm for VRAM (model-swapping kills throughput). Set
