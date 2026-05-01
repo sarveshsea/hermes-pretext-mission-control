@@ -48,6 +48,53 @@ async function concretizeOne(task, indexBlock) {
   }
 }
 
+// Drain the task-recursion graveyard. Most "consolidate Master Task Plan" /
+// "review rejection feedback" / "finalize audit" tasks are duplicates of
+// duplicates. Cluster by (mission + first 3 lowercased title tokens); abandon
+// all but oldest in each cluster of size >5; tag survivor recursion-survivor
+// so the pipeline can't pick it again without explicit promote.
+export async function drainRecursion({ minClusterSize = 5 } = {}) {
+  const open = await listTasks({ status: "open" });
+  if (open.length < minClusterSize) return { drained: 0, clustersFound: 0, openBefore: open.length };
+  const buckets = new Map();
+  for (const task of open) {
+    const tokens = (task.title || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length >= 4)
+      .slice(0, 3);
+    const key = `${task.mission}::${tokens.join("-")}`;
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(task);
+  }
+  let drained = 0;
+  let clustersFound = 0;
+  for (const [key, group] of buckets) {
+    if (group.length <= minClusterSize) continue;
+    clustersFound += 1;
+    const sorted = group.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    const keeper = sorted[0];
+    await updateTask(keeper.id, {
+      tags: ["recursion-survivor"],
+      note: `survivor of ${group.length}-task cluster (${key.split("::")[1]})`
+    });
+    for (const dupe of sorted.slice(1)) {
+      await updateTask(dupe.id, {
+        status: "abandoned",
+        note: `drained as recursion (cluster: ${key.split("::")[1]}, kept ${keeper.id})`
+      });
+      drained += 1;
+    }
+  }
+  await appendHermesEvent({
+    type: "memory_write",
+    role: "system",
+    content: `drainRecursion: ${drained} drained across ${clustersFound} clusters (of ${open.length} open)`
+  });
+  return { drained, clustersFound, openBefore: open.length };
+}
+
 export async function batchConcretizeLedger({ limit = 50 } = {}) {
   const open = await listTasks({ status: "open" });
   const candidates = open

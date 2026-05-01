@@ -9,7 +9,7 @@ import { previewProposedCommand, previewProposedEdit } from "./diffPreview.mjs";
 
 const MAX_HISTORY = 200;
 const STORE_FILE = path.join(ROOTS.project, "data/improvement-proposals.json");
-const MARKDOWN_FILE = path.join(ROOTS.reviewQueues, "Hermes Proposals.md");
+const MARKDOWN_FILE = path.join(ROOTS.hermesOps, "proposals.md");
 
 const VALID_KIND = new Set(["shell", "patch", "note", "edit"]);
 

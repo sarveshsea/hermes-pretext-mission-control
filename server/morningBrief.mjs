@@ -8,8 +8,8 @@ import { getCadence } from "./scheduler.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
 const CURSOR_FILE = path.join(ROOTS.project, "data/morning-cursor.json");
-const BRIEF_MD = path.join(ROOTS.agent, "Hermes Logs/Morning Brief.md");
-const BRIEFS_DIR = path.join(ROOTS.agent, "Hermes Logs/Briefs");
+const BRIEF_MD = path.join(ROOTS.hermesOps, "morning-brief.md");
+const BRIEFS_DIR = ROOTS.hermesOpsBriefs;
 const TTL_MS = 8_000;
 
 let cache = { value: null, at: 0 };

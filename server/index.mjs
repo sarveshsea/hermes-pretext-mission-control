@@ -70,7 +70,7 @@ import { startAgentDelegation, getAgentDelegationStatus } from "./agentDelegatio
 import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
-import { batchConcretizeLedger, seedDogfoodTasks, seedMultiStepPlans } from "./maintenance.mjs";
+import { batchConcretizeLedger, drainRecursion, seedDogfoodTasks, seedMultiStepPlans } from "./maintenance.mjs";
 import { readGoals } from "./goals.mjs";
 import { getPaneSummaries } from "./paneSummaries.mjs";
 import {
@@ -447,6 +447,9 @@ async function apiRoute(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/seed-plans") {
     return sendJson(res, 200, await seedMultiStepPlans());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/drain-recursion") {
+    return sendJson(res, 200, await drainRecursion());
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/goals") {
     return sendJson(res, 200, { goals: await readGoals() });

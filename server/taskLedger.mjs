@@ -4,7 +4,7 @@ import { ROOTS } from "./config.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
 const STORE = path.join(ROOTS.project, "data/task-ledger.json");
-const MARKDOWN = path.join(ROOTS.agent, "Hermes Tasks.md");
+const MARKDOWN = path.join(ROOTS.hermesOps, "tasks.md");
 const MAX_TASKS = 500;
 const VALID_STATUS = new Set(["open", "in_progress", "advanced", "blocked", "done", "abandoned"]);
 const VALID_MISSION = new Set(["design", "pretext", "sports", "buzzr", "library", "obsidian", "memoire", "autofix", "naming", "subscription", "general"]);

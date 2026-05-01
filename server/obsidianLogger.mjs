@@ -4,7 +4,7 @@ import { ROOTS } from "./config.mjs";
 import { subscribeHermesEvents } from "./hermesEvents.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
-const DEFAULT_DIR = path.join(ROOTS.agent, "Hermes Logs");
+const DEFAULT_DIR = path.join(ROOTS.hermesOps, "logs");
 const TYPE_ICON = {
   telegram_in: "📥",
   telegram_out: "📤",

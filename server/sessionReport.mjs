@@ -15,7 +15,7 @@ import { getSwarmStatus } from "./workerSwarm.mjs";
 import { listSubscriptionTasks } from "./subscriptions.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
-const REPORTS_DIR = path.join(ROOTS.agent, "Hermes Logs/Sessions");
+const REPORTS_DIR = ROOTS.hermesOpsSessions;
 
 function execGit(args) {
   return new Promise((resolve) => {

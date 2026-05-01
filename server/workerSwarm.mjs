@@ -18,6 +18,7 @@ import { spawnSubagent, updateSubagent, listSubagents } from "./subagents.mjs";
 import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { ROOTS } from "./config.mjs";
 import { runOllama } from "./ollamaQueue.mjs";
+import { embed, clusterByEmbedding } from "./embeddings.mjs";
 
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
 
@@ -363,6 +364,8 @@ async function runRunnerTick() {
 async function runDedupTick() {
   const open = await listTasks({ status: "open" });
   if (open.length < 3) return `dedup: only ${open.length} open tasks, skipping`;
+
+  // Phase 1: word-prefix bucketing (cheap, catches obvious cases).
   const buckets = new Map();
   for (const task of open) {
     const key = (task.title || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).slice(0, 5).join(" ");
@@ -372,15 +375,44 @@ async function runDedupTick() {
   let merged = 0;
   for (const [, group] of buckets) {
     if (group.length < 2) continue;
-    // Keep the OLDEST (first created); merge the rest.
     const sorted = group.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     const keeper = sorted[0];
     for (const dupe of sorted.slice(1)) {
-      await updateTask(dupe.id, { status: "abandoned", note: `merged into ${keeper.id} (dedup bucket)` });
+      await updateTask(dupe.id, { status: "abandoned", note: `merged into ${keeper.id} (word-prefix dedup)` });
       merged += 1;
     }
   }
-  return `dedup merged=${merged} (of ${open.length} open, ${buckets.size} buckets)`;
+
+  // Phase 2: semantic dedup via nomic-embed-text — catches paraphrases like
+  // "audit document" vs "review the audit doc". Best-effort: skip if
+  // embeddings fail. Caps at 60 tasks per tick to avoid Ollama load.
+  let semanticMerged = 0;
+  try {
+    const stillOpen = await listTasks({ status: "open" });
+    const sample = stillOpen.slice(0, 60);
+    const items = [];
+    for (const task of sample) {
+      const v = await embed(task.title || "");
+      if (v) items.push({ task, embedding: v });
+    }
+    const clusters = clusterByEmbedding(items, 0.88);
+    for (const cluster of clusters) {
+      if (cluster.members.length < 2) continue;
+      const sorted = cluster.members.slice().sort((a, b) => new Date(a.task.createdAt) - new Date(b.task.createdAt));
+      const keeper = sorted[0].task;
+      for (const dupe of sorted.slice(1)) {
+        await updateTask(dupe.task.id, {
+          status: "abandoned",
+          note: `merged into ${keeper.id} (semantic-dedup, sim≥0.88)`
+        });
+        semanticMerged += 1;
+      }
+    }
+  } catch {
+    // best-effort
+  }
+
+  return `dedup merged=${merged}+semantic=${semanticMerged} (of ${open.length} open, ${buckets.size} word-buckets)`;
 }
 
 async function runWorker(spec) {

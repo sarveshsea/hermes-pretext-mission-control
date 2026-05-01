@@ -5,7 +5,7 @@ import { appendHermesEvent } from "./hermesEvents.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
 const STORE = path.join(ROOTS.project, "data/plans.json");
-const REFLECTIONS_MD = path.join(ROOTS.agent, "Reflections.md");
+const REFLECTIONS_MD = path.join(ROOTS.hermesOps, "reflections.md");
 const MAX_PLANS = 200;
 
 let cache = null;

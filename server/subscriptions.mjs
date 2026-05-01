@@ -5,7 +5,7 @@ import { safeSnippet } from "./redaction.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 
 const STORE = path.join(ROOTS.project, "data/subscriptions.json");
-const MARKDOWN = path.join(ROOTS.agent, "Subscription Ledger.md");
+const MARKDOWN = path.join(ROOTS.hermesOps, "subscriptions.md");
 const MAX_TASKS = 200;
 const VALID_PROVIDERS = new Set(["codex", "claude-max", "claude-code", "external"]);
 const VALID_STATUS = new Set(["queued", "sent", "completed", "failed", "abandoned"]);
