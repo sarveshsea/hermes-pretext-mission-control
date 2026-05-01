@@ -17,6 +17,11 @@ import { getMemoryFiles } from "./memoryFiles.mjs";
 import { getEventTimeline } from "./timeline.mjs";
 import { getGitState } from "./git.mjs";
 import { getPendingProposals } from "./proposals.mjs";
+import { getCadence } from "./scheduler.mjs";
+import { getAllThemedSummaries } from "./themedSurfaces.mjs";
+import { listTasks } from "./taskLedger.mjs";
+import { listPlans } from "./harness.mjs";
+import { getOutboundStatus } from "./telegram.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
 import { getRunRequests } from "./runRequests.mjs";
@@ -324,7 +329,12 @@ export async function getDashboardPayload() {
     memoryFiles,
     timeline,
     git,
-    pendingProposals
+    pendingProposals,
+    cadence,
+    themed,
+    tasks,
+    plans,
+    telegramOutbound
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -346,7 +356,12 @@ export async function getDashboardPayload() {
     getMemoryFiles(),
     getEventTimeline({ minutes: 60 }),
     getGitState(),
-    getPendingProposals()
+    getPendingProposals(),
+    getCadence(),
+    getAllThemedSummaries(),
+    listTasks(),
+    listPlans(8),
+    Promise.resolve(getOutboundStatus())
   ]);
   return {
     status,
@@ -369,6 +384,11 @@ export async function getDashboardPayload() {
     memoryFiles,
     timeline,
     git,
-    pendingProposals
+    pendingProposals,
+    cadence,
+    themed,
+    tasks,
+    plans,
+    telegramOutbound
   };
 }

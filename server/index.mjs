@@ -45,6 +45,14 @@ import {
   getPendingProposals,
   getProposals
 } from "./proposals.mjs";
+import { getCadence } from "./scheduler.mjs";
+import { startAutoApplyLoop, getAutoApplyStatus } from "./autoApply.mjs";
+import { getMorningBrief, noteCadenceTransition } from "./morningBrief.mjs";
+import { linkGraph, readNote, startObsidianWatcher, walkVault, writeNote } from "./obsidian.mjs";
+import { addTask, listTasks, updateTask } from "./taskLedger.mjs";
+import { createPlan, getPlan, listPlans, recordStepResult, reflect } from "./harness.mjs";
+import { THEMED_SURFACES, getAllThemedSummaries, getThemedItems, postThemedItem } from "./themedSurfaces.mjs";
+import { getOutboundStatus, sendTelegramMessage, setOutboundEnabled } from "./telegram.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
@@ -237,6 +245,98 @@ async function apiRoute(req, res) {
     return sendJson(res, 200, await setAutoApprove(Boolean(body.value ?? body.enabled ?? true)));
   }
 
+  if (req.method === "GET" && url.pathname === "/api/health") {
+    return sendJson(res, 200, { ok: true, at: new Date().toISOString() });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/cadence") {
+    const cadence = await getCadence();
+    void noteCadenceTransition({ mode: cadence.mode });
+    return sendJson(res, 200, cadence);
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/auto-apply-status") {
+    return sendJson(res, 200, getAutoApplyStatus());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/morning-brief") {
+    const force = url.searchParams.get("force") === "true";
+    return sendJson(res, 200, await getMorningBrief({ force }));
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/obsidian/vault") {
+    return sendJson(res, 200, await walkVault({ depth: Number(url.searchParams.get("depth") || 4) }));
+  }
+  if (req.method === "GET" && url.pathname === "/api/obsidian/note") {
+    const p = url.searchParams.get("path");
+    if (!p) return sendJson(res, 400, { error: "path required" });
+    return sendJson(res, 200, await readNote(p));
+  }
+  if (req.method === "POST" && url.pathname === "/api/obsidian/note") {
+    return sendJson(res, 201, await writeNote(await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/obsidian/graph") {
+    return sendJson(res, 200, await linkGraph());
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/hermes/tasks") {
+    const mission = url.searchParams.get("mission") || undefined;
+    const status = url.searchParams.get("status") || undefined;
+    return sendJson(res, 200, await listTasks({ mission, status }));
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/tasks") {
+    return sendJson(res, 201, await addTask(await readJsonBody(req)));
+  }
+  const taskUpdateMatch = url.pathname.match(/^\/api\/hermes\/tasks\/([^/]+)$/);
+  if (req.method === "PATCH" && taskUpdateMatch) {
+    return sendJson(res, 200, await updateTask(decodeURIComponent(taskUpdateMatch[1]), await readJsonBody(req)));
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/hermes/plan") {
+    return sendJson(res, 201, await createPlan(await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/plans") {
+    return sendJson(res, 200, await listPlans(Number(url.searchParams.get("limit") || 30)));
+  }
+  const planStepMatch = url.pathname.match(/^\/api\/hermes\/plan\/([^/]+)\/step\/(\d+)$/);
+  if (req.method === "POST" && planStepMatch) {
+    const id = decodeURIComponent(planStepMatch[1]);
+    const idx = Number(planStepMatch[2]);
+    return sendJson(res, 200, await recordStepResult(id, idx, await readJsonBody(req)));
+  }
+  const planMatch = url.pathname.match(/^\/api\/hermes\/plan\/([^/]+)$/);
+  if (req.method === "GET" && planMatch) {
+    const plan = await getPlan(decodeURIComponent(planMatch[1]));
+    if (!plan) return sendJson(res, 404, { error: "unknown plan" });
+    return sendJson(res, 200, plan);
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/reflect") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await reflect(body.planId, body.learning));
+  }
+
+  const themedMatch = url.pathname.match(/^\/api\/themed\/([a-z_]+)$/);
+  if (themedMatch) {
+    const surface = themedMatch[1];
+    if (!THEMED_SURFACES.includes(surface)) return sendJson(res, 404, { error: "unknown surface" });
+    if (req.method === "POST") {
+      return sendJson(res, 201, await postThemedItem(surface, await readJsonBody(req)));
+    }
+    if (req.method === "GET") {
+      return sendJson(res, 200, await getThemedItems(surface, Number(url.searchParams.get("limit") || 20)));
+    }
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/telegram/send") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await sendTelegramMessage({ text: body.text, urgent: Boolean(body.urgent) }));
+  }
+  if (req.method === "POST" && url.pathname === "/api/runtime/telegram-send") {
+    const body = await readJsonBody(req);
+    const next = setOutboundEnabled(Boolean(body.value ?? body.enabled ?? true));
+    return sendJson(res, 200, { enabled: next });
+  }
+  if (req.method === "GET" && url.pathname === "/api/telegram/status") {
+    return sendJson(res, 200, getOutboundStatus());
+  }
+
   return false;
 }
 
@@ -297,4 +397,6 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startBuilderLoop();
   startImprovementLoop({ getDashboard: getDashboardPayload });
   startObsidianLogger();
+  startObsidianWatcher();
+  startAutoApplyLoop();
 });

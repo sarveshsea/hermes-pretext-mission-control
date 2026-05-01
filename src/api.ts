@@ -275,10 +275,89 @@ export type Proposal = {
   argv: string[] | null;
   cwd: string | null;
   sessionId: string | null;
+  autoSafe: boolean;
+  autoAppliedAt: string | null;
   decidedAt: string | null;
   decision: "confirmed" | "declined" | null;
   declineReason: string | null;
   runResult: null | { id?: string; status?: string; exitCode?: number | null; durationMs?: number | null; output?: string; error?: string };
+};
+
+export type Cadence = {
+  generatedAt: string;
+  idleSec: number;
+  loadAvg: number;
+  throttle: number;
+  mode: "active" | "idle" | "asleep";
+  recommendedIntervalMs: number;
+  recommendedAutoApply: boolean;
+  sinceTransitionMs: number;
+};
+
+export type MorningBrief = {
+  generatedAt: string;
+  startedAt: string;
+  endedAt: string;
+  cadence: Cadence;
+  events: { total: number; byType: Record<string, number> };
+  proposals: { pending: number; applied: number; declined: number; failed: number; appliedTitles: string[] };
+  commits: { sha: string; short: string; author: string; subject: string; committedAt: string }[];
+  headlines: string[];
+  deltas: string[];
+  markdown?: string;
+};
+
+export type Task = {
+  id: string;
+  title: string;
+  status: "open" | "in_progress" | "advanced" | "blocked" | "done" | "abandoned";
+  mission: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  notes: string[];
+};
+
+export type PlanStep = {
+  idx: number;
+  text: string;
+  result: string | null;
+  decision: string | null;
+  completedAt: string | null;
+};
+
+export type PlanState = {
+  id: string;
+  intent: string;
+  mission: string;
+  sessionId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  status: "active" | "complete" | "aborted" | "replanning";
+  currentStep: number;
+  steps: PlanStep[];
+  reflection?: string;
+  reflectedAt?: string;
+};
+
+export type ThemedItem = {
+  id: string;
+  surface: string;
+  createdAt: string;
+  [key: string]: unknown;
+};
+
+export type ThemedSummary = {
+  design_lab?: { count: number; latest: ThemedItem[] };
+  sports_radar?: { count: number; latest: ThemedItem[] };
+  buzzr_drafts?: { count: number; latest: ThemedItem[] };
+  design_library?: { count: number; latest: ThemedItem[] };
+};
+
+export type TelegramOutboundStatus = {
+  enabled: boolean;
+  rateLimitMs: number;
+  lastSendAt: string | null;
 };
 
 export type DashboardPayload = {
@@ -303,6 +382,11 @@ export type DashboardPayload = {
   timeline: { generatedAt: string; minutes: number; total: number; peak: number; buckets: TimelineBucket[] };
   git: GitState;
   pendingProposals: Proposal[];
+  cadence: Cadence;
+  themed: ThemedSummary;
+  tasks: Task[];
+  plans: PlanState[];
+  telegramOutbound: TelegramOutboundStatus;
 };
 
 export async function fetchDashboard(): Promise<DashboardPayload> {
@@ -414,6 +498,38 @@ export async function decidePublicIntent(
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
     throw new Error(payload.error || `Decision failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchMorningBrief(force = false): Promise<MorningBrief> {
+  const response = await fetch(`/api/hermes/morning-brief${force ? "?force=true" : ""}`);
+  if (!response.ok) throw new Error(`Morning brief failed: ${response.status}`);
+  return response.json();
+}
+
+export async function sendTelegramMessage(text: string, urgent = false): Promise<{ ok: boolean; messageId?: number; sentAt?: string }> {
+  const response = await fetch("/api/telegram/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, urgent })
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Telegram send failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function setTelegramOutbound(enabled: boolean): Promise<TelegramOutboundStatus> {
+  const response = await fetch("/api/runtime/telegram-send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ value: enabled })
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Telegram toggle failed: ${response.status}`);
   }
   return response.json();
 }

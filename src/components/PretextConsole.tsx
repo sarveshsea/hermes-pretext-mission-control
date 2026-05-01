@@ -174,11 +174,13 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
       context.fillStyle = bg;
       context.fillRect(0, 0, rect.width, rect.height);
 
-      // 2. Matrix rain layer (subtle, scales with rate)
+      // 2. Matrix rain layer — modulated by cadence mode
       if (!matrixRef.current || matrixRef.current.width !== rect.width || matrixRef.current.height !== rect.height) {
         matrixRef.current = buildMatrixRain(rect.width, rect.height);
       }
-      drawMatrixRain(context, matrixRef.current, density);
+      const cadenceMode = payload.cadence?.mode || "active";
+      const cadenceMultiplier = cadenceMode === "asleep" ? 1.6 : cadenceMode === "idle" ? 1.0 : 0.4;
+      drawMatrixRain(context, matrixRef.current, Math.min(1, density * cadenceMultiplier + (cadenceMode === "asleep" ? 0.15 : 0)));
 
       // 3. ASCII dust grid (very faint)
       context.font = `11px ${MONO}`;
@@ -242,14 +244,15 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
       // 5. Particles
       particlesRef.current = particlesRef.current.filter((particle) => drawParticle(context, particle, now));
 
-      // 6. Nodes with pulse-driven glow
+      // 6. Nodes with pulse-driven glow (breathing scales with cadence)
+      const breathSpeed = cadenceMode === "asleep" ? 0.18 : cadenceMode === "idle" ? 0.10 : 0.04;
       nodes.forEach((node) => {
         const x = (node.x / 100) * rect.width;
         const y = (node.y / 100) * rect.height;
         const isActive = node.id === activeNode;
         const pulse = nodePulseRef.current.get(node.id) || 0;
         nodePulseRef.current.set(node.id, decay(pulse, dt, 600));
-        const breathing = isActive ? Math.sin(frame * 0.07) * 1.4 : 0;
+        const breathing = isActive ? Math.sin(frame * breathSpeed) * 1.4 : 0;
         const radius = 26 + pulse * 8 + breathing;
         const haloAlpha = Math.min(0.55, 0.05 + pulse * 0.18 + (isActive ? 0.15 : 0));
 
@@ -397,9 +400,42 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
         pillX += w + 8;
       });
 
+      // 9a-bis. CADENCE pill row — adaptive scheduler state
+      const cadence = payload.cadence;
+      if (cadence) {
+        const cadenceY = 124;
+        const idleMin = Math.floor(cadence.idleSec / 60);
+        const idleSec = cadence.idleSec % 60;
+        const idleLabel = idleMin > 0 ? `${idleMin}m${idleSec}s` : `${cadence.idleSec}s`;
+        const cadencePills = [
+          { label: "MODE", value: cadence.mode.toUpperCase(), tone: cadence.mode === "asleep" ? "alert" : cadence.mode === "idle" ? "warm" : "neutral" },
+          { label: "IDLE", value: idleLabel, tone: "neutral" },
+          { label: "THROTTLE", value: cadence.throttle.toFixed(2), tone: cadence.throttle > 0.7 ? "good" : "neutral" },
+          { label: "INTERVAL", value: `${Math.round(cadence.recommendedIntervalMs / 1000)}s`, tone: "neutral" },
+          { label: "AUTO-APPLY", value: cadence.recommendedAutoApply ? "ARMED" : "off", tone: cadence.recommendedAutoApply ? "good" : "neutral" },
+          { label: "LOAD", value: cadence.loadAvg.toFixed(2), tone: cadence.loadAvg > 3 ? "alert" : "neutral" }
+        ];
+        let cadenceX = 48;
+        context.font = `11px ${MONO}`;
+        cadencePills.forEach((pill) => {
+          const text = `${pill.label} ${pill.value}`;
+          const w = context.measureText(text).width + 14;
+          const fill = pill.tone === "alert" ? "rgba(255, 130, 130, 0.18)" : pill.tone === "warm" ? "rgba(255, 200, 120, 0.18)" : pill.tone === "good" ? "rgba(208, 241, 0, 0.16)" : "rgba(140, 200, 255, 0.16)";
+          const stroke = pill.tone === "alert" ? "rgba(255, 130, 130, 0.7)" : pill.tone === "warm" ? "rgba(255, 200, 120, 0.7)" : pill.tone === "good" ? "rgba(208, 241, 0, 0.7)" : "rgba(140, 200, 255, 0.6)";
+          const txt = pill.tone === "alert" ? "rgba(255, 180, 180, 0.95)" : pill.tone === "warm" ? "rgba(255, 220, 170, 0.95)" : pill.tone === "good" ? "rgba(225, 255, 120, 0.95)" : "rgba(190, 220, 255, 0.92)";
+          context.fillStyle = fill;
+          context.fillRect(cadenceX, cadenceY, w, 20);
+          context.strokeStyle = stroke;
+          context.strokeRect(cadenceX + 0.5, cadenceY + 0.5, w - 1, 19);
+          context.fillStyle = txt;
+          context.fillText(text, cadenceX + 7, cadenceY + 14);
+          cadenceX += w + 6;
+        });
+      }
+
       // 9b. SPARKLINE — events per minute over last hour
       const sparkX = 48;
-      const sparkY = 132;
+      const sparkY = 154;
       const sparkW = Math.min(420, rect.width * 0.32);
       const sparkH = 36;
       paneBox(context, sparkX, sparkY, sparkW, sparkH, "rgba(140, 200, 255, 0.32)", 0.4);
@@ -529,6 +565,47 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
           context.fillText(clip(proposal.rationale, Math.floor(propW / 6)), propX + 12, propY + 48 + idx * 28);
         });
       }
+
+      // 9h. THEMED SURFACES strip (DESIGN_LAB / SPORTS_RADAR / BUZZR_DRAFTS / DESIGN_LIBRARY)
+      const themed = payload.themed || {};
+      const themedY = rect.height - 332;
+      const themedW = (rect.width - 96) / 4;
+      const themedH = 84;
+      const themedSurfaces: { key: keyof typeof themed; title: string; color: string; emptyHint: string }[] = [
+        { key: "design_lab", title: "DESIGN_LAB", color: "rgba(180, 160, 255, 0.5)", emptyHint: "no experiments yet — Hermes will propose visual polishes overnight" },
+        { key: "sports_radar", title: "SPORTS_RADAR", color: "rgba(140, 200, 255, 0.5)", emptyHint: "leagues / headlines / commentator tweets — Hermes fetches via web tool" },
+        { key: "buzzr_drafts", title: "BUZZR_DRAFTS", color: "rgba(208, 241, 0, 0.5)", emptyHint: "tweet drafts queued — public-gate before any post" },
+        { key: "design_library", title: "DESIGN_LIBRARY", color: "rgba(160, 240, 200, 0.5)", emptyHint: "design system summaries pulled by Hermes" }
+      ];
+      themedSurfaces.forEach((surface, idx) => {
+        const x = 48 + idx * themedW;
+        const summary = themed[surface.key];
+        const count = summary?.count ?? 0;
+        paneBox(context, x, themedY, themedW - 10, themedH, surface.color, 0.45);
+        context.font = `12px ${MONO}`;
+        context.fillStyle = surface.color.replace("0.5", "0.95");
+        context.fillText(`${surface.title}  ${count}`, x + 10, themedY + 16);
+        if (count === 0 || !summary?.latest?.length) {
+          context.fillStyle = "rgba(224, 246, 255, 0.5)";
+          context.font = `10px ${MONO}`;
+          const wrapped = surface.emptyHint.match(/.{1,38}/g) || [surface.emptyHint];
+          wrapped.slice(0, 4).forEach((line, lidx) => {
+            context.fillText(line, x + 10, themedY + 34 + lidx * 12);
+          });
+        } else {
+          summary.latest.slice(0, 4).forEach((item: Record<string, unknown>, lidx: number) => {
+            const text =
+              (item.title as string | undefined) ||
+              (item.headline as string | undefined) ||
+              (item.text as string | undefined) ||
+              (item.summary as string | undefined) ||
+              "";
+            context.fillStyle = "rgba(224, 246, 255, 0.78)";
+            context.font = `11px ${MONO}`;
+            context.fillText(`· ${clip(String(text), Math.floor((themedW - 30) / 6))}`, x + 10, themedY + 32 + lidx * 13);
+          });
+        }
+      });
 
       // 9. Bottom-left footer panes (RUN_LOG, LOCAL_CONSOLE)
       const footerY = rect.height - 230;

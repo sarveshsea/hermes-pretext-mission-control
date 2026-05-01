@@ -3,10 +3,12 @@ import path from "node:path";
 import { ROOTS } from "./config.mjs";
 import { publishProjectChanges } from "./publisher.mjs";
 import { safeSnippet } from "./redaction.mjs";
+import { getCadence } from "./scheduler.mjs";
 
 const DEFAULT_INTERVAL_MS = Number(process.env.PRETEXT_IMPROVEMENT_LOOP_MS || 5 * 60_000);
-const DEFAULT_COOLDOWN_MS = Number(process.env.PRETEXT_IMPROVEMENT_COOLDOWN_MS || 15 * 60_000);
+const DEFAULT_COOLDOWN_MS = Number(process.env.PRETEXT_IMPROVEMENT_COOLDOWN_MS || 5 * 60_000);
 const DEFAULT_AUTO_PUBLISH = process.env.PRETEXT_AUTO_PUBLISH !== "false";
+const ADAPTIVE = process.env.PRETEXT_IMPROVEMENT_ADAPTIVE !== "false";
 
 let loopTimer = null;
 let lastTickAt = null;
@@ -191,11 +193,22 @@ export function startImprovementLoop({ intervalMs = DEFAULT_INTERVAL_MS, getDash
       lastError = "";
     } catch (error) {
       lastError = error instanceof Error ? error.message : "Improvement loop failed";
+    } finally {
+      let next = intervalMs;
+      if (ADAPTIVE) {
+        try {
+          const cadence = await getCadence();
+          next = cadence.recommendedIntervalMs;
+        } catch {
+          next = intervalMs;
+        }
+      }
+      loopTimer = setTimeout(tick, next);
+      loopTimer.unref?.();
     }
   };
 
-  void tick();
-  loopTimer = setInterval(tick, intervalMs);
+  loopTimer = setTimeout(tick, 1000);
   loopTimer.unref?.();
   return loopTimer;
 }
