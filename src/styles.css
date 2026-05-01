@@ -115,6 +115,7 @@ button {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "health      health      health      cadence     cadence     cadence     sparkline   sparkline   sparkline   perf        perf        perf"
+    "report      report      report      report      report      report      report      report      report      report      report      report"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"

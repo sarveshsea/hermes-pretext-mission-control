@@ -58,6 +58,8 @@ import { getLayout, resetLayout, updateLayout } from "./dashboardLayout.mjs";
 import { getProcessSummary } from "./processes.mjs";
 import { getContinuousWorkerStatus, startContinuousWorker } from "./continuousWorker.mjs";
 import { getSwarmStatus, startWorkerSwarm } from "./workerSwarm.mjs";
+import { getEventArchiveStatus, startEventArchive } from "./eventArchive.mjs";
+import { generateSessionReport } from "./sessionReport.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
@@ -375,6 +377,13 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/swarm") {
     return sendJson(res, 200, getSwarmStatus());
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/event-archive") {
+    return sendJson(res, 200, getEventArchiveStatus());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/session-report") {
+    const minutes = Number(url.searchParams.get("minutes") || 60);
+    return sendJson(res, 200, await generateSessionReport({ minutes: Math.min(Math.max(minutes, 5), 720) }));
+  }
 
   if (req.method === "POST" && url.pathname === "/api/hermes/subscriptions") {
     return sendJson(res, 201, await dispatchSubscriptionTask(await readJsonBody(req)));
@@ -493,4 +502,24 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   // Disable the old single-worker and run the parallel swarm instead.
   if (process.env.PRETEXT_LEGACY_WORKER === "true") startContinuousWorker();
   startWorkerSwarm();
+  startEventArchive();
+
+  // Auto-generate an hourly session report on the hour, mirroring to the vault
+  // so each hour is reviewable in Obsidian even if the dashboard is closed.
+  const scheduleHourly = () => {
+    const now = new Date();
+    const next = new Date(now);
+    next.setMinutes(0, 0, 0);
+    next.setHours(now.getHours() + 1);
+    const delay = next.getTime() - now.getTime();
+    setTimeout(async () => {
+      try {
+        await generateSessionReport({ minutes: 60 });
+      } catch {
+        // best-effort
+      }
+      scheduleHourly();
+    }, delay);
+  };
+  scheduleHourly();
 });
