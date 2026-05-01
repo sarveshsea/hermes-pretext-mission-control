@@ -18,8 +18,6 @@ import {
 import { buildConsoleNodes, type ConsoleNodeId } from "./consoleModel";
 import PretextConsole from "./components/PretextConsole";
 import PretextDock from "./components/PretextDock";
-import DraggablePane from "./components/DraggablePane";
-import DraggableLayer from "./components/DraggableLayer";
 import InspectorOverlay from "./components/InspectorOverlay";
 import DiffPreviewOverlay from "./components/DiffPreviewOverlay";
 import HealthPanel from "./components/panes/HealthPanel";
@@ -43,7 +41,8 @@ import CodeSearchPanel from "./components/panes/CodeSearchPanel";
 import SubagentTreePanel from "./components/panes/SubagentTreePanel";
 import PerformancePanel from "./components/panes/PerformancePanel";
 import ObsidianGraphPanel from "./components/panes/ObsidianGraphPanel";
-import { resetServerLayout, type PanePosition } from "./layout";
+import RunningProcessesPanel from "./components/panes/RunningProcessesPanel";
+import SubscriptionLedgerPanel from "./components/panes/SubscriptionLedgerPanel";
 
 const POLL_MS = 12_000;
 const DEFAULT_NODE: ConsoleNodeId = "hermes";
@@ -57,76 +56,37 @@ const SUGGESTED_COMMANDS = [
   "ls /tmp"
 ];
 
-const PANE_IDS = [
-  "health",
-  "cadence",
-  "sparkline",
-  "git-state",
-  "github-publish",
-  "improvement-loop",
-  "performance",
-  "sessions",
-  "skills",
-  "memory-files",
-  "hermes-live",
-  "thinking",
-  "mission",
-  "memory",
-  "run-log",
-  "local-console",
-  "changelog",
-  "code-search",
-  "subagent-tree",
-  "themed-surfaces",
-  "obsidian-graph"
-];
-
-const PANE_TITLES: Record<string, string> = {
-  health: "HEALTH",
-  cadence: "CADENCE",
-  sparkline: "EVENTS/MIN",
-  "git-state": "GIT_STATE",
-  "github-publish": "GITHUB_PUBLISH",
-  "improvement-loop": "IMPROVEMENT_LOOP",
-  performance: "PERFORMANCE",
-  sessions: "TELEGRAM_SESSIONS",
-  skills: "SKILLS",
-  "memory-files": "MEMORY_FILES",
-  "hermes-live": "HERMES_LIVE",
-  thinking: "THINKING",
-  mission: "MISSION",
-  memory: "MEMORY",
-  "run-log": "RUN_LOG",
-  "local-console": "LOCAL_CONSOLE",
-  changelog: "CHANGELOG",
-  "code-search": "CODE_SEARCH",
-  "subagent-tree": "SUBAGENT_TREE",
-  "themed-surfaces": "THEMED_SURFACES",
-  "obsidian-graph": "OBSIDIAN_GRAPH"
+type CellSpec = {
+  area: string;
+  title: string;
+  accent?: string;
 };
 
-const PANE_ACCENTS: Record<string, string> = {
-  health: "rgba(208, 241, 0, 0.7)",
-  cadence: "rgba(208, 241, 0, 0.7)",
-  sparkline: "rgba(140, 200, 255, 0.6)",
-  "git-state": "rgba(208, 241, 0, 0.5)",
-  "github-publish": "rgba(208, 241, 0, 0.7)",
-  "improvement-loop": "rgba(180, 160, 255, 0.6)",
-  performance: "rgba(140, 200, 255, 0.6)",
-  sessions: "rgba(160, 240, 200, 0.6)",
-  skills: "rgba(180, 160, 255, 0.6)",
-  "memory-files": "rgba(160, 240, 200, 0.6)",
-  "hermes-live": "rgba(140, 200, 255, 0.7)",
-  thinking: "rgba(180, 160, 255, 0.7)",
-  mission: "rgba(208, 241, 0, 0.7)",
-  memory: "rgba(160, 240, 200, 0.7)",
-  "run-log": "rgba(224, 246, 255, 0.4)",
-  "local-console": "rgba(224, 246, 255, 0.4)",
-  changelog: "rgba(208, 241, 0, 0.4)",
-  "code-search": "rgba(140, 200, 255, 0.6)",
-  "subagent-tree": "rgba(180, 160, 255, 0.6)",
-  "themed-surfaces": "rgba(208, 241, 0, 0.5)",
-  "obsidian-graph": "rgba(160, 240, 200, 0.6)"
+const CELLS: Record<string, CellSpec> = {
+  health: { area: "health", title: "HEALTH", accent: "rgba(208, 241, 0, 0.7)" },
+  cadence: { area: "cadence", title: "CADENCE", accent: "rgba(208, 241, 0, 0.6)" },
+  sparkline: { area: "sparkline", title: "EVENTS / 60min", accent: "rgba(140, 200, 255, 0.6)" },
+  perf: { area: "perf", title: "PERFORMANCE", accent: "rgba(140, 200, 255, 0.6)" },
+  mission: { area: "mission", title: "MISSION", accent: "rgba(208, 241, 0, 0.7)" },
+  thinking: { area: "thinking", title: "THINKING", accent: "rgba(180, 160, 255, 0.7)" },
+  live: { area: "live", title: "HERMES_LIVE", accent: "rgba(140, 200, 255, 0.7)" },
+  memory: { area: "memory", title: "MEMORY", accent: "rgba(160, 240, 200, 0.7)" },
+  proposals: { area: "proposals", title: "HERMES_PROPOSALS", accent: "rgba(255, 200, 120, 0.8)" },
+  ledger: { area: "ledger", title: "TASK_LEDGER", accent: "rgba(208, 241, 0, 0.6)" },
+  subscriptions: { area: "subscriptions", title: "SUBSCRIPTIONS", accent: "rgba(180, 160, 255, 0.6)" },
+  search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)" },
+  graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)" },
+  subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)" },
+  themed: { area: "themed", title: "THEMED_SURFACES", accent: "rgba(208, 241, 0, 0.5)" },
+  sessions: { area: "sessions", title: "TELEGRAM_SESSIONS", accent: "rgba(160, 240, 200, 0.6)" },
+  skills: { area: "skills", title: "SKILLS", accent: "rgba(180, 160, 255, 0.6)" },
+  memfiles: { area: "memfiles", title: "MEMORY_FILES", accent: "rgba(160, 240, 200, 0.6)" },
+  runlog: { area: "runlog", title: "RUN_LOG", accent: "rgba(224, 246, 255, 0.4)" },
+  local: { area: "local", title: "LOCAL_CONSOLE", accent: "rgba(224, 246, 255, 0.4)" },
+  changelog: { area: "changelog", title: "CHANGELOG", accent: "rgba(208, 241, 0, 0.4)" },
+  git: { area: "git", title: "GIT_STATE", accent: "rgba(208, 241, 0, 0.5)" },
+  publish: { area: "publish", title: "GITHUB_PUBLISH", accent: "rgba(208, 241, 0, 0.7)" },
+  improve: { area: "improve", title: "IMPROVEMENT_LOOP", accent: "rgba(180, 160, 255, 0.6)" }
 };
 
 function isActionable(request: RunRequest) {
@@ -150,7 +110,7 @@ export default function App() {
     try {
       const next = await fetchDashboard();
       setPayload(next);
-      setLiveEvents(next.hermesEvents.slice(0, 60));
+      setLiveEvents(next.hermesEvents.slice(0, 80));
       setLiveIntents(next.pendingPublicIntents);
       setError("");
     } catch (err) {
@@ -178,16 +138,13 @@ export default function App() {
     return off;
   }, []);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Ignore when typing in an input/textarea
       const target = e.target as HTMLElement | null;
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
       if (e.key === "/") {
         e.preventDefault();
-        const input = document.querySelector<HTMLInputElement>('[data-pane-input="code-search"]');
-        input?.focus();
+        document.querySelector<HTMLInputElement>('[data-pane-input="code-search"]')?.focus();
       } else if (e.key === "Escape") {
         setInspectedEvent(null);
         setDiffProposal(null);
@@ -226,91 +183,50 @@ export default function App() {
       setBusy("");
     }
   }
-
   async function handleApprove(id: string) {
     setBusy(`approve:${id}`);
-    try {
-      await approveRunRequest(id);
-      await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Approval failed");
-    } finally {
-      setBusy("");
-    }
+    try { await approveRunRequest(id); await refresh(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Approval failed"); }
+    finally { setBusy(""); }
   }
-
   async function handleReject(id: string) {
     setBusy(`reject:${id}`);
-    try {
-      await rejectRunRequest(id, "Rejected in Pretext Console");
-      await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Reject failed");
-    } finally {
-      setBusy("");
-    }
+    try { await rejectRunRequest(id, "Rejected in Pretext Console"); await refresh(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Reject failed"); }
+    finally { setBusy(""); }
   }
-
   async function handleLocalMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy("message");
-    try {
-      await createLocalMessage(localMessage);
-      setLocalMessage("");
-      await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Local message failed");
-    } finally {
-      setBusy("");
-    }
+    try { await createLocalMessage(localMessage); setLocalMessage(""); await refresh(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Local message failed"); }
+    finally { setBusy(""); }
   }
-
   async function handleModelChange(event: React.ChangeEvent<HTMLSelectElement>) {
     setBusy("model");
-    try {
-      await setHermesModel(event.target.value);
-      await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Model switch failed");
-    } finally {
-      setBusy("");
-    }
+    try { await setHermesModel(event.target.value); await refresh(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Model switch failed"); }
+    finally { setBusy(""); }
   }
-
   async function handleIntentDecision(intent: PublicIntent, decision: "confirm" | "decline") {
     setBusy(`intent:${intent.id}`);
     try {
       await decidePublicIntent(intent.id, decision, decision === "decline" ? { reason: "declined locally" } : {});
       setLiveIntents((prev) => prev.filter((item) => item.id !== intent.id));
       await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Intent decision failed");
-    } finally {
-      setBusy("");
-    }
+    } catch (err) { setError(err instanceof Error ? err.message : "Intent decision failed"); }
+    finally { setBusy(""); }
   }
-
   async function handleProposalDecision(proposal: Proposal, decision: "confirm" | "decline") {
     setBusy(`prop:${proposal.id}`);
-    try {
-      await decideProposal(proposal.id, decision, decision === "decline" ? { reason: "declined locally" } : {});
-      await refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Proposal decision failed");
-    } finally {
-      setBusy("");
-    }
-  }
-
-  async function handleResetLayout() {
-    if (!window.confirm("Reset dashboard layout to defaults?")) return;
-    await resetServerLayout();
-    window.location.reload();
+    try { await decideProposal(proposal.id, decision, decision === "decline" ? { reason: "declined locally" } : {}); await refresh(); }
+    catch (err) { setError(err instanceof Error ? err.message : "Proposal decision failed"); }
+    finally { setBusy(""); }
   }
 
   if (!payload) {
     return (
-      <main className="console-stage loading-stage">
+      <main className="bento-stage loading-stage">
         <div className="loading-card">
           <span>PRETEXT_BOOT</span>
           <strong>reading local agent memory</strong>
@@ -322,105 +238,119 @@ export default function App() {
   const runtime = payload.hermesRuntime;
   const knownModels = runtime?.knownModels?.length ? runtime.knownModels : [runtime?.model || "gemma4:e4b"];
 
-  function renderPane(id: string, position: PanePosition, onPos: (id: string, p: PanePosition) => void, onFocus: (id: string) => void) {
-    const title = PANE_TITLES[id];
-    const accent = PANE_ACCENTS[id];
+  function cell(key: keyof typeof CELLS, body: React.ReactNode) {
+    const spec = CELLS[key];
     return (
-      <DraggablePane
-        id={id}
-        position={position}
-        onPositionChange={onPos}
-        onFocus={onFocus}
-        title={title}
-        accent={accent}
-      >
-        {paneBody(id, payload!, liveEvents, setInspectedEvent)}
-      </DraggablePane>
+      <section className="bento-cell" style={{ gridArea: spec.area, borderColor: spec.accent }}>
+        <header className="bento-header">
+          <span className="bento-title" style={{ color: spec.accent }}>{spec.title}</span>
+        </header>
+        <div className="bento-body">{body}</div>
+      </section>
     );
   }
 
   return (
-    <main className="console-stage">
-      <PretextConsole
-        payload={payload}
-        nodes={nodes}
-        activeNode={activeNode}
-        liveEvents={liveEvents}
-      />
-
-      <div className="top-bar">
-        <div className="brand-mark" aria-label="Hermes Pretext Console">H</div>
-        <select
-          className="model-select"
-          aria-label="Active Hermes model"
-          value={runtime?.model || ""}
-          onChange={handleModelChange}
-          disabled={busy === "model"}
-        >
-          {knownModels.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
+    <main className="bento-stage">
+      <header className="bento-topbar">
+        <div className="brand-mark">H</div>
+        <select className="model-select" value={runtime?.model || ""} onChange={handleModelChange} disabled={busy === "model"} aria-label="Active Hermes model">
+          {knownModels.map((m) => <option key={m} value={m}>{m}</option>)}
         </select>
-        <button className="button button-ghost refresh-button" onClick={refresh}>refresh</button>
-        <button className="button button-ghost refresh-button" onClick={handleResetLayout}>reset layout</button>
+        <button className="button button-ghost" onClick={refresh}>refresh</button>
+        <span className="topbar-mode muted">
+          {payload.cadence.mode.toUpperCase()} · idle {payload.cadence.idleSec}s · {Math.round(payload.cadence.recommendedIntervalMs / 1000)}s loop · {payload.cadence.recommendedAutoApply ? "AUTO-APPLY" : "manual"}
+        </span>
         <span className="kbd-hint muted">/ search · g focus · p propose · m inspect · ? help</span>
+      </header>
+
+      <aside className="bento-rail">
+        <RunningProcessesPanel processes={payload.processes} />
+      </aside>
+
+      <div className="bento-grid">
+        {cell("health", <HealthPanel payload={payload} />)}
+        {cell("cadence", <CadencePanel cadence={payload.cadence} />)}
+        {cell("sparkline", <SparklinePanel buckets={payload.timeline?.buckets || []} total={payload.timeline?.total || 0} peak={payload.timeline?.peak || 0} />)}
+        {cell("perf", <PerformancePanel payload={payload} />)}
+
+        {cell("mission", <MissionPanel mission={payload.mission} />)}
+        {cell("thinking", <ThinkingPanel mission={payload.mission} />)}
+        {cell("live", <HermesLivePanel events={liveEvents} onSelect={setInspectedEvent} />)}
+        {cell("memory", <MemoryPanel mission={payload.mission} events={liveEvents} />)}
+
+        {cell("proposals",
+          payload.pendingProposals.length === 0 ? (
+            <div className="muted">no pending proposals · validator running</div>
+          ) : (
+            <div className="proposal-stack">
+              {payload.pendingProposals.slice(0, 4).map((proposal) => (
+                <article className="proposal-card" key={proposal.id}>
+                  <header>
+                    <strong>◆ {proposal.title}</strong>
+                    <span className="proposal-kind">({proposal.kind})</span>
+                  </header>
+                  <p className="proposal-rationale">{proposal.rationale}</p>
+                  {proposal.command ? <code className="proposal-cmd">{proposal.command}</code> : null}
+                  {proposal.argv?.length ? <code className="proposal-cmd">{proposal.argv.join(" ")}</code> : null}
+                  <div className="proposal-actions">
+                    <button className="button button-mini button-primary" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "confirm")}>apply</button>
+                    <button className="button button-mini button-light" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "decline")}>decline</button>
+                    <button className="button button-mini button-light" onClick={() => setDiffProposal(proposal)}>diff</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )
+        )}
+
+        {cell("ledger",
+          <ul className="row-list">
+            {payload.tasks.length === 0 && <li className="muted">no tasks · ledger empty</li>}
+            {payload.tasks.slice(0, 12).map((t) => (
+              <li key={t.id} className="row" title={t.notes?.[t.notes.length - 1] || ""}>
+                <span className={`row-tag ${t.status === "done" ? "ok" : t.status === "blocked" ? "warn" : "muted"}`}>{t.status}</span>
+                <span className="row-id">[{t.mission}]</span>
+                <span className="row-content truncate">{t.title}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
+        {cell("search", <CodeSearchPanel />)}
+        {cell("graph", <ObsidianGraphPanel />)}
+        {cell("subagents", <SubagentTreePanel payload={payload} />)}
+        {cell("themed", <ThemedSurfacesPanel themed={payload.themed} />)}
+
+        {cell("sessions", <SessionsPanel sessions={payload.sessions?.sessions || []} />)}
+        {cell("skills", <SkillsPanel skills={payload.skills?.skills || []} activeCount={payload.skills?.activeCount || 0} disabledCount={payload.skills?.disabledCount || 0} totalCount={payload.skills?.totalCount || 0} />)}
+        {cell("memfiles", <MemoryFilesPanel files={payload.memoryFiles?.files || []} count={payload.memoryFiles?.count || 0} />)}
+
+        {cell("runlog", <RunLogPanel runs={payload.runRequests} />)}
+        {cell("local", <LocalConsolePanel messages={payload.localMessages} />)}
+        {cell("changelog", <ChangelogPanel entries={payload.changelog} />)}
+
+        {cell("git", <GitStatePanel git={payload.git} />)}
+        {cell("publish", <GithubPublishPanel publishStatus={payload.publishStatus} />)}
+        {cell("improve", <ImprovementLoopPanel payload={payload} />)}
       </div>
 
-      <div className="node-layer" aria-label="Hermes console nodes">
-        {nodes.map((node) => (
-          <button
-            key={node.id}
-            className={`node-hotspot ${node.id === activeNode ? "node-hotspot-active" : ""}`}
-            style={{ left: `${node.x}%`, top: `${node.y}%` }}
-            onClick={() => setActiveNode(node.id)}
-            aria-label={`Focus ${node.label}`}
-            aria-pressed={node.id === activeNode}
-          />
-        ))}
-      </div>
-
-      <DraggableLayer paneIds={PANE_IDS} render={renderPane} />
-
-      {payload.pendingProposals.length > 0 && (
-        <aside className="proposal-dock" aria-label="Pending Hermes proposals">
-          <header className="proposal-dock-header">HERMES_PROPOSALS · {payload.pendingProposals.length}</header>
-          {payload.pendingProposals.slice(0, 4).map((proposal) => (
-            <article className="proposal-row" key={proposal.id}>
-              <header>
-                <strong>◆ {proposal.title}</strong>
-                <span className="proposal-kind"> ({proposal.kind})</span>
-              </header>
-              <p className="proposal-rationale">{proposal.rationale}</p>
-              {proposal.command ? <code className="proposal-cmd">{proposal.command}</code> : null}
-              {proposal.argv?.length ? <code className="proposal-cmd">{proposal.argv.join(" ")}</code> : null}
-              <div className="proposal-actions">
-                <button
-                  className="button button-mini button-primary"
-                  disabled={busy === `prop:${proposal.id}`}
-                  onClick={() => handleProposalDecision(proposal, "confirm")}
-                >
-                  apply
-                </button>
-                <button
-                  className="button button-mini button-light"
-                  disabled={busy === `prop:${proposal.id}`}
-                  onClick={() => handleProposalDecision(proposal, "decline")}
-                >
-                  decline
-                </button>
-                <button
-                  className="button button-mini button-light"
-                  onClick={() => setDiffProposal(proposal)}
-                >
-                  diff
-                </button>
-              </div>
-            </article>
+      <div className="bento-canvas-stage">
+        <PretextConsole payload={payload} nodes={nodes} activeNode={activeNode} liveEvents={liveEvents} />
+        <div className="node-layer" aria-label="Hermes console nodes">
+          {nodes.map((node) => (
+            <button
+              key={node.id}
+              className={`node-hotspot ${node.id === activeNode ? "node-hotspot-active" : ""}`}
+              style={{ left: `${node.x}%`, top: `${node.y}%` }}
+              onClick={() => setActiveNode(node.id)}
+              aria-label={`Focus ${node.label}`}
+              aria-pressed={node.id === activeNode}
+            />
           ))}
-        </aside>
-      )}
+        </div>
+      </div>
 
       {liveIntents.length > 0 && (
         <aside className="intent-dock" aria-label="Pending public actions">
@@ -431,9 +361,7 @@ export default function App() {
                 <span> → {intent.surface} ({intent.audience})</span>
               </header>
               <p className="intent-content">{intent.content}</p>
-              <p className="intent-meta">
-                worst-case: {intent.worstCase} · legal: {intent.legalPosture} · rep: {intent.reputationPosture}
-              </p>
+              <p className="intent-meta">worst-case: {intent.worstCase} · legal: {intent.legalPosture} · rep: {intent.reputationPosture}</p>
               <div className="intent-actions">
                 <button className="button button-mini button-primary" disabled={busy === `intent:${intent.id}`} onClick={() => handleIntentDecision(intent, "confirm")}>confirm</button>
                 <button className="button button-mini button-light" disabled={busy === `intent:${intent.id}`} onClick={() => handleIntentDecision(intent, "decline")}>decline</button>
@@ -450,16 +378,8 @@ export default function App() {
             <article className="request-row" key={request.id}>
               <code>{request.command || "empty"}</code>
               <em className="request-status request-status-ready">{request.status}</em>
-              <button
-                className="button button-mini button-primary"
-                disabled={request.status !== "pending" || busy === `approve:${request.id}`}
-                onClick={() => handleApprove(request.id)}
-              >run</button>
-              <button
-                className="button button-mini button-light"
-                disabled={busy === `reject:${request.id}`}
-                onClick={() => handleReject(request.id)}
-              >reject</button>
+              <button className="button button-mini button-primary" disabled={request.status !== "pending" || busy === `approve:${request.id}`} onClick={() => handleApprove(request.id)}>run</button>
+              <button className="button button-mini button-light" disabled={busy === `reject:${request.id}`} onClick={() => handleReject(request.id)}>reject</button>
             </article>
           ))}
         </aside>
@@ -474,9 +394,7 @@ export default function App() {
       <form className="command-dock" onSubmit={handleCreate} aria-label="Create local run request">
         <PretextDock mode="command" value={command} detail={reason} busy={busy === "create"} />
         <input className="command-input" aria-label="Command" value={command} list="suggested-commands" onChange={(e) => setCommand(e.target.value)} placeholder="any shell command..." />
-        <datalist id="suggested-commands">
-          {SUGGESTED_COMMANDS.map((item) => <option key={item} value={item} />)}
-        </datalist>
+        <datalist id="suggested-commands">{SUGGESTED_COMMANDS.map((item) => <option key={item} value={item} />)}</datalist>
         <input aria-label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
         <button className="native-submit-button" disabled={busy === "create"}>queue</button>
       </form>
@@ -485,66 +403,4 @@ export default function App() {
       <DiffPreviewOverlay proposal={diffProposal} onClose={() => setDiffProposal(null)} />
     </main>
   );
-}
-
-function paneBody(id: string, payload: DashboardPayload, liveEvents: HermesEvent[], onSelectEvent: (e: HermesEvent) => void) {
-  switch (id) {
-    case "health":
-      return <HealthPanel payload={payload} />;
-    case "cadence":
-      return <CadencePanel cadence={payload.cadence} />;
-    case "sparkline":
-      return (
-        <SparklinePanel
-          buckets={payload.timeline?.buckets || []}
-          total={payload.timeline?.total || 0}
-          peak={payload.timeline?.peak || 0}
-        />
-      );
-    case "git-state":
-      return <GitStatePanel git={payload.git} />;
-    case "github-publish":
-      return <GithubPublishPanel publishStatus={payload.publishStatus} />;
-    case "improvement-loop":
-      return <ImprovementLoopPanel payload={payload} />;
-    case "performance":
-      return <PerformancePanel payload={payload} />;
-    case "sessions":
-      return <SessionsPanel sessions={payload.sessions?.sessions || []} />;
-    case "skills":
-      return (
-        <SkillsPanel
-          skills={payload.skills?.skills || []}
-          activeCount={payload.skills?.activeCount || 0}
-          disabledCount={payload.skills?.disabledCount || 0}
-          totalCount={payload.skills?.totalCount || 0}
-        />
-      );
-    case "memory-files":
-      return <MemoryFilesPanel files={payload.memoryFiles?.files || []} count={payload.memoryFiles?.count || 0} />;
-    case "hermes-live":
-      return <HermesLivePanel events={liveEvents} onSelect={onSelectEvent} />;
-    case "thinking":
-      return <ThinkingPanel mission={payload.mission} />;
-    case "mission":
-      return <MissionPanel mission={payload.mission} />;
-    case "memory":
-      return <MemoryPanel mission={payload.mission} events={liveEvents} />;
-    case "run-log":
-      return <RunLogPanel runs={payload.runRequests} />;
-    case "local-console":
-      return <LocalConsolePanel messages={payload.localMessages} />;
-    case "changelog":
-      return <ChangelogPanel entries={payload.changelog} />;
-    case "code-search":
-      return <CodeSearchPanel />;
-    case "subagent-tree":
-      return <SubagentTreePanel payload={payload} />;
-    case "themed-surfaces":
-      return <ThemedSurfacesPanel themed={payload.themed} />;
-    case "obsidian-graph":
-      return <ObsidianGraphPanel />;
-    default:
-      return <div className="muted">unknown pane: {id}</div>;
-  }
 }

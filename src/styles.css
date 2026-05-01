@@ -66,6 +66,242 @@ button {
   display: block;
 }
 
+/* ===== Bento layout (replaces draggable layer) ===== */
+
+.bento-stage {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 360px;
+  grid-template-rows: 44px minmax(0, 1fr);
+  grid-template-areas:
+    "topbar topbar topbar"
+    "rail   grid   canvas";
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.bento-topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+  border-radius: 4px;
+}
+
+.topbar-mode {
+  margin-left: 12px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bento-rail {
+  grid-area: rail;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.bento-grid {
+  grid-area: grid;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "health      health      health      cadence     cadence     cadence     sparkline   sparkline   sparkline   perf        perf        perf"
+    "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
+    "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
+    "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"
+    "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"
+    "ledger      ledger      ledger      ledger      subagents   subagents   subagents   subagents   themed      themed      themed      themed"
+    "sessions    sessions    skills      skills      memfiles    memfiles    git         git         publish     publish     improve     improve"
+    "runlog      runlog      runlog      runlog      local       local       local       local       changelog   changelog   changelog   changelog"
+    "subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions";
+  grid-template-rows:
+    100px
+    140px 60px
+    220px 0
+    180px
+    140px
+    130px
+    100px;
+  overflow: auto;
+}
+
+.bento-canvas-stage {
+  grid-area: canvas;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-deep-cosmos);
+}
+
+.bento-canvas-stage .pretext-console-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.bento-canvas-stage .node-layer {
+  inset: 0;
+}
+
+.bento-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel-strong);
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+.bento-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 9px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bento-title {
+  color: var(--color-chartreuse-pulse);
+}
+
+.bento-body {
+  flex: 1;
+  padding: 7px 9px;
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.45;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Running processes rail */
+
+.proc-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.proc-section {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel-strong);
+}
+
+.proc-section header {
+  padding: 4px 8px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--line);
+  color: var(--color-slate-ink);
+}
+
+.proc-list {
+  margin: 0;
+  padding: 4px 8px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 10.5px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed rgba(224, 246, 255, 0.06);
+}
+
+.proc-row:last-child {
+  border-bottom: 0;
+}
+
+.proc-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.proc-dot {
+  font-size: 8px;
+}
+
+.proc-row.ok .proc-dot {
+  color: var(--color-chartreuse-pulse);
+}
+
+.proc-row.warn .proc-dot {
+  color: rgba(255, 130, 130, 0.95);
+}
+
+.proc-row.muted .proc-dot {
+  color: var(--color-slate-ink);
+}
+
+.proc-label {
+  flex: 1;
+  text-transform: lowercase;
+}
+
+.proc-state {
+  color: var(--color-slate-ink);
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.proc-detail {
+  font-size: 9.5px;
+  line-height: 1.3;
+}
+
+.proc-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 9.5px;
+}
+
+/* Proposal stack inside bento cell */
+
+.proposal-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.proposal-card {
+  border-bottom: 1px dashed rgba(224, 246, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.proposal-card:last-child {
+  border-bottom: 0;
+}
+
+.proposal-card header strong {
+  color: rgba(255, 240, 200, 0.92);
+}
+
+.proposal-card header {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 11px;
+}
+
 .top-bar {
   position: absolute;
   top: 16px;
