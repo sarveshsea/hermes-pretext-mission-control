@@ -7,6 +7,8 @@
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { dispatchSubscriptionTask, listSubscriptionTasks } from "./subscriptions.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
+import { createPublicIntent } from "./publicIntents.mjs";
+import { createProposal } from "./proposals.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
 const ABANDON_THRESHOLD = 5;
@@ -51,20 +53,31 @@ async function tick() {
       const intent =
         `Hermes pipeline abandoned ${info.count}× on task: "${safeSnippet(sample.taskTitle, 120)}". ` +
         `Last reason: ${safeSnippet(sample.reason || "unknown", 200)}. ` +
-        `Please advise: produce the concrete edit (filePath + find/replace) OR mark this needs_design.`;
+        `Please produce the concrete edit as JSON: {"filePath": "...", "find": "...", "replace": "..."}. ` +
+        `If the task is too abstract to map to a file, return {"needs_design": true, "reason": "..."}.`;
       try {
+        // Queue the subscription (status: queued, no autoExecute yet).
         const sub = await dispatchSubscriptionTask({
           provider: "claude-code",
           intent,
           payload: { taskId: sample.taskId, taskTitle: sample.taskTitle, lastReason: sample.reason },
-          notes: [`auto-delegated by agentDelegation after ${info.count} abandons`]
+          notes: [`auto-delegated by agentDelegation after ${info.count} abandons`],
+          autoExecute: false
+        });
+        // Also queue a public_intent so Sarvesh can approve/decline. Approval
+        // will trigger the actual claude-code shell-out (via the public-intent
+        // confirm handler in index.mjs — see route below).
+        await createPublicIntent({
+          channel: "claude-dispatch",
+          content: `Ask Claude Code: ${safeSnippet(sample.taskTitle, 100)} (${info.count} abandons)`,
+          extra: { subscriptionId: sub.id, taskId: sample.taskId }
         });
         dispatchedClasses.set(cls, Date.now());
         dispatched += 1;
         await appendHermesEvent({
           type: "mission_update",
           role: "assistant",
-          content: `[delegate] ${info.count} abandons → asked claude-code for help (${sub.id})`,
+          content: `[delegate] ${info.count} abandons → queued claude-code dispatch (${sub.id}); awaiting Sarvesh approval`,
           extra: { taskId: sample.taskId, subscriptionId: sub.id }
         });
       } catch {
@@ -84,6 +97,78 @@ export function startAgentDelegation() {
   timer = setInterval(() => void tick(), 5 * 60_000);
   timer.unref?.();
   return timer;
+}
+
+// Called by subscriptions.executeClaudeCode when a real Claude Code dispatch
+// returns. We try to extract a structured edit from the result text — if it's
+// shaped as JSON with {filePath, find, replace}, we auto-create an edit
+// proposal that the autoApply loop will ship. Otherwise we just log.
+export async function digestClaudeResult({ task, parsed, rawText } = {}) {
+  if (!task) return;
+  // Try several extraction shapes.
+  let edit = null;
+  // 1) parsed.result is a plain JSON string
+  const candidates = [];
+  if (parsed?.result && typeof parsed.result === "string") candidates.push(parsed.result);
+  if (typeof rawText === "string") candidates.push(rawText);
+  for (const text of candidates) {
+    if (!text) continue;
+    const m = text.match(/\{[\s\S]*?"filePath"[\s\S]*?\}/);
+    if (m) {
+      try {
+        const obj = JSON.parse(m[0]);
+        if (obj.filePath && typeof obj.find === "string" && typeof obj.replace === "string") {
+          edit = obj;
+          break;
+        }
+      } catch {
+        // try next
+      }
+    }
+  }
+  if (!edit) {
+    await appendHermesEvent({
+      type: "tool_result",
+      role: "assistant",
+      content: `[claude-digest] no edit shape found in result for ${task.id}; raw: ${safeSnippet(String(rawText || ""), 160)}`,
+      intent: task.id
+    });
+    return;
+  }
+  // Fire a thinking event so the validator's 60s window is satisfied.
+  const sessionId = `claude_${task.id}`;
+  await appendHermesEvent({
+    type: "thinking",
+    role: "assistant",
+    content: `[claude-digest] proposing edit from claude-code dispatch for ${task.id}`,
+    sessionId
+  });
+  try {
+    const proposal = await createProposal({
+      kind: "edit",
+      title: `From Claude: ${safeSnippet(task.intent, 100)}`,
+      rationale: safeSnippet(`Auto-created from claude-code dispatch ${task.id}`, 400),
+      filePath: edit.filePath,
+      find: edit.find,
+      replace: edit.replace,
+      autoSafe: true,
+      sessionId
+    });
+    await appendHermesEvent({
+      type: "mission_update",
+      role: "assistant",
+      content: `[claude-digest] created edit proposal ${proposal.id} → ${proposal.status}`,
+      intent: task.id,
+      extra: { proposalId: proposal.id }
+    });
+  } catch (error) {
+    await appendHermesEvent({
+      type: "error",
+      role: "system",
+      content: `[claude-digest] failed to create proposal: ${error?.message || "unknown"}`,
+      intent: task.id
+    });
+  }
 }
 
 export async function getAgentDelegationStatus() {

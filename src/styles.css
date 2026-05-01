@@ -147,7 +147,7 @@ button {
     "mission      mission      mission      live         live         live         live         thinking     thinking     thinking     memory       memory"
     "proposals    proposals    proposals    proposals    proposals    proposals    agentvoice   agentvoice   agentvoice   delegation   delegation   delegation"
     "ledger       ledger       ledger       ledger       subagents    subagents    subagents    subagents    themed       themed       themed       themed"
-    "subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions archives archives archives archives archives archives";
+    "subscriptions subscriptions subscriptions subscriptions drafts       drafts       drafts       archives     archives     archives     archives     archives";
   grid-template-rows:
     44px
     96px
@@ -2087,6 +2087,93 @@ option {
   min-height: 0;
   overflow: auto;
   padding: var(--s-4);
+}
+
+/* Draft pool — quality-gated rejections */
+
+.draft-pool {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  height: 100%;
+  min-height: 0;
+}
+.draft-pool-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.draft-pool-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+}
+.draft-pool-tab:hover { color: var(--text-base); }
+.draft-pool-tab.active {
+  color: rgb(255, 200, 90);
+  border-bottom-color: rgb(255, 200, 90);
+}
+.draft-pool-count {
+  font-size: var(--t-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  padding: 0 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.draft-pool-tab.active .draft-pool-count {
+  color: rgb(255, 200, 90);
+  background: rgba(255, 200, 90, 0.12);
+}
+.draft-pool-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+}
+.draft-pool-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1.5fr;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-1) var(--s-2);
+  border-radius: 3px;
+  font-size: var(--t-meta);
+}
+.draft-pool-row:hover { background: rgba(255, 255, 255, 0.03); }
+.draft-pool-time {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-label);
+}
+.draft-pool-reason {
+  color: rgb(255, 200, 90);
+  font-size: var(--t-meta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-pool-sample {
+  color: var(--text-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 /* Inspector decision drawer enrichment */

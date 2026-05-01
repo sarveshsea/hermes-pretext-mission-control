@@ -47,6 +47,7 @@ import PlaybookScoreboardPanel from "./components/panes/PlaybookScoreboardPanel"
 import GoalsPanel from "./components/panes/GoalsPanel";
 import OllamaQueuePanel from "./components/panes/OllamaQueuePanel";
 import ArchivesPanel from "./components/panes/ArchivesPanel";
+import DraftPoolPanel from "./components/panes/DraftPoolPanel";
 import DelegationInboxPanel from "./components/panes/DelegationInboxPanel";
 import AgentVoicePanel from "./components/panes/AgentVoicePanel";
 import WhyStrip from "./components/WhyStrip";
@@ -89,6 +90,7 @@ const CELLS: Record<string, CellSpec> = {
   goals: { area: "goals", title: "GOALS", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
   ollama: { area: "ollama", title: "OLLAMA_QUEUE", accent: "rgba(140, 200, 255, 0.7)", tier: 2 },
   archives: { area: "archives", title: "ARCHIVES", accent: "rgba(255, 255, 255, 0.18)", tier: 3 },
+  drafts: { area: "drafts", title: "DRAFT_POOL", accent: "rgba(255, 200, 90, 0.6)", tier: 2 },
   delegation: { area: "delegation", title: "DELEGATION_INBOX", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
   agentvoice: { area: "agentvoice", title: "AGENT_VOICE", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
   subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)", tier: 2, summaryKey: "swarm" },
@@ -399,6 +401,7 @@ export default function App() {
         {cell("goals", <GoalsPanel />)}
         {cell("ollama", <OllamaQueuePanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
+        {cell("drafts", <DraftPoolPanel />)}
         {cell("subagents", <SubagentTreePanel payload={payload} />)}
         {cell("themed", <ThemedSurfacesPanel themed={payload.themed} />)}
 

@@ -19,6 +19,7 @@ import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { ROOTS } from "./config.mjs";
 import { runOllama } from "./ollamaQueue.mjs";
 import { embed, clusterByEmbedding } from "./embeddings.mjs";
+import { validateBuzzrDraft, validateSportsHeadline, validateMemoireAudit, appendDraft } from "./qualityGates.mjs";
 
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
 
@@ -522,40 +523,61 @@ async function runWorker(spec) {
         case "buzzr": {
           const text = result.parsed.text || result.parsed.tweet || "";
           if (text) {
-            const item = await postThemedItem("buzzr_drafts", {
-              text: safeSnippet(text, 280),
-              audience: result.parsed.audience || "x.com followers",
-              worstCase: "(swarm draft, unverified)"
-            });
-            resultSummary = `+ buzzr draft ${item.id}: ${safeSnippet(text, 60)}`;
+            const audience = result.parsed.audience || "x.com followers";
+            const verdict = validateBuzzrDraft({ text, audience });
+            if (!verdict.ok) {
+              await appendDraft("buzzr_drafts", { text, audience }, verdict.reason);
+              resultSummary = `✗ buzzr draft (gate): ${verdict.reason} — text: ${safeSnippet(text, 50)}`;
+            } else {
+              const item = await postThemedItem("buzzr_drafts", {
+                text: safeSnippet(text, 280),
+                audience,
+                worstCase: "(swarm draft, gate-passed)"
+              });
+              resultSummary = `+ buzzr draft ${item.id}: ${safeSnippet(text, 60)}`;
+            }
           }
           break;
         }
         case "memoire": {
           const slug = (result.parsed.slug || "audit").replace(/[^a-z0-9-]/gi, "-").slice(0, 40).toLowerCase();
           const source = result.parsed.source || "";
+          const summary = result.parsed.summary || "";
           if (source) {
-            const t = await addTask({
-              title: `Memoire audit: ${safeSnippet(source, 120)}`,
-              mission: "memoire",
-              createdBy: "swarm:memoire",
-              notes: [`source: ${source}`, `slug: ${slug}`, result.parsed.summary || ""].filter(Boolean)
-            });
-            resultSummary = `+ memoire audit task ${t.id}: ${safeSnippet(source, 60)}`;
+            const verdict = validateMemoireAudit({ source, summary });
+            if (!verdict.ok) {
+              await appendDraft("memoire_audits", { source, slug, summary }, verdict.reason);
+              resultSummary = `✗ memoire audit (gate): ${verdict.reason}`;
+            } else {
+              const t = await addTask({
+                title: `Memoire audit: ${safeSnippet(source, 120)}`,
+                mission: "memoire",
+                createdBy: "swarm:memoire",
+                notes: [`source: ${source}`, `slug: ${slug}`, summary].filter(Boolean)
+              });
+              resultSummary = `+ memoire audit task ${t.id}: ${safeSnippet(source, 60)}`;
+            }
           }
           break;
         }
         case "sports": {
           const headline = result.parsed.headline || "";
           const league = result.parsed.league || "general";
+          const source = result.parsed.source || "swarm";
           if (headline) {
-            const item = await postThemedItem("sports_radar", {
-              kind: "headline",
-              league,
-              source: result.parsed.source || "swarm",
-              headline: safeSnippet(headline, 280)
-            });
-            resultSummary = `+ sports_radar [${league}] ${item.id}: ${safeSnippet(headline, 60)}`;
+            const verdict = validateSportsHeadline({ headline, league, source });
+            if (!verdict.ok) {
+              await appendDraft("sports_radar", { headline, league, source }, verdict.reason);
+              resultSummary = `✗ sports headline (gate): ${verdict.reason}`;
+            } else {
+              const item = await postThemedItem("sports_radar", {
+                kind: "headline",
+                league,
+                source,
+                headline: safeSnippet(headline, 280)
+              });
+              resultSummary = `+ sports_radar [${league}] ${item.id}: ${safeSnippet(headline, 60)}`;
+            }
           }
           break;
         }

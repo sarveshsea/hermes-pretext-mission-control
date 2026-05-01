@@ -1,8 +1,16 @@
 import { promises as fs } from "node:fs";
+import { execFile } from "node:child_process";
 import path from "node:path";
 import { ROOTS } from "./config.mjs";
 import { safeSnippet } from "./redaction.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
+
+const CLAUDE_BIN = process.env.PRETEXT_CLAUDE_BIN || `${ROOTS.home}/.local/bin/claude`;
+const CLAUDE_DISPATCH_LIMIT_PER_HOUR = Number(process.env.PRETEXT_CLAUDE_DISPATCH_LIMIT || 5);
+const CLAUDE_TIMEOUT_MS = 5 * 60_000;
+const CLAUDE_SPEND_LOG = path.join(ROOTS.project, "data/claude-spend.jsonl");
+
+const recentClaudeDispatches = []; // [{ts, taskId, ok}]
 
 const STORE = path.join(ROOTS.project, "data/subscriptions.json");
 const MARKDOWN = path.join(ROOTS.hermesOps, "subscriptions.md");
@@ -69,7 +77,7 @@ function newId(now) {
   return `sub_${now.getTime().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export async function dispatchSubscriptionTask({ provider, intent, payload, notes } = {}) {
+export async function dispatchSubscriptionTask({ provider, intent, payload, notes, autoExecute = false } = {}) {
   await load();
   const safeProvider = VALID_PROVIDERS.has(provider) ? provider : "external";
   const now = new Date();
@@ -96,7 +104,107 @@ export async function dispatchSubscriptionTask({ provider, intent, payload, note
     intent: task.id,
     extra: { provider: safeProvider }
   });
+  // Real execution: only when explicitly autoExecute is true (the agent
+  // delegation flow gates this through public_intent first, so by the time
+  // we get here Sarvesh has approved). For claude-code, shell out.
+  if (autoExecute && safeProvider === "claude-code") {
+    void executeClaudeCode(task).catch(() => {});
+  }
   return task;
+}
+
+async function executeClaudeCode(task) {
+  // Rate limit: max N dispatches per rolling hour.
+  const cutoff = Date.now() - 3600_000;
+  const recent = recentClaudeDispatches.filter((r) => r.ts > cutoff);
+  recentClaudeDispatches.length = 0;
+  recentClaudeDispatches.push(...recent);
+  if (recent.length >= CLAUDE_DISPATCH_LIMIT_PER_HOUR) {
+    await logSubscriptionResult(task.id, {
+      status: "failed",
+      result: `rate-limited: ${recent.length} dispatches in last hour (cap ${CLAUDE_DISPATCH_LIMIT_PER_HOUR})`
+    });
+    return;
+  }
+  recentClaudeDispatches.push({ ts: Date.now(), taskId: task.id, ok: null });
+  await logSubscriptionResult(task.id, { status: "sent", notes: ["dispatched to claude-code"] });
+  const args = [
+    "--print",
+    "--output-format", "json",
+    "--dangerously-skip-permissions",
+    "--add-dir", ROOTS.project,
+    task.intent
+  ];
+  const startedAt = Date.now();
+  const exec = await new Promise((resolve) => {
+    execFile(CLAUDE_BIN, args, { timeout: CLAUDE_TIMEOUT_MS, maxBuffer: 4 * 1024 * 1024 }, (error, stdout, stderr) => {
+      resolve({
+        ok: !error,
+        exitCode: error?.code ?? 0,
+        stdout: (stdout || "").toString(),
+        stderr: (stderr || "").toString()
+      });
+    });
+  });
+  const durationMs = Date.now() - startedAt;
+  let parsed = null;
+  try {
+    parsed = JSON.parse(exec.stdout);
+  } catch {
+    parsed = null;
+  }
+  // Spend log — best-effort.
+  try {
+    await fs.mkdir(path.dirname(CLAUDE_SPEND_LOG), { recursive: true });
+    await fs.appendFile(
+      CLAUDE_SPEND_LOG,
+      JSON.stringify({
+        ts: new Date().toISOString(),
+        taskId: task.id,
+        intent: task.intent,
+        durationMs,
+        exitCode: exec.exitCode,
+        usage: parsed?.usage || null,
+        cost: parsed?.total_cost_usd || null
+      }) + "\n",
+      "utf8"
+    );
+  } catch {
+    // ignore
+  }
+  if (!exec.ok) {
+    await logSubscriptionResult(task.id, {
+      status: "failed",
+      result: safeSnippet(exec.stderr || exec.stdout || `exit ${exec.exitCode}`, 1500)
+    });
+    return;
+  }
+  const summary = parsed?.result || parsed?.text || exec.stdout.slice(-1500);
+  await logSubscriptionResult(task.id, {
+    status: "completed",
+    result: safeSnippet(summary, 1600),
+    notes: parsed?.usage ? [`usage: ${JSON.stringify(parsed.usage)}`] : []
+  });
+  // Hand the result to agentDelegation for digestion (auto-create kind:edit
+  // proposals if the result looks like {filePath, find, replace}).
+  try {
+    const { digestClaudeResult } = await import("./agentDelegation.mjs");
+    await digestClaudeResult({ task, parsed, rawText: summary });
+  } catch {
+    // best-effort
+  }
+}
+
+export function getClaudeDispatchStatus() {
+  const cutoff = Date.now() - 3600_000;
+  const recent = recentClaudeDispatches.filter((r) => r.ts > cutoff);
+  return {
+    limitPerHour: CLAUDE_DISPATCH_LIMIT_PER_HOUR,
+    inLastHour: recent.length,
+    remaining: Math.max(0, CLAUDE_DISPATCH_LIMIT_PER_HOUR - recent.length),
+    bin: CLAUDE_BIN,
+    recent: recent.slice(-5).map((r) => ({ taskId: r.taskId, at: new Date(r.ts).toISOString() }))
+  };
 }
 
 export async function logSubscriptionResult(id, { status, result, notes } = {}) {

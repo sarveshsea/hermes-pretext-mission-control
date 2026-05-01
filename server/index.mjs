@@ -71,12 +71,14 @@ import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mj
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
 import { batchConcretizeLedger, drainRecursion, seedDogfoodTasks, seedMultiStepPlans } from "./maintenance.mjs";
+import { readDrafts } from "./qualityGates.mjs";
 import { readGoals } from "./goals.mjs";
 import { getPaneSummaries } from "./paneSummaries.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
-  logSubscriptionResult
+  logSubscriptionResult,
+  getClaudeDispatchStatus
 } from "./subscriptions.mjs";
 import { searchCode } from "./codeSearch.mjs";
 import { previewProposedCommand } from "./diffPreview.mjs";
@@ -450,6 +452,38 @@ async function apiRoute(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/drain-recursion") {
     return sendJson(res, 200, await drainRecursion());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/draft-pool") {
+    return sendJson(res, 200, { surfaces: await readDrafts() });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/claude-dispatch-status") {
+    return sendJson(res, 200, getClaudeDispatchStatus());
+  }
+  // Approve a queued claude-code subscription dispatch — fires the actual
+  // shell-out to `claude --print`. Decline marks the subscription abandoned.
+  const claudeDispatchMatch = url.pathname.match(/^\/api\/hermes\/subscriptions\/([^/]+)\/(approve|decline)$/);
+  if (req.method === "POST" && claudeDispatchMatch) {
+    const id = decodeURIComponent(claudeDispatchMatch[1]);
+    const action = claudeDispatchMatch[2];
+    const all = await listSubscriptionTasks();
+    const task = all.find((t) => t.id === id);
+    if (!task) return sendJson(res, 404, { error: `subscription ${id} not found` });
+    if (action === "decline") {
+      await logSubscriptionResult(id, { status: "abandoned", notes: ["Sarvesh declined"] });
+      return sendJson(res, 200, { id, status: "abandoned" });
+    }
+    // approve → re-dispatch with autoExecute: true so it actually shells out.
+    if (task.provider === "claude-code") {
+      await dispatchSubscriptionTask({
+        provider: "claude-code",
+        intent: task.intent,
+        payload: null,
+        notes: [`approved by Sarvesh; ref ${id}`],
+        autoExecute: true
+      });
+      return sendJson(res, 200, { id, status: "approved-and-dispatched" });
+    }
+    return sendJson(res, 400, { error: `cannot approve provider ${task.provider}` });
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/goals") {
     return sendJson(res, 200, { goals: await readGoals() });
