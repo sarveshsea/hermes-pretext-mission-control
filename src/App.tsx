@@ -93,6 +93,34 @@ function isActionable(request: RunRequest) {
   return request.status === "pending";
 }
 
+function WorkingIndicator({ payload, eventCount, latestEvent }: { payload: DashboardPayload; eventCount: number; latestEvent?: HermesEvent }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  const lastEventMs = latestEvent ? new Date(latestEvent.createdAt).getTime() : 0;
+  const ageSec = lastEventMs ? Math.max(0, Math.round((now - lastEventMs) / 1000)) : null;
+  const cron = (payload.processes?.crons || []).find((c) => c.id === "pretext-auto-improve");
+  const nextMs = cron?.nextRunAt ? new Date(cron.nextRunAt).getTime() - now : 0;
+  const nextSec = Math.max(0, Math.round(nextMs / 1000));
+  const tone = ageSec == null ? "muted" : ageSec < 30 ? "ok" : ageSec < 300 ? "warn" : "alert";
+  return (
+    <span className={`working-indicator ${tone}`}>
+      <span className="pulse-dot" aria-hidden>●</span>
+      <span>last event {ageSec == null ? "—" : `${ageSec}s ago`}</span>
+      <span className="muted">·</span>
+      <span>events {eventCount}</span>
+      {cron ? (
+        <>
+          <span className="muted">·</span>
+          <span>cron in {Math.floor(nextSec / 60)}m{nextSec % 60}s</span>
+        </>
+      ) : null}
+    </span>
+  );
+}
+
 export default function App() {
   const [payload, setPayload] = useState<DashboardPayload | null>(null);
   const [activeNode, setActiveNode] = useState<ConsoleNodeId>(DEFAULT_NODE);
@@ -241,9 +269,9 @@ export default function App() {
   function cell(key: keyof typeof CELLS, body: React.ReactNode) {
     const spec = CELLS[key];
     return (
-      <section className="bento-cell" style={{ gridArea: spec.area, borderColor: spec.accent }}>
+      <section className="bento-cell" style={{ gridArea: spec.area }}>
         <header className="bento-header">
-          <span className="bento-title" style={{ color: spec.accent }}>{spec.title}</span>
+          <span className="bento-title">{spec.title}</span>
         </header>
         <div className="bento-body">{body}</div>
       </section>
@@ -258,8 +286,9 @@ export default function App() {
           {knownModels.map((m) => <option key={m} value={m}>{m}</option>)}
         </select>
         <button className="button button-ghost" onClick={refresh}>refresh</button>
+        <WorkingIndicator payload={payload} eventCount={liveEvents.length} latestEvent={liveEvents[0]} />
         <span className="topbar-mode muted">
-          {payload.cadence.mode.toUpperCase()} · idle {payload.cadence.idleSec}s · {Math.round(payload.cadence.recommendedIntervalMs / 1000)}s loop · {payload.cadence.recommendedAutoApply ? "AUTO-APPLY" : "manual"}
+          {payload.cadence.mode.toUpperCase()} · idle {payload.cadence.idleSec}s · {Math.round(payload.cadence.recommendedIntervalMs / 1000)}s · {payload.cadence.recommendedAutoApply ? "AUTO-APPLY" : "manual"}
         </span>
         <span className="kbd-hint muted">/ search · g focus · p propose · m inspect · ? help</span>
       </header>

@@ -74,21 +74,29 @@ export default function ObsidianGraphPanel() {
         const res = await fetch("/api/obsidian/graph", { cache: "no-store" });
         const data = await res.json();
         if (cancelled) return;
-        const limitedNodes: GraphNode[] = (data.nodes || []).slice(0, 60);
-        const ids = new Set(limitedNodes.map((n) => n.id));
-        const limitedEdges: GraphEdge[] = (data.edges || [])
-          .filter((e: GraphEdge) => ids.has(e.from) && ids.has(e.to))
-          .slice(0, 200);
-        setNodes(limitedNodes);
+        // Rank by edge degree, keep top 24 — orphans clutter the canvas.
+        const allNodes: GraphNode[] = data.nodes || [];
+        const allEdges: GraphEdge[] = data.edges || [];
+        const degree = new Map<string, number>();
+        for (const e of allEdges) {
+          degree.set(e.from, (degree.get(e.from) || 0) + 1);
+          degree.set(e.to, (degree.get(e.to) || 0) + 1);
+        }
+        const ranked = [...allNodes]
+          .sort((a, b) => (degree.get(b.id) || 0) - (degree.get(a.id) || 0))
+          .slice(0, 24);
+        const ids = new Set(ranked.map((n) => n.id));
+        const limitedEdges = allEdges.filter((e) => ids.has(e.from) && ids.has(e.to)).slice(0, 80);
+        setNodes(ranked);
         setEdges(limitedEdges);
         const rect = containerRef.current?.getBoundingClientRect();
         const w = rect?.width || 600;
         const h = rect?.height || 220;
         const layoutPos = await fetch("/api/dashboard-layout").then((r) => r.json()).catch(() => null);
         const persisted: LayoutCache = layoutPos?.obsidianNodes || {};
-        const computed = springLayout(limitedNodes, limitedEdges, w, h);
+        const computed = springLayout(ranked, limitedEdges, w, h, 120);
         const merged: LayoutCache = {};
-        for (const n of limitedNodes) merged[n.id] = persisted[n.id] || computed[n.id];
+        for (const n of ranked) merged[n.id] = persisted[n.id] || computed[n.id];
         setPositions(merged);
       } catch {
         // ignore
