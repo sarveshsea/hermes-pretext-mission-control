@@ -3,3 +3,5 @@
 ## Agent/Memoire Audit - First Portfolio
  ### Executive Summary 
 Drafting initial audit document for the first portfolio, focusing on identified gaps.
+## Agent/Memoire Audit - First Portfolio
+ *Initial draft based on gap analysis.* 
