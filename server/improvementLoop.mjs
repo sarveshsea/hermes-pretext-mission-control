@@ -1,0 +1,189 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { ROOTS } from "./config.mjs";
+import { safeSnippet } from "./redaction.mjs";
+
+const DEFAULT_INTERVAL_MS = Number(process.env.PRETEXT_IMPROVEMENT_LOOP_MS || 5 * 60_000);
+const DEFAULT_COOLDOWN_MS = Number(process.env.PRETEXT_IMPROVEMENT_COOLDOWN_MS || 15 * 60_000);
+
+let loopTimer = null;
+let lastTickAt = null;
+let lastCreatedAt = null;
+let lastError = "";
+let pathOverride = null;
+
+export function setImprovementLoopPathsForTests(paths) {
+  pathOverride = paths;
+}
+
+function storePath() {
+  return pathOverride?.storePath || ROOTS.improvementLoopStore;
+}
+
+function markdownPath() {
+  return pathOverride?.markdownPath || ROOTS.improvementLoopMarkdown;
+}
+
+function changelogPath() {
+  return pathOverride?.changelogPath || ROOTS.changelog;
+}
+
+function improvementId(now) {
+  return `imp_${now.getTime().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+async function readEvents() {
+  try {
+    const text = await fs.readFile(storePath(), "utf8");
+    const parsed = JSON.parse(text);
+    return Array.isArray(parsed.events) ? parsed.events : [];
+  } catch {
+    return [];
+  }
+}
+
+async function writeEvents(events) {
+  await fs.mkdir(path.dirname(storePath()), { recursive: true });
+  await fs.writeFile(storePath(), JSON.stringify({ events }, null, 2), "utf8");
+}
+
+function pickImprovement(dashboard) {
+  const latestLocal = dashboard.localMessages?.[0]?.body || "";
+  if (latestLocal) {
+    return {
+      title: "Local Console Follow-Through",
+      summary: `Improvement loop observed local instruction: ${safeSnippet(latestLocal, 220)}`,
+      area: "local-console"
+    };
+  }
+
+  if (dashboard.publishStatus?.state === "blocked") {
+    return {
+      title: "Publish Guardrail Visibility",
+      summary: `Publish is blocked: ${safeSnippet(dashboard.publishStatus.reason || "unknown", 220)}`,
+      area: "github-publish"
+    };
+  }
+
+  return {
+    title: "Pretext Surface Health Pass",
+    summary: "Improvement loop reviewed dashboard state and kept the next visible upgrade path in the changelog.",
+    area: "dashboard"
+  };
+}
+
+async function appendChangelog(event) {
+  await fs.mkdir(path.dirname(changelogPath()), { recursive: true });
+  let existing = "";
+  try {
+    existing = await fs.readFile(changelogPath(), "utf8");
+  } catch {
+    existing = "# Changelog\n";
+  }
+
+  const entry = [
+    "",
+    `## ${event.date} - ${event.title}`,
+    "",
+    `- ${event.summary}`,
+    `- Publish state: ${event.publishState}.`,
+    `- Status: ${event.status}.`,
+    ""
+  ].join("\n");
+
+  await fs.writeFile(changelogPath(), `${existing.trimEnd()}\n${entry}`, "utf8");
+}
+
+async function appendMarkdown(event) {
+  await fs.mkdir(path.dirname(markdownPath()), { recursive: true });
+  let existing = "";
+  try {
+    existing = await fs.readFile(markdownPath(), "utf8");
+  } catch {
+    existing = "# Improvement Loop\n\nAutonomous Pretext improvement observations and publish trail.\n";
+  }
+
+  const entry = [
+    "",
+    `## ${event.date} - ${event.title}`,
+    "",
+    `- id: ${event.id}`,
+    `- area: ${event.area}`,
+    `- summary: ${event.summary}`,
+    `- Publish state: ${event.publishState}`,
+    `- status: ${event.status}`,
+    ""
+  ].join("\n");
+
+  await fs.writeFile(markdownPath(), `${existing.trimEnd()}\n${entry}`, "utf8");
+}
+
+function hasRecentEvent(events, now, cooldownMs) {
+  return events.some((event) => now.getTime() - new Date(event.createdAt).getTime() < cooldownMs);
+}
+
+export function getImprovementLoopStatus() {
+  return {
+    state: loopTimer ? "running" : "stopped",
+    intervalMs: DEFAULT_INTERVAL_MS,
+    cooldownMs: DEFAULT_COOLDOWN_MS,
+    lastTickAt,
+    lastCreatedAt,
+    lastError
+  };
+}
+
+export async function getImprovementEvents() {
+  return readEvents();
+}
+
+export async function runImprovementLoopOnce({
+  dashboard,
+  now = new Date(),
+  cooldownMs = DEFAULT_COOLDOWN_MS
+} = {}) {
+  lastTickAt = now.toISOString();
+  const events = await readEvents();
+  if (hasRecentEvent(events, now, cooldownMs)) return null;
+
+  if (!dashboard) {
+    const error = new Error("Improvement loop requires a dashboard payload");
+    error.status = 500;
+    throw error;
+  }
+  const payload = dashboard;
+  const selected = pickImprovement(payload);
+  const event = {
+    id: improvementId(now),
+    date: now.toISOString().slice(0, 10),
+    createdAt: now.toISOString(),
+    status: "recorded",
+    publishState: payload.publishStatus?.state || "unknown",
+    ...selected
+  };
+
+  await writeEvents([event, ...events].slice(0, 100));
+  await appendChangelog(event);
+  await appendMarkdown(event);
+  lastCreatedAt = event.createdAt;
+  return event;
+}
+
+export function startImprovementLoop({ intervalMs = DEFAULT_INTERVAL_MS, getDashboard } = {}) {
+  if (loopTimer) return loopTimer;
+
+  const tick = async () => {
+    try {
+      if (!getDashboard) return;
+      await runImprovementLoopOnce({ dashboard: await getDashboard() });
+      lastError = "";
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : "Improvement loop failed";
+    }
+  };
+
+  void tick();
+  loopTimer = setInterval(tick, intervalMs);
+  loopTimer.unref?.();
+  return loopTimer;
+}
