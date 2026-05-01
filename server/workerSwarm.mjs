@@ -13,7 +13,8 @@ import { listTasks, addTask, updateTask } from "./taskLedger.mjs";
 import { postThemedItem } from "./themedSurfaces.mjs";
 import { writeNote } from "./obsidian.mjs";
 import { safeSnippet } from "./redaction.mjs";
-import { spawnSubagent, updateSubagent } from "./subagents.mjs";
+import { spawnSubagent, updateSubagent, listSubagents } from "./subagents.mjs";
+import { createProposal } from "./proposals.mjs";
 
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
@@ -75,6 +76,38 @@ const WORKERS = [
     system:
       "You are the OBSIDIAN gardener. Suggest ONE small vault improvement (index note, link cleanup, new section). " +
       'Return JSON: {"thinking": "<short reason>", "title": "<task title>", "path_hint": "<relative vault path>"}.'
+  },
+  {
+    id: "sports",
+    label: "sports",
+    intervalMs: 75_000,
+    mission: "sports",
+    system:
+      "You are the SPORTS RADAR worker. Surface ONE notable storyline from a major league (NFL / NBA / MLS / NCAA / MLB). " +
+      "Pull from your training (you don't have live web). Pick something fresh-feeling and angle-able for a sports app. " +
+      'Return JSON: {"thinking": "<one sentence>", "league": "<NFL|NBA|MLS|NCAA|MLB>", "headline": "<≤ 140 chars>", "source": "<imagined outlet name>"}.'
+  },
+  {
+    id: "executor",
+    label: "executor",
+    intervalMs: 90_000,
+    mission: "general",
+    system:
+      "You are the EXECUTOR worker. Your job is to turn an OPEN LEDGER TASK into a concrete shell command that will produce a real diff. " +
+      "Look at the open tasks, pick the most actionable one, and write a SAFE shell pipeline (no rm, no sudo, no curl|sh, no chmod) that edits a file under /Users/sarveshchidambaram/Desktop/Projects/Other/pretext. " +
+      "Examples: `cd /Users/...pretext && printf '\\n## %s - <title>\\n\\n- <line>\\n' \"$(date +%Y-%m-%d)\" >> CHANGELOG.md && git add CHANGELOG.md && git commit -m '<title>' && git push` " +
+      "Or: `cd /Users/...pretext && sed -i '' 's/old/new/' src/styles.css && git add -A && git commit -m '<title>' && git push`. " +
+      'Return JSON: {"thinking": "<one sentence>", "task_id": "<id from list>", "title": "<≤ 80 chars matching the diff>", "rationale": "<≤ 120 chars>", "command": "<exact shell pipeline ending with git push>"}.'
+  },
+  {
+    id: "selfimprove",
+    label: "selfimprove",
+    intervalMs: 120_000,
+    mission: "pretext",
+    system:
+      "You are the SELFIMPROVE worker. Propose ONE small visible refinement to the Pretext dashboard itself — a CSS tweak, a copy edit, a new column in a pane, a typography refinement. The change should help Sarvesh see what Hermes is doing more clearly. " +
+      "Output a SAFE shell pipeline (sed -i '' or printf >>). Files under src/ or server/ only. Always end with git add + git commit + git push. " +
+      'Return JSON: {"thinking": "<one sentence>", "title": "<≤ 80 chars>", "rationale": "<≤ 120 chars>", "command": "<exact pipeline>"}.'
   }
 ];
 
@@ -98,6 +131,17 @@ const timers = [];
 async function ensureSubagent(spec, status) {
   if (status.subagentId) return status.subagentId;
   try {
+    // Reuse existing subagent for this worker label if already in the ledger
+    // (avoids duplication on dashboard restart).
+    const existing = await listSubagents({ limit: 200 });
+    const match = existing.find(
+      (s) => s.intent && s.intent.startsWith(`${spec.label} swarm worker`)
+    );
+    if (match) {
+      status.subagentId = match.id;
+      await updateSubagent(match.id, { status: "running" });
+      return status.subagentId;
+    }
     const sub = await spawnSubagent({
       intent: `${spec.label} swarm worker — ${spec.system.split(".")[0]}`,
       mission: spec.mission,
