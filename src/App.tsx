@@ -47,6 +47,7 @@ import SessionReportPanel from "./components/panes/SessionReportPanel";
 import PowerMetricsPanel from "./components/panes/PowerMetricsPanel";
 import PlaybookScoreboardPanel from "./components/panes/PlaybookScoreboardPanel";
 import GoalsPanel from "./components/panes/GoalsPanel";
+import OllamaQueuePanel from "./components/panes/OllamaQueuePanel";
 import WhyStrip from "./components/WhyStrip";
 
 const POLL_MS = 12_000;
@@ -85,6 +86,7 @@ const CELLS: Record<string, CellSpec> = {
   power: { area: "power", title: "POWER_METRICS", accent: "rgba(208, 241, 0, 0.85)", tier: 1, summaryKey: "power" },
   scoreboard: { area: "scoreboard", title: "PLAYBOOK_SCOREBOARD", accent: "rgba(208, 241, 0, 0.7)", tier: 1 },
   goals: { area: "goals", title: "GOALS", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
+  ollama: { area: "ollama", title: "OLLAMA_QUEUE", accent: "rgba(140, 200, 255, 0.7)", tier: 2 },
   search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
   graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)", tier: 2 },
   subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)", tier: 2, summaryKey: "swarm" },
@@ -394,6 +396,7 @@ export default function App() {
         {cell("power", <PowerMetricsPanel />)}
         {cell("scoreboard", <PlaybookScoreboardPanel />)}
         {cell("goals", <GoalsPanel />)}
+        {cell("ollama", <OllamaQueuePanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
         {cell("search", <CodeSearchPanel />)}
         {cell("graph", <ObsidianGraphPanel />)}

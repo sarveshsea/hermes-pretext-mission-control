@@ -66,6 +66,7 @@ import { getPowerMetrics } from "./powerMetrics.mjs";
 import { getOllamaQueueStatus } from "./ollamaQueue.mjs";
 // Importing ollamaHealth registers its setHealthHook side-effect.
 import { getOllamaHealthStatus } from "./ollamaHealth.mjs";
+import { startAgentDelegation, getAgentDelegationStatus } from "./agentDelegation.mjs";
 import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
@@ -401,6 +402,27 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/ollama-queue") {
     return sendJson(res, 200, { ...getOllamaQueueStatus(), health: getOllamaHealthStatus() });
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/delegation") {
+    return sendJson(res, 200, await getAgentDelegationStatus());
+  }
+  const promoteMatch = url.pathname.match(/^\/api\/hermes\/tasks\/([^/]+)\/promote-to-plan$/);
+  if (req.method === "POST" && promoteMatch) {
+    const id = decodeURIComponent(promoteMatch[1]);
+    const body = await readJsonBody(req);
+    const steps = Array.isArray(body?.steps) ? body.steps.map(String).slice(0, 12) : [];
+    if (!steps.length) return sendJson(res, 400, { error: "steps[] required" });
+    const { createPlan } = await import("./harness.mjs");
+    const open = await listTasks();
+    const target = open.find((t) => t.id === id);
+    if (!target) return sendJson(res, 404, { error: `task ${id} not found` });
+    const plan = await createPlan({ intent: target.title, mission: target.mission, steps });
+    await updateTask(id, {
+      tags: [...(target.tags || []), "multi-step", "plan-parent"],
+      pipelineState: { phase: "plan", plan_id: plan.id, currentStep: 0, updatedAt: new Date().toISOString() },
+      note: `promoted to plan ${plan.id} (${steps.length} steps)`
+    });
+    return sendJson(res, 200, { planId: plan.id, taskId: id, steps: plan.steps.length });
+  }
   if (req.method === "GET" && url.pathname === "/api/hermes/power-metrics") {
     const minutes = Number(url.searchParams.get("minutes") || 60);
     return sendJson(res, 200, await getPowerMetrics({ windowMinutes: Math.min(Math.max(minutes, 5), 720) }));
@@ -559,6 +581,7 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startCodeIndex();
   startWorkerSwarm();
   startPipelineWorker();
+  startAgentDelegation();
   startEventArchive();
 
   // Auto-generate an hourly session report on the hour, mirroring to the vault

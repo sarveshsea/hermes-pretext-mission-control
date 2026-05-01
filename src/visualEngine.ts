@@ -38,7 +38,8 @@ const HUE: Record<HermesEventType, string> = {
   mission_update: "rgba(208, 241, 0, 0.7)",
   memory_read: "rgba(160, 240, 200, 0.82)",
   memory_write: "rgba(160, 240, 200, 0.95)",
-  note: "rgba(224, 246, 255, 0.55)"
+  note: "rgba(224, 246, 255, 0.55)",
+  pipeline_step: "rgba(208, 241, 0, 0.85)"
 };
 
 export function colorFor(type: HermesEventType): string {

@@ -145,7 +145,8 @@ export type HermesEventType =
   | "mission_update"
   | "memory_read"
   | "memory_write"
-  | "note";
+  | "note"
+  | "pipeline_step";
 
 export type HermesEvent = {
   id: string;

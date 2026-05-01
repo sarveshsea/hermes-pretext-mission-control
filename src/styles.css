@@ -117,7 +117,7 @@ button {
     "why         why         why         why         why         why         why         why         why         why         why         why"
     "health      health      health      cadence     cadence     cadence     sparkline   sparkline   sparkline   perf        perf        perf"
     "power       power       power       power       power       power       scoreboard  scoreboard  scoreboard  scoreboard  scoreboard  scoreboard"
-    "report      report      report      report      report      report      goals       goals       goals       goals       goals       goals"
+    "report      report      report      report      goals       goals       goals       goals       ollama      ollama      ollama      ollama"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"
@@ -1592,7 +1592,7 @@ option {
 }
 .why-strip {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 8px;
   height: 44px;
   padding: 4px 8px;
@@ -1603,6 +1603,26 @@ option {
     rgba(17, 17, 20, 0.7);
   -webkit-backdrop-filter: blur(28px) saturate(160%);
   backdrop-filter: blur(28px) saturate(160%);
+}
+.why-action {
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(208, 241, 0, 0.08);
+  border: 1px solid rgba(208, 241, 0, 0.4);
+  border-radius: 3px;
+  color: rgb(208, 241, 0);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.why-action:hover {
+  background: rgba(208, 241, 0, 0.18);
+}
+.why-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .why-cell {
   display: flex;
@@ -1733,6 +1753,93 @@ option {
   font-size: 10px;
   color: rgba(255, 255, 255, 0.7);
   font-variant-numeric: tabular-nums;
+}
+
+/* OllamaQueue pane */
+
+.ollama-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.ollama-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid rgba(255, 255, 255, 0.18);
+}
+.ollama-row-green { border-left-color: rgb(208, 241, 0); }
+.ollama-row-amber { border-left-color: rgb(255, 200, 90); }
+.ollama-row-red {
+  border-left-color: rgb(255, 110, 110);
+  background: rgba(255, 110, 110, 0.06);
+}
+.ollama-model {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+.ollama-counts {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 10px;
+}
+.ollama-counts-key {
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ollama-counts-val {
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.85);
+  margin-right: 4px;
+}
+.ollama-counts-val.warn { color: rgb(255, 130, 130); }
+.ollama-health {
+  font-size: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-top: 4px;
+}
+
+/* Inspector decision drawer enrichment */
+
+.inspector-decision {
+  width: min(720px, 92vw);
+}
+.inspector-section {
+  margin-bottom: 10px;
+}
+.inspector-section-label {
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.inspector-pre-scroll {
+  max-height: 200px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 11px;
+}
+.inspector-latency,
+.inspector-model {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(208, 241, 0, 0.1);
+  color: rgb(208, 241, 0);
+  margin-left: 6px;
+}
+.inspector-model {
+  background: rgba(140, 200, 255, 0.1);
+  color: rgb(140, 200, 255);
 }
 
 @media (max-width: 1024px) {

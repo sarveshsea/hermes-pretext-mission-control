@@ -45,9 +45,10 @@ const recentOutcomes = []; // ["ship", "ship", "abandon"] (cap 6)
 const taskAttempts = new Map(); // taskId -> { lastAt: ms, attempts: n }
 
 async function callOllama({ system, user, model }) {
-  // gpt-oss:20b can take 60-120s on cold load and 20-40s warm. 240s gives
-  // headroom for cold start + slow generation.
-  const timeoutMs = /20b|13b|llama3.1:8b/.test(model) ? 240_000 : 90_000;
+  // The queue serializes per-model so multiple swarm calls can pile up. Pipeline
+  // is the highest-leverage caller — give it generous headroom past queue wait.
+  // gpt-oss:20b can take 60-120s on cold load + 20-40s warm.
+  const timeoutMs = /20b|13b|llama3.1:8b/.test(model) ? 240_000 : 180_000;
   const start = Date.now();
   const data = await runOllama({
     model,
@@ -119,10 +120,19 @@ async function pickTask() {
   if (!open.length) return null;
   const now = Date.now();
 
-  // 1) Prefer tasks already in mid-pipeline (have pipelineState) — resume
-  //    them before picking fresh work. This is what makes ticks compound.
+  // 1) Active multi-step plans first — advance them step by step.
+  const planTasks = open
+    .filter((t) => t.pipelineState?.phase === "plan" && t.pipelineState?.plan_id)
+    .sort((a, b) => new Date(a.pipelineState.updatedAt || a.updatedAt) - new Date(b.pipelineState.updatedAt || b.updatedAt));
+  for (const task of planTasks) {
+    const rec = taskAttempts.get(task.id);
+    if (rec && now - rec.lastAt < ATTEMPT_COOLDOWN_MS) continue;
+    return task;
+  }
+
+  // 2) Tasks already mid-pipeline (concretized/searched/playbooked) — resume.
   const inProgress = open
-    .filter((t) => t.pipelineState && t.pipelineState.phase && t.pipelineState.phase !== "abandoned")
+    .filter((t) => t.pipelineState && t.pipelineState.phase && !["abandoned", "plan", "submitted"].includes(t.pipelineState.phase))
     .sort((a, b) => new Date(a.pipelineState.updatedAt || a.updatedAt) - new Date(b.pipelineState.updatedAt || b.updatedAt));
   for (const task of inProgress) {
     const rec = taskAttempts.get(task.id);
@@ -130,7 +140,7 @@ async function pickTask() {
     return task;
   }
 
-  // 2) Otherwise: oldest concrete task (skip ones tagged needs_design).
+  // 3) Otherwise: oldest concrete task (skip ones tagged needs_design).
   const sorted = open
     .filter((t) => !(t.tags || []).includes("needs_design"))
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -140,6 +150,50 @@ async function pickTask() {
     return task;
   }
   return null;
+}
+
+// planAdvancePhase: when a task carries plan_id, advance ONE step per tick.
+// Records the step result; on final step, reflects + closes the parent task.
+// Returns {ok: true, advanced: true} when handled (caller should skip
+// concretize/search/playbook for this tick — plan steps are LLM-prompted by
+// being injected as the effective task title in the next tick's pipeline).
+async function planAdvancePhase({ task, sessionId }) {
+  const planId = task.pipelineState?.plan_id;
+  if (!planId) return { ok: false, reason: "no plan_id" };
+  const plan = await getPlan(planId);
+  if (!plan) return { ok: false, reason: `plan ${planId} not found` };
+  const idx = plan.currentStep || 0;
+  const step = plan.steps[idx];
+  if (!step) return { ok: false, reason: "plan has no current step" };
+  await emit("planAdvance", `${plan.id} step ${idx + 1}/${plan.steps.length}: ${safeSnippet(step.text, 80)}`, sessionId, {
+    planId: plan.id,
+    stepIdx: idx,
+    stepText: step.text
+  });
+  // Mark step as 'advanced' for now — the next tick will pick the same task
+  // and concretize against the step text. On the LAST step, we also reflect
+  // + close the parent task.
+  if (idx >= plan.steps.length - 1) {
+    await recordStepResult(plan.id, idx, { result: "final step reached", decision: "next" });
+    await reflect(plan.id, "completed via pipeline planAdvance");
+    await updateTask(task.id, {
+      status: "done",
+      note: `plan ${plan.id} complete — reflected`,
+      pipelineState: { phase: "plan-done", plan_id: plan.id, updatedAt: new Date().toISOString() }
+    });
+    return { ok: true, advanced: true, completed: true };
+  }
+  await recordStepResult(plan.id, idx, { result: `pipeline advance — see step ${idx + 2}`, decision: "next" });
+  await updateTask(task.id, {
+    pipelineState: {
+      phase: "plan",
+      plan_id: plan.id,
+      currentStep: idx + 1,
+      updatedAt: new Date().toISOString()
+    },
+    note: `plan step ${idx + 1}/${plan.steps.length} advanced`
+  });
+  return { ok: true, advanced: true, completed: false };
 }
 
 // Concretize: given an abstract task, output {component, file_path, target_change}
@@ -306,6 +360,23 @@ async function runPipelineTick() {
     const journalBlock = formatJournalForPrompt(journalEntries);
 
     await emit("pickTask", `${task.id} [${task.mission}] ${task.title}`, sessionId);
+
+    // Plan advance: if this task is a multi-step plan, advance one step then
+    // exit — concretize/search/playbook run on the NEXT tick once the new
+    // step text is the effective task title. Spreads work across ticks.
+    if (task.pipelineState?.phase === "plan" && task.pipelineState?.plan_id) {
+      const advance = await planAdvancePhase({ task, sessionId });
+      pipelineRecord.phase = "planAdvance";
+      pipelineRecord.outcome = advance.completed ? "submitted" : "advanced";
+      if (advance.completed) {
+        outcome = "ship";
+        totalShipped += 1;
+        lastResult = `plan complete: ${task.pipelineState.plan_id}`;
+      } else {
+        lastResult = `plan advanced step → next tick`;
+      }
+      return;
+    }
 
     // Concretize phase (skipped if cached on task.pipelineState).
     const concretize = await concretizePhase({ task, sessionId, sharedBlock, indexBlock });
