@@ -54,6 +54,7 @@ import { createPlan, getPlan, listPlans, recordStepResult, reflect } from "./har
 import { THEMED_SURFACES, getAllThemedSummaries, getThemedItems, postThemedItem } from "./themedSurfaces.mjs";
 import { getOutboundStatus, sendTelegramMessage, setOutboundEnabled } from "./telegram.mjs";
 import { getOllamaWarmStatus, startOllamaWarm } from "./ollamaWarm.mjs";
+import { getLayout, resetLayout, updateLayout } from "./dashboardLayout.mjs";
 import { searchCode } from "./codeSearch.mjs";
 import { previewProposedCommand } from "./diffPreview.mjs";
 import { getActiveDevRuns, listDevChecks, runDevCheck } from "./devTools.mjs";
@@ -345,6 +346,16 @@ async function apiRoute(req, res) {
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/ollama-warm") {
     return sendJson(res, 200, getOllamaWarmStatus());
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/dashboard-layout") {
+    return sendJson(res, 200, await getLayout());
+  }
+  if (req.method === "POST" && url.pathname === "/api/dashboard-layout") {
+    return sendJson(res, 200, await updateLayout(await readJsonBody(req)));
+  }
+  if (req.method === "DELETE" && url.pathname === "/api/dashboard-layout") {
+    return sendJson(res, 200, await resetLayout());
   }
 
   if (req.method === "POST" && url.pathname === "/api/code/search") {
