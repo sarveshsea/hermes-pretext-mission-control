@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-04-30 - Hermes Bridge, Local Unlock, Sarvesh Code
+
+- Wired Hermes ↔ Pretext live: new `/api/hermes/event`, `/api/hermes/events`, `/api/hermes/stream` (SSE), `/api/hermes/run-request`, `/api/hermes/model`, `/api/hermes/runtime`, `/api/hermes/public-intent`, and `/api/runtime/auto-approve` endpoints. Hermes now mirrors its work to the dashboard in real time and can be remote-controlled from it.
+- Dropped the `npm`-only allowlist and the project-cwd assertion in `runRequests.mjs`. The dashboard now spawns arbitrary shell commands in any cwd, with streaming output captured into the SSE bus and persisted to the run-requests store. Hermes-originated runs auto-approve by default (toggle via `PRETEXT_AUTO_APPROVE=false` or the runtime auto-approve endpoint).
+- Added `server/sse.mjs`, `server/hermesEvents.mjs`, `server/hermesRuntime.mjs`, `server/publicIntents.mjs`. Events buffer to disk; runtime state (active model, iteration, session, auto-approve flag) is persisted; public-intent decisions append to the Obsidian audit trail at `Agent/Review Queues/Public Actions.md`.
+- Added a `HERMES_LIVE` event log, `MODEL_RAIL` selector, and `PUBLIC_GATE` confirm/decline pane to the dashboard. The active model is surfaced live; the run-request input is now free-form with a datalist of suggested commands.
+- Added a secret-regex guard in `publisher.mjs` between `git add` and `git commit`. Refuses to commit staged diffs matching common token shapes (AWS keys, GitHub PATs, OpenAI keys, OpenSSH private keys, Telegram bot tokens). Opt-out via `PRETEXT_PUBLISH_NO_SECRET_GUARD=true`.
+- Updated `model.default` in `~/.hermes/config.yaml` to `gemma4:e4b` (faster than `gpt-oss:20b`, switchable per-task from the dashboard). Removed `pretext` from the disabled-skills list. Added `terminal` to the Telegram platform toolset so shell commands can be requested over Telegram.
+- Created `~/.hermes/memories/sarvesh_code.md` — the moral and legal posture Hermes self-enforces for any action touching another person, a third-party system, or Sarvesh's public identity. Always loaded.
+- Created the `pretext-bridge` skill at `~/.hermes/skills/pretext-bridge/` (SKILL.md + bridge.py) so Hermes has a typed Python helper to emit events, propose run-requests, switch models, and gate public actions through the dashboard.
+- Verification: `npm run check` passes (43 tests, all green). Dashboard restart and `HERMES_YOLO_MODE=true` are gated on local user action.
+
 ## 2026-04-30 - Improvement Loop And Dedicated Publish Repo
 
 - Added an autonomous improvement loop that records dashboard improvement events, appends `CHANGELOG.md`, and mirrors the trail to Obsidian.

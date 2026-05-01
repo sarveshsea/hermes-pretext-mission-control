@@ -2,22 +2,20 @@ import { useEffect, useMemo, useRef } from "react";
 import { layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
 import type { ConsoleNode, ConsoleNodeId } from "../consoleModel";
 import { activeNodeCopy, buildWorkTrace } from "../consoleModel";
-import type { DashboardPayload, RunRequest } from "../api";
+import type { DashboardPayload, HermesEvent, PublicIntent, RunRequest } from "../api";
 
 type Props = {
   payload: DashboardPayload;
   nodes: ConsoleNode[];
   activeNode: ConsoleNodeId;
+  liveEvents: HermesEvent[];
+  pendingIntents: PublicIntent[];
 };
-
-function plural(count: number, label: string) {
-  return `${count} ${count === 1 ? label : `${label}s`}`;
-}
 
 function latestRuns(requests: RunRequest[]) {
   return requests
     .slice(0, 4)
-    .map((request) => `${request.source}:${request.command.replace(/^npm run /, "")}:${request.status}`)
+    .map((request) => `${request.source}:${(request.command || "").slice(0, 28)}:${request.status}`)
     .join(" | ");
 }
 
@@ -60,7 +58,31 @@ function drawTextBox(
   lines.forEach((line, index) => context.fillText(line, x, y + index * 18));
 }
 
-export default function PretextConsole({ payload, nodes, activeNode }: Props) {
+const EVENT_TINT: Record<string, string> = {
+  telegram_in: "rgba(208, 241, 0, 0.92)",
+  telegram_out: "rgba(208, 241, 0, 0.7)",
+  model_call: "rgba(140, 200, 255, 0.86)",
+  tool_call: "rgba(224, 246, 255, 0.62)",
+  tool_result: "rgba(224, 246, 255, 0.5)",
+  iteration_tick: "rgba(224, 246, 255, 0.45)",
+  error: "rgba(255, 140, 140, 0.92)",
+  public_intent: "rgba(255, 200, 120, 0.92)",
+  public_action: "rgba(255, 200, 120, 0.72)",
+  run_request: "rgba(208, 241, 0, 0.78)",
+  run_chunk: "rgba(224, 246, 255, 0.45)",
+  run_result: "rgba(208, 241, 0, 0.84)",
+  note: "rgba(224, 246, 255, 0.5)"
+};
+
+function formatHermesLine(event: HermesEvent) {
+  const time = event.createdAt.slice(11, 19);
+  const tag = event.type.toUpperCase().padEnd(14, " ");
+  const role = (event.role || "").padEnd(6, " ").slice(0, 6);
+  const body = (event.content || "").replace(/\s+/g, " ").trim();
+  return `${time} ${tag} ${role} ${body}`.slice(0, 96);
+}
+
+export default function PretextConsole({ payload, nodes, activeNode, liveEvents, pendingIntents }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const corpus = useMemo(() => buildConsoleLanguage(payload, nodes, activeNode), [activeNode, nodes, payload]);
   const workTrace = useMemo(() => buildWorkTrace(payload), [payload]);
@@ -87,6 +109,9 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
       const active = nodes.find((node) => node.id === activeNode) || nodes[0];
       const pending = payload.runRequests.filter((request) => request.status === "pending").length;
       const completed = payload.runRequests.filter((request) => request.status === "completed").length;
+      const runtime = payload.hermesRuntime;
+      const activeModel = runtime?.model || payload.status.model || "unknown";
+      const autoApprove = runtime?.autoApprove ? "ON" : "OFF";
 
       const bg = context.createLinearGradient(0, 0, rect.width, rect.height);
       bg.addColorStop(0, "#001033");
@@ -108,16 +133,16 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
       context.lineWidth = 1;
       context.strokeRect(22.5, 22.5, rect.width - 45, rect.height - 45);
 
-      drawTextBox(context, 52, 48, 500, [
+      drawTextBox(context, 52, 48, 560, [
         "PRETEXT://HERMES_LOCAL",
-        `gateway:${payload.status.gateway}  model:${payload.status.model}  loop:${payload.status.builderLoop?.state || "boot"}`,
-        `queues:${payload.reviewQueues.length}  projects:${payload.projects.length}  local:${payload.localMessages.length}  runs:${payload.runRequests.length}  pending:${pending}  complete:${completed}`
+        `gateway:${payload.status.gateway}  model:${activeModel}  loop:${payload.status.builderLoop?.state || "boot"}  auto:${autoApprove}`,
+        `queues:${payload.reviewQueues.length}  projects:${payload.projects.length}  local:${payload.localMessages.length}  runs:${payload.runRequests.length}  pending:${pending}  complete:${completed}  intents:${pendingIntents.length}`
       ]);
 
       context.textAlign = "right";
       drawTextBox(context, rect.width - 500, 48, 450, [
         `host:${payload.status.dashboardHost}`,
-        `sandbox:${payload.status.projectSandbox.split("/").slice(-3).join("/")}`,
+        `iteration:${runtime?.iteration ?? 0}  session:${runtime?.sessionId ?? "—"}`,
         `style:ANTIMETAL_ASCII  memory:OBSIDIAN  channel:LOCAL_CONSOLE`
       ], "rgba(224, 246, 255, 0.72)");
       context.textAlign = "left";
@@ -177,7 +202,7 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
 
       const runLines = payload.runRequests.slice(0, 5).map((request) => {
         const status = request.status.toUpperCase().slice(0, 8).padEnd(8, " ");
-        return `${status} ${request.command.replace(/^npm run /, "")}`;
+        return `${status} ${(request.command || "").slice(0, 48)}`;
       });
       drawTextBox(context, 52, rect.height - 134, 460, [
         "RUN_LOG",
@@ -189,6 +214,57 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
         "LOCAL_CONSOLE",
         ...(localLines === "EMPTY" ? ["EMPTY"] : localLines.match(/.{1,68}/g) || ["EMPTY"])
       ], "rgba(224, 246, 255, 0.7)");
+
+      const liveLines = liveEvents.slice(0, 8).map(formatHermesLine);
+      const liveBoxX = 52;
+      const liveBoxY = Math.max(168, centerY - 256);
+      const liveBoxW = Math.min(640, rect.width * 0.46);
+      context.fillStyle = "rgba(0, 16, 51, 0.5)";
+      context.fillRect(liveBoxX - 14, liveBoxY - 24, liveBoxW, 200);
+      context.strokeStyle = "rgba(140, 200, 255, 0.32)";
+      context.strokeRect(liveBoxX - 14.5, liveBoxY - 24.5, liveBoxW + 1, 201);
+      context.font = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+      context.fillStyle = "rgba(140, 200, 255, 0.92)";
+      context.fillText("HERMES_LIVE", liveBoxX, liveBoxY - 14);
+      if (liveLines.length === 0) {
+        context.fillStyle = "rgba(224, 246, 255, 0.45)";
+        context.fillText("waiting for hermes events...", liveBoxX, liveBoxY + 12);
+      } else {
+        liveLines.forEach((line, index) => {
+          const event = liveEvents[index];
+          context.fillStyle = EVENT_TINT[event.type] || "rgba(224, 246, 255, 0.6)";
+          context.fillText(line, liveBoxX, liveBoxY + 10 + index * 18);
+        });
+      }
+
+      const intentBoxX = Math.max(52, rect.width - 600);
+      const intentBoxY = liveBoxY;
+      const intentBoxW = Math.min(540, rect.width - intentBoxX - 44);
+      context.fillStyle = "rgba(0, 16, 51, 0.5)";
+      context.fillRect(intentBoxX - 14, intentBoxY - 24, intentBoxW, 200);
+      context.strokeStyle = pendingIntents.length
+        ? "rgba(255, 200, 120, 0.6)"
+        : "rgba(208, 241, 0, 0.32)";
+      context.strokeRect(intentBoxX - 14.5, intentBoxY - 24.5, intentBoxW + 1, 201);
+      context.fillStyle = pendingIntents.length ? "rgba(255, 200, 120, 0.92)" : "rgba(208, 241, 0, 0.72)";
+      context.fillText(`PUBLIC_GATE  pending=${pendingIntents.length}`, intentBoxX, intentBoxY - 14);
+      if (pendingIntents.length === 0) {
+        context.fillStyle = "rgba(224, 246, 255, 0.55)";
+        context.fillText("no pending public actions — local work proceeds without gate", intentBoxX, intentBoxY + 12);
+        context.fillText("(public = touches another person, third-party system, or", intentBoxX, intentBoxY + 30);
+        context.fillText(" Sarvesh's external identity)", intentBoxX, intentBoxY + 48);
+      } else {
+        pendingIntents.slice(0, 4).forEach((intent, index) => {
+          context.fillStyle = "rgba(255, 200, 120, 0.86)";
+          context.fillText(
+            `${intent.action} → ${intent.surface} (${intent.audience})`.slice(0, 72),
+            intentBoxX,
+            intentBoxY + 10 + index * 36
+          );
+          context.fillStyle = "rgba(224, 246, 255, 0.62)";
+          context.fillText(`worst-case: ${intent.worstCase}`.slice(0, 80), intentBoxX, intentBoxY + 26 + index * 36);
+        });
+      }
 
       const changeLines = payload.changelog.slice(0, 4).map((entry) => `${entry.date} ${entry.title}`);
       drawTextBox(context, rect.width - 560, rect.height - 210, 510, [
@@ -207,33 +283,36 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
         .map((event) => `${event.date} ${event.title}:${event.status}`);
       drawTextBox(context, rect.width - 560, rect.height - 302, 510, [
         "IMPROVEMENT_LOOP",
-        `state:${payload.status.improvementLoop?.state || "boot"} cadence:${payload.status.improvementLoop ? Math.round(payload.status.improvementLoop.intervalMs / 60000) : 0}m`,
+        `state:${payload.status.improvementLoop?.state || "boot"} autopush:${payload.status.improvementLoop?.autoPublish ? "on" : "off"} cadence:${payload.status.improvementLoop ? Math.round(payload.status.improvementLoop.intervalMs / 60000) : 0}m`,
         ...(improvementLines.length ? improvementLines : ["EMPTY"])
       ], "rgba(208, 241, 0, 0.68)");
 
       context.textAlign = "right";
       drawTextBox(context, rect.width - 520, rect.height - 92, 470, [
-        `ACTIVE:${active?.id || "hermes"}  AUTORUN:${payload.status.builderLoop?.autoRun ? "ON" : "OFF"}  SAFETY:SCOPED`,
-        "NO_INSTALLS NO_DELETES NO_PUSHES NO_SPEND"
+        `ACTIVE:${active?.id || "hermes"}  AUTORUN:${payload.status.builderLoop?.autoRun ? "ON" : "OFF"}  POSTURE:YOLO_LOCAL · GUARDED_PUBLIC`,
+        "ANYTHING_LOCAL · PUBLIC_VIA_GATE · SARVESH_CODE_LOADED"
       ], "rgba(224, 246, 255, 0.62)");
       context.textAlign = "left";
 
       const traceX = Math.max(52, rect.width - 620);
       const traceY = Math.max(168, centerY - 256);
-      context.fillStyle = "rgba(0, 16, 51, 0.36)";
-      context.fillRect(traceX - 14, traceY - 24, Math.min(560, rect.width - traceX - 44), 142);
-      context.strokeStyle = "rgba(208, 241, 0, 0.24)";
-      context.strokeRect(traceX - 14.5, traceY - 24.5, Math.min(560, rect.width - traceX - 44) + 1, 143);
-      context.font = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
-      context.fillStyle = "#d0f100";
-      context.fillText("WORK_TRACE", traceX, traceY - 14);
-      const hotLine = Math.floor(frame / 55) % workTrace.length;
-      workTrace.forEach((line, index) => {
-        const marker = index === hotLine ? ">" : " ";
-        const clipped = line.length > 74 ? `${line.slice(0, 71)}...` : line;
-        context.fillStyle = index === hotLine ? "rgba(250, 254, 255, 0.92)" : "rgba(224, 246, 255, 0.58)";
-        context.fillText(`${marker} ${clipped}`, traceX, traceY + 10 + index * 20);
-      });
+      // Skip work_trace box if it would collide with intent box; only draw when room
+      if (traceX + 560 < rect.width - 60 && traceX > liveBoxX + liveBoxW + 24) {
+        context.fillStyle = "rgba(0, 16, 51, 0.36)";
+        context.fillRect(traceX - 14, traceY - 24, Math.min(560, rect.width - traceX - 44), 142);
+        context.strokeStyle = "rgba(208, 241, 0, 0.24)";
+        context.strokeRect(traceX - 14.5, traceY - 24.5, Math.min(560, rect.width - traceX - 44) + 1, 143);
+        context.font = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+        context.fillStyle = "#d0f100";
+        context.fillText("WORK_TRACE", traceX, traceY - 14);
+        const hotLine = Math.floor(frame / 55) % workTrace.length;
+        workTrace.forEach((line, index) => {
+          const marker = index === hotLine ? ">" : " ";
+          const clipped = line.length > 74 ? `${line.slice(0, 71)}...` : line;
+          context.fillStyle = index === hotLine ? "rgba(250, 254, 255, 0.92)" : "rgba(224, 246, 255, 0.58)";
+          context.fillText(`${marker} ${clipped}`, traceX, traceY + 10 + index * 20);
+        });
+      }
 
       frame += 1;
       raf = requestAnimationFrame(draw);
@@ -241,7 +320,7 @@ export default function PretextConsole({ payload, nodes, activeNode }: Props) {
 
     draw();
     return () => cancelAnimationFrame(raf);
-  }, [activeNode, corpus, nodes, payload, workTrace]);
+  }, [activeNode, corpus, liveEvents, nodes, payload, pendingIntents, workTrace]);
 
   return <canvas ref={canvasRef} className="pretext-console-canvas" aria-label="Hermes Pretext node console" />;
 }

@@ -20,6 +20,7 @@ export type StatusPayload = {
     state: string;
     intervalMs: number;
     cooldownMs: number;
+    autoPublish: boolean;
     lastTickAt: string | null;
     lastCreatedAt: string | null;
     lastError: string;
@@ -67,6 +68,8 @@ export type Learning = {
 export type RunRequest = {
   id: string;
   command: string;
+  argv?: string[];
+  shell?: boolean;
   source: string;
   status: string;
   reason?: string;
@@ -77,6 +80,7 @@ export type RunRequest = {
   finishedAt?: string;
   rejectedAt?: string;
   exitCode?: number;
+  durationMs?: number;
   output?: string;
 };
 
@@ -122,6 +126,61 @@ export type DesignReference = {
   snippet: string;
 };
 
+export type HermesEventType =
+  | "telegram_in"
+  | "telegram_out"
+  | "model_call"
+  | "tool_call"
+  | "tool_result"
+  | "iteration_tick"
+  | "error"
+  | "public_intent"
+  | "public_action"
+  | "run_request"
+  | "run_chunk"
+  | "run_result"
+  | "note";
+
+export type HermesEvent = {
+  id: string;
+  createdAt: string;
+  type: HermesEventType;
+  role: string;
+  content: string;
+  model?: string;
+  iteration?: number;
+  sessionId?: string;
+  intent?: string;
+  extra?: Record<string, unknown>;
+};
+
+export type HermesRuntime = {
+  model: string;
+  sessionId: string | null;
+  iteration: number;
+  lastActivityAt: string | null;
+  autoApprove: boolean;
+  knownModels: string[];
+};
+
+export type PublicIntent = {
+  id: string;
+  createdAt: string;
+  status: "pending" | "approved" | "declined";
+  action: string;
+  audience: string;
+  surface: string;
+  content: string;
+  legalPosture: string;
+  reputationPosture: string;
+  worstCase: string;
+  sessionId?: string;
+  decision: "confirmed" | "declined" | "edited" | null;
+  decidedAt: string | null;
+  decidedContent: string | null;
+  declineReason: string | null;
+};
+
 export type DashboardPayload = {
   status: StatusPayload;
   reviewQueues: ReviewQueue[];
@@ -133,6 +192,9 @@ export type DashboardPayload = {
   changelog: ChangelogEntry[];
   publishStatus: PublishStatus;
   improvementEvents: ImprovementEvent[];
+  hermesEvents: HermesEvent[];
+  hermesRuntime: HermesRuntime;
+  pendingPublicIntents: PublicIntent[];
 };
 
 export async function fetchDashboard(): Promise<DashboardPayload> {
@@ -203,4 +265,79 @@ export async function createLocalMessage(body: string): Promise<LocalMessage> {
     throw new Error(payload.error || `Local message failed: ${response.status}`);
   }
   return response.json();
+}
+
+export async function setHermesModel(name: string): Promise<HermesRuntime> {
+  const response = await fetch("/api/hermes/model", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name })
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Set model failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function setAutoApprove(value: boolean): Promise<HermesRuntime> {
+  const response = await fetch("/api/runtime/auto-approve", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ value })
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Set auto-approve failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function decidePublicIntent(
+  id: string,
+  decision: "confirm" | "decline" | "edit",
+  options: { content?: string; reason?: string } = {}
+): Promise<PublicIntent> {
+  const response = await fetch(`/api/hermes/public-intent/${encodeURIComponent(id)}/${decision}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(options)
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Decision failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export type HermesStreamHandlers = {
+  onEvent?: (event: HermesEvent) => void;
+  onPublicIntent?: (intent: PublicIntent) => void;
+  onError?: (event: Event) => void;
+};
+
+export function subscribeHermesStream(handlers: HermesStreamHandlers): () => void {
+  const source = new EventSource("/api/hermes/stream");
+  if (handlers.onEvent) {
+    source.addEventListener("hermes-event", (event) => {
+      try {
+        handlers.onEvent?.(JSON.parse((event as MessageEvent).data) as HermesEvent);
+      } catch {
+        // ignore malformed payloads
+      }
+    });
+  }
+  if (handlers.onPublicIntent) {
+    source.addEventListener("public-intent", (event) => {
+      try {
+        handlers.onPublicIntent?.(JSON.parse((event as MessageEvent).data) as PublicIntent);
+      } catch {
+        // ignore
+      }
+    });
+  }
+  if (handlers.onError) {
+    source.addEventListener("error", handlers.onError);
+  }
+  return () => source.close();
 }

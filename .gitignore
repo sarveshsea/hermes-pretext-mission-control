@@ -7,3 +7,6 @@ dist/
 data/run-requests.json
 data/local-messages.json
 data/improvement-events.json
+data/hermes-events.json
+data/hermes-runtime.json
+data/public-intents.json

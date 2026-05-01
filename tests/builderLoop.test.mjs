@@ -39,18 +39,18 @@ describe("builder loop run requests", () => {
     expect(requests[0].command).toBe("npm run build");
   });
 
-  it("stores disallowed requests as blocked instead of executable", async () => {
+  it("permits any command in unlocked mode (was previously blocked)", async () => {
     const request = await createRunRequest({
       command: "npm install lodash",
-      reason: "unsafe install attempt",
+      reason: "Hermes wants to install a dep",
       source: "telegram"
     });
 
-    expect(request.allowed).toBe(false);
-    expect(request.status).toBe("blocked");
+    expect(request.allowed).toBe(true);
+    expect(request.status).toBe("pending");
 
     const requests = await getRunRequests();
-    expect(requests[0].allowed).toBe(false);
+    expect(requests[0].allowed).toBe(true);
   });
 
   it("rejects a pending request without running it", async () => {

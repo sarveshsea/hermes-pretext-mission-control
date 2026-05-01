@@ -32,7 +32,8 @@ describe("improvement loop", () => {
         publishStatus: { state: "ready", remote: "https://github.com/sarveshsea/hermes-pretext-mission-control.git" },
         runRequests: []
       },
-      now: new Date("2026-04-30T22:30:00Z")
+      now: new Date("2026-04-30T22:30:00Z"),
+      autoPublish: false
     });
 
     expect(event.id).toMatch(/^imp_/);
@@ -46,5 +47,21 @@ describe("improvement loop", () => {
     const markdown = await readFile(path.join(tempDir, "Improvement Loop.md"), "utf8");
     expect(markdown).toContain(event.id);
     expect(markdown).toContain("Publish state");
+  });
+
+  it("publishes after recording when auto-publish is enabled and repo is ready", async () => {
+    const event = await runImprovementLoopOnce({
+      dashboard: {
+        localMessages: [{ body: "Publish this dashboard improvement", createdAt: new Date().toISOString() }],
+        changelog: [],
+        publishStatus: { state: "ready", remote: "https://github.com/sarveshsea/hermes-pretext-mission-control.git" },
+        runRequests: []
+      },
+      now: new Date("2026-04-30T22:45:00Z"),
+      publish: async () => ({ status: "published", commit: "abc1234" })
+    });
+
+    expect(event.publishResult.status).toBe("published");
+    expect(event.publishResult.commit).toBe("abc1234");
   });
 });

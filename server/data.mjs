@@ -4,8 +4,11 @@ import path from "node:path";
 import { ROOTS, MAX_FILE_BYTES } from "./config.mjs";
 import { getBuilderLoopStatus } from "./builderLoop.mjs";
 import { getChangelog } from "./changelog.mjs";
+import { getHermesEvents } from "./hermesEvents.mjs";
+import { getHermesRuntime } from "./hermesRuntime.mjs";
 import { getImprovementEvents, getImprovementLoopStatus } from "./improvementLoop.mjs";
 import { getLocalMessages } from "./localMessages.mjs";
+import { getPendingPublicIntents } from "./publicIntents.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
 import { getRunRequests } from "./runRequests.mjs";
@@ -281,7 +284,10 @@ export async function getDashboardPayload() {
     localMessages,
     changelog,
     publishStatus,
-    improvementEvents
+    improvementEvents,
+    hermesEvents,
+    hermesRuntime,
+    pendingPublicIntents
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -292,7 +298,10 @@ export async function getDashboardPayload() {
     getLocalMessages(),
     getChangelog(),
     getPublishStatus(),
-    getImprovementEvents()
+    getImprovementEvents(),
+    getHermesEvents(80),
+    getHermesRuntime(),
+    getPendingPublicIntents()
   ]);
   return {
     status,
@@ -304,6 +313,9 @@ export async function getDashboardPayload() {
     localMessages,
     changelog,
     publishStatus,
-    improvementEvents
+    improvementEvents,
+    hermesEvents,
+    hermesRuntime,
+    pendingPublicIntents
   };
 }

@@ -13,9 +13,28 @@ import {
   getReviewQueues,
   getStatus
 } from "./data.mjs";
+import {
+  appendHermesEvent,
+  getHermesEvents,
+  subscribeHermesEvents
+} from "./hermesEvents.mjs";
+import {
+  getHermesRuntime,
+  recordRuntimeActivity,
+  setAutoApprove,
+  setHermesModel
+} from "./hermesRuntime.mjs";
+import {
+  createPublicIntent,
+  decidePublicIntent,
+  getPendingPublicIntents,
+  getPublicIntents,
+  subscribePublicIntents
+} from "./publicIntents.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
+import { attachSseHeartbeat, openSseStream, writeSseEvent } from "./sse.mjs";
 import { DEFAULT_PORT, LOCAL_HOST, ROOTS } from "./config.mjs";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -38,7 +57,7 @@ async function readJsonBody(req) {
   const chunks = [];
   for await (const chunk of req) {
     chunks.push(chunk);
-    if (Buffer.concat(chunks).byteLength > 16_384) {
+    if (Buffer.concat(chunks).byteLength > 256_000) {
       const error = new Error("Request body is too large");
       error.status = 413;
       throw error;
@@ -54,6 +73,30 @@ async function readJsonBody(req) {
     error.status = 400;
     throw error;
   }
+}
+
+function attachHermesStream(res) {
+  openSseStream(res);
+  attachSseHeartbeat(res);
+  const offEvent = subscribeHermesEvents((event) => {
+    writeSseEvent(res, "hermes-event", event);
+  });
+  const offIntent = subscribePublicIntents((intent) => {
+    writeSseEvent(res, "public-intent", intent);
+  });
+  res.on("close", () => {
+    offEvent();
+    offIntent();
+  });
+  // initial replay so the client sees recent events even before any new ones
+  getHermesEvents(50)
+    .then((events) => {
+      events
+        .slice()
+        .reverse()
+        .forEach((event) => writeSseEvent(res, "hermes-event", event));
+    })
+    .catch(() => {});
 }
 
 async function apiRoute(req, res) {
@@ -87,6 +130,58 @@ async function apiRoute(req, res) {
   if (req.method === "POST" && rejectMatch) {
     const body = await readJsonBody(req);
     return sendJson(res, 200, await rejectRunRequest(decodeURIComponent(rejectMatch[1]), body.reason));
+  }
+
+  // Hermes live wires
+  if (req.method === "POST" && url.pathname === "/api/hermes/event") {
+    const body = await readJsonBody(req);
+    const event = await appendHermesEvent(body);
+    if (body.sessionId || Number.isFinite(body.iteration)) {
+      await recordRuntimeActivity({ sessionId: body.sessionId, iteration: body.iteration });
+    }
+    return sendJson(res, 201, event);
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/events") {
+    const limit = Number(url.searchParams.get("limit") || 200);
+    return sendJson(res, 200, await getHermesEvents(Number.isFinite(limit) ? limit : 200));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/stream") {
+    attachHermesStream(res);
+    return true;
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/run-request") {
+    const body = await readJsonBody(req);
+    const request = await createRunRequest({ ...body, source: body.source || "hermes" });
+    return sendJson(res, 201, request);
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/model") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await setHermesModel(body.name || body.model));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/runtime") {
+    return sendJson(res, 200, await getHermesRuntime());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/public-intent") {
+    return sendJson(res, 201, await createPublicIntent(await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/public-intents") {
+    const limit = Number(url.searchParams.get("limit") || 50);
+    return sendJson(res, 200, await getPublicIntents(Number.isFinite(limit) ? limit : 50));
+  }
+  const intentDecideMatch = url.pathname.match(/^\/api\/hermes\/public-intent\/([^/]+)\/(confirm|decline|edit)$/);
+  if (req.method === "POST" && intentDecideMatch) {
+    const id = decodeURIComponent(intentDecideMatch[1]);
+    const action = intentDecideMatch[2];
+    const body = await readJsonBody(req);
+    const decision = action === "confirm" ? "confirmed" : action === "decline" ? "declined" : "edited";
+    return sendJson(res, 200, await decidePublicIntent(id, { decision, content: body.content, reason: body.reason }));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/pending-intents") {
+    return sendJson(res, 200, await getPendingPublicIntents());
+  }
+  if (req.method === "POST" && url.pathname === "/api/runtime/auto-approve") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await setAutoApprove(Boolean(body.value ?? body.enabled ?? true)));
   }
 
   return false;

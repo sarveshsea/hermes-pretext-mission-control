@@ -162,6 +162,79 @@ button {
   pointer-events: auto;
 }
 
+.model-select {
+  position: relative;
+  pointer-events: auto;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--color-ice-veil);
+  background: rgba(0, 16, 51, 0.78);
+  font-size: 12px;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.model-select:hover {
+  border-color: rgba(208, 241, 0, 0.72);
+  color: var(--color-chartreuse-pulse);
+}
+
+.intent-dock {
+  position: absolute;
+  z-index: 2;
+  top: 92px;
+  left: 32px;
+  width: min(440px, calc(100vw - 64px));
+  border: 1px solid rgba(255, 200, 120, 0.6);
+  border-radius: 4px;
+  background: var(--panel);
+  box-shadow: rgba(0, 39, 80, 0.22) 0 18px 60px -28px;
+  backdrop-filter: blur(12px);
+  padding: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.intent-row {
+  display: block;
+  border-top: 1px solid rgba(224, 246, 255, 0.12);
+  padding: 8px 0;
+  margin-top: 8px;
+}
+
+.intent-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.intent-row header {
+  color: rgba(255, 200, 120, 0.92);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.intent-content {
+  margin: 6px 0;
+  color: var(--color-ice-veil);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.intent-meta {
+  margin: 4px 0 8px;
+  color: rgba(224, 246, 255, 0.6);
+  font-size: 11px;
+}
+
+.intent-actions {
+  display: flex;
+  gap: 6px;
+}
+
 .node-layer {
   inset: 0;
   z-index: 1;
@@ -292,12 +365,11 @@ select {
   height: 30px;
 }
 
-.command-dock select {
+.command-dock .command-input {
   left: 54px;
   top: 26px;
   width: 184px;
   height: 30px;
-  opacity: 0;
 }
 
 .command-dock input {
@@ -305,6 +377,10 @@ select {
   right: 96px;
   top: 26px;
   height: 30px;
+}
+
+.command-dock .command-input + datalist {
+  display: none;
 }
 
 option {

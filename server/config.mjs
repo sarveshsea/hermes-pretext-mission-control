@@ -31,13 +31,9 @@ export const LOCAL_HOST = "127.0.0.1";
 export const DEFAULT_PORT = Number(process.env.PORT || 4317);
 export const POLL_MS = 12_000;
 
-export const ALLOWED_COMMANDS = new Map([
-  ["npm run dev", { command: "npm", args: ["run", "dev"], longRunning: true }],
-  ["npm run build", { command: "npm", args: ["run", "build"], longRunning: false }],
-  ["npm test", { command: "npm", args: ["test"], longRunning: false }],
-  ["npm run typecheck", { command: "npm", args: ["run", "typecheck"], longRunning: false }],
-  ["npm run check", { command: "npm", args: ["run", "check"], longRunning: false }]
-]);
+export const DEFAULT_RUN_TIMEOUT_MS = Number(process.env.PRETEXT_RUN_TIMEOUT_MS || 600_000);
+
+export const KNOWN_OLLAMA_MODELS = ["gemma4:e4b", "llama3.1:8b", "gpt-oss:20b", "nomic-embed-text:latest"];
 
 export const MAX_FILE_BYTES = 256_000;
 export const MAX_SNIPPET_CHARS = 420;
