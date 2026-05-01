@@ -1,0 +1,17 @@
+{
+  "tasks": [
+    {
+      "id": "task_momikamd_sh4o7x",
+      "title": "verify task ledger",
+      "status": "open",
+      "mission": "design",
+      "createdBy": "hermes",
+      "createdAt": "2026-05-01T06:10:22.021Z",
+      "updatedAt": "2026-05-01T11:27:30.956Z",
+      "notes": [
+        "smoke test",
+        "auto commit proposal queued"
+      ]
+    }
+  ]
+}

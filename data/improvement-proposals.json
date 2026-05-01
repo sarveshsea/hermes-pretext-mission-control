@@ -1,0 +1,47 @@
+{
+  "proposals": [
+    {
+      "id": "prop_momhoi8n_6byx3s",
+      "createdAt": "2026-05-01T05:45:38.903Z",
+      "status": "applied",
+      "kind": "shell",
+      "title": "smoke test proposal",
+      "rationale": "verify proposal pipeline end to end",
+      "command": null,
+      "argv": [
+        "echo",
+        "proposal-test-success"
+      ],
+      "cwd": null,
+      "sessionId": null,
+      "decidedAt": "2026-05-01T05:45:46.933Z",
+      "decision": "confirmed",
+      "declineReason": null,
+      "runResult": {
+        "id": "req_momhoofp_gllyva",
+        "status": "completed",
+        "exitCode": 0,
+        "durationMs": 2,
+        "output": "proposal-test-success"
+      }
+    },
+    {
+      "id": "prop_momtvvqf_oahtmb",
+      "createdAt": "2026-05-01T11:27:18.375Z",
+      "status": "pending",
+      "kind": "shell",
+      "title": "auto: commit dirty",
+      "rationale": "auto commit",
+      "command": "git add . && git commit -m \"auto: commit dirty\"",
+      "argv": null,
+      "cwd": "/Users/sarveshchidambaram/Desktop/Projects/Other/pretext",
+      "sessionId": null,
+      "autoSafe": true,
+      "autoAppliedAt": null,
+      "decidedAt": null,
+      "decision": null,
+      "declineReason": null,
+      "runResult": null
+    }
+  ]
+}
