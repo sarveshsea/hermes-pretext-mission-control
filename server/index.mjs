@@ -31,6 +31,8 @@ import {
   getPublicIntents,
   subscribePublicIntents
 } from "./publicIntents.mjs";
+import { getMissionState } from "./missions.mjs";
+import { startObsidianLogger } from "./obsidianLogger.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
@@ -161,6 +163,9 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/runtime") {
     return sendJson(res, 200, await getHermesRuntime());
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/mission") {
+    return sendJson(res, 200, await getMissionState());
+  }
   if (req.method === "POST" && url.pathname === "/api/hermes/public-intent") {
     return sendJson(res, 201, await createPublicIntent(await readJsonBody(req)));
   }
@@ -243,4 +248,5 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   console.log(`Hermes Mission Control running at http://${LOCAL_HOST}:${DEFAULT_PORT}`);
   startBuilderLoop();
   startImprovementLoop({ getDashboard: getDashboardPayload });
+  startObsidianLogger();
 });

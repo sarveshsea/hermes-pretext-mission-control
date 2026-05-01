@@ -130,6 +130,7 @@ export type HermesEventType =
   | "telegram_in"
   | "telegram_out"
   | "model_call"
+  | "model_result"
   | "tool_call"
   | "tool_result"
   | "iteration_tick"
@@ -139,6 +140,11 @@ export type HermesEventType =
   | "run_request"
   | "run_chunk"
   | "run_result"
+  | "thinking"
+  | "mission_start"
+  | "mission_update"
+  | "memory_read"
+  | "memory_write"
   | "note";
 
 export type HermesEvent = {
@@ -181,6 +187,19 @@ export type PublicIntent = {
   declineReason: string | null;
 };
 
+export type MissionState = {
+  runtime: HermesRuntime;
+  headline: string;
+  lastInbound: { at: string; content: string; sessionId?: string } | null;
+  lastOutbound: { at: string; content: string; sessionId?: string } | null;
+  thinking: { id: string; at: string; type: HermesEventType; content: string }[];
+  tools: HermesEvent[];
+  memory: HermesEvent[];
+  rate1m: number;
+  rate5m: number;
+  lastEventAt: string | null;
+};
+
 export type DashboardPayload = {
   status: StatusPayload;
   reviewQueues: ReviewQueue[];
@@ -195,6 +214,7 @@ export type DashboardPayload = {
   hermesEvents: HermesEvent[];
   hermesRuntime: HermesRuntime;
   pendingPublicIntents: PublicIntent[];
+  mission: MissionState;
 };
 
 export async function fetchDashboard(): Promise<DashboardPayload> {

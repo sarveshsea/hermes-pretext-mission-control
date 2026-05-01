@@ -8,6 +8,7 @@ import { getHermesEvents } from "./hermesEvents.mjs";
 import { getHermesRuntime } from "./hermesRuntime.mjs";
 import { getImprovementEvents, getImprovementLoopStatus } from "./improvementLoop.mjs";
 import { getLocalMessages } from "./localMessages.mjs";
+import { getMissionState } from "./missions.mjs";
 import { getPendingPublicIntents } from "./publicIntents.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
@@ -287,7 +288,8 @@ export async function getDashboardPayload() {
     improvementEvents,
     hermesEvents,
     hermesRuntime,
-    pendingPublicIntents
+    pendingPublicIntents,
+    mission
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -299,9 +301,10 @@ export async function getDashboardPayload() {
     getChangelog(),
     getPublishStatus(),
     getImprovementEvents(),
-    getHermesEvents(80),
+    getHermesEvents(120),
     getHermesRuntime(),
-    getPendingPublicIntents()
+    getPendingPublicIntents(),
+    getMissionState()
   ]);
   return {
     status,
@@ -316,6 +319,7 @@ export async function getDashboardPayload() {
     improvementEvents,
     hermesEvents,
     hermesRuntime,
-    pendingPublicIntents
+    pendingPublicIntents,
+    mission
   };
 }

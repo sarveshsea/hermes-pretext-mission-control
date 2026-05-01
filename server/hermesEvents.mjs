@@ -10,6 +10,7 @@ const KNOWN_TYPES = new Set([
   "telegram_in",
   "telegram_out",
   "model_call",
+  "model_result",
   "tool_call",
   "tool_result",
   "iteration_tick",
@@ -19,6 +20,11 @@ const KNOWN_TYPES = new Set([
   "run_request",
   "run_chunk",
   "run_result",
+  "thinking",
+  "mission_start",
+  "mission_update",
+  "memory_read",
+  "memory_write",
   "note"
 ]);
 
