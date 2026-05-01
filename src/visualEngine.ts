@@ -138,53 +138,6 @@ export function drawParticle(ctx: CanvasRenderingContext2D, particle: Particle, 
   return true;
 }
 
-const COLUMN_FONT = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
-
-export type MatrixRainState = {
-  columns: { x: number; y: number; speed: number; chars: string[] }[];
-  width: number;
-  height: number;
-};
-
-const MATRIX_GLYPHS = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ░▒▓█▌▐│┤╣║╗╝┐└┴┬├─┼".split("");
-
-export function buildMatrixRain(width: number, height: number): MatrixRainState {
-  const colWidth = 18;
-  const colCount = Math.max(8, Math.floor(width / colWidth));
-  const rowCount = Math.max(20, Math.floor(height / 16));
-  const columns = Array.from({ length: colCount }, (_, idx) => ({
-    x: idx * colWidth + 6,
-    y: Math.random() * height,
-    speed: 0.3 + Math.random() * 1.1,
-    chars: Array.from({ length: rowCount }, () => MATRIX_GLYPHS[Math.floor(Math.random() * MATRIX_GLYPHS.length)])
-  }));
-  return { columns, width, height };
-}
-
-export function drawMatrixRain(
-  ctx: CanvasRenderingContext2D,
-  state: MatrixRainState,
-  density: number
-) {
-  ctx.font = COLUMN_FONT;
-  ctx.textBaseline = "top";
-  const tint = Math.min(0.22, 0.06 + density * 0.12);
-  state.columns.forEach((col) => {
-    col.y += col.speed * (0.5 + density * 0.8);
-    if (col.y > state.height + 80) col.y = -80 - Math.random() * 120;
-    const baseY = col.y;
-    col.chars.forEach((char, idx) => {
-      const y = baseY - idx * 16;
-      if (y < -16 || y > state.height + 16) return;
-      const alpha = idx === 0 ? tint + 0.18 : tint * (1 - idx / col.chars.length);
-      ctx.fillStyle = idx === 0
-        ? `rgba(208, 241, 0, ${Math.min(0.85, alpha)})`
-        : `rgba(140, 200, 255, ${Math.max(0.02, alpha)})`;
-      ctx.fillText(char, col.x, y);
-    });
-  });
-}
-
 export function decay(value: number, dt: number, halfLife = 600): number {
   return value * Math.pow(0.5, dt / halfLife);
 }
