@@ -37,10 +37,8 @@ import RunLogPanel from "./components/panes/RunLogPanel";
 import LocalConsolePanel from "./components/panes/LocalConsolePanel";
 import ChangelogPanel from "./components/panes/ChangelogPanel";
 import ThemedSurfacesPanel from "./components/panes/ThemedSurfacesPanel";
-import CodeSearchPanel from "./components/panes/CodeSearchPanel";
 import SubagentTreePanel from "./components/panes/SubagentTreePanel";
 import PerformancePanel from "./components/panes/PerformancePanel";
-import ObsidianGraphPanel from "./components/panes/ObsidianGraphPanel";
 import RunningProcessesPanel from "./components/panes/RunningProcessesPanel";
 import SubscriptionLedgerPanel from "./components/panes/SubscriptionLedgerPanel";
 import SessionReportPanel from "./components/panes/SessionReportPanel";
@@ -89,8 +87,8 @@ const CELLS: Record<string, CellSpec> = {
   goals: { area: "goals", title: "GOALS", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
   ollama: { area: "ollama", title: "OLLAMA_QUEUE", accent: "rgba(140, 200, 255, 0.7)", tier: 2 },
   archives: { area: "archives", title: "ARCHIVES", accent: "rgba(255, 255, 255, 0.18)", tier: 3 },
-  search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
-  graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)", tier: 2 },
+  delegation: { area: "delegation", title: "DELEGATION_INBOX", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
+  agentvoice: { area: "agentvoice", title: "AGENT_VOICE", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
   subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)", tier: 2, summaryKey: "swarm" },
   themed: { area: "themed", title: "THEMED_SURFACES", accent: "rgba(208, 241, 0, 0.5)", tier: 2 },
   sessions: { area: "sessions", title: "TELEGRAM_SESSIONS", accent: "rgba(160, 240, 200, 0.6)", tier: 3 },
@@ -400,8 +398,6 @@ export default function App() {
         {cell("goals", <GoalsPanel />)}
         {cell("ollama", <OllamaQueuePanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
-        {cell("search", <CodeSearchPanel />)}
-        {cell("graph", <ObsidianGraphPanel />)}
         {cell("subagents", <SubagentTreePanel payload={payload} />)}
         {cell("themed", <ThemedSurfacesPanel themed={payload.themed} />)}
 
