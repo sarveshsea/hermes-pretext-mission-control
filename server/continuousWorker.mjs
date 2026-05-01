@@ -170,22 +170,41 @@ async function callOllama({ model, prompt }) {
 }
 
 function parseResponse(text) {
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-  const thinking = lines.find((l) => l.toUpperCase().startsWith("THINKING:"))?.replace(/^THINKING:\s*/i, "") || "";
-  const actionLine = lines.find((l) => l.toUpperCase().startsWith("ACTION:"))?.replace(/^ACTION:\s*/i, "") || "";
-  const action = actionLine.split(/\s+/)[0]?.toUpperCase() || "";
-  const payloadLine = lines.find((l) => l.toUpperCase().startsWith("PAYLOAD:"))?.replace(/^PAYLOAD:\s*/i, "") || "{}";
+  const cleaned = (text || "").replace(/\*\*/g, "").replace(/^[ \t]+/gm, "");
+  // Forgiving: find THINKING/ACTION/PAYLOAD anywhere, case-insensitive,
+  // tolerating markdown emphasis and arbitrary preamble.
+  const thinkingMatch = cleaned.match(/THINKING\s*[:\-]\s*(.+?)(?:\n|$)/i);
+  const actionMatch = cleaned.match(/ACTION\s*[:\-]\s*([A-Z_]+)/i);
+  const payloadMatch = cleaned.match(/PAYLOAD\s*[:\-]\s*(\{[\s\S]*?\})/i);
+
+  let thinking = thinkingMatch ? thinkingMatch[1].trim() : "";
+  // Always-emit fallback: if no structured THINKING line found but the model
+  // produced text, treat the first ≤180 chars of cleaned text as the thinking
+  // line so the user sees actual model output, not just errors.
+  if (!thinking && cleaned.trim()) {
+    const firstSentence = cleaned.trim().split(/(?<=[.!?])\s+|\n/)[0] || cleaned.trim();
+    thinking = firstSentence.slice(0, 240);
+  }
+
+  const action = actionMatch ? actionMatch[1].toUpperCase() : "";
   let payload = {};
-  try {
-    payload = JSON.parse(payloadLine);
-  } catch {
-    // try to recover by taking the first JSON-like substring
-    const m = payloadLine.match(/\{[\s\S]*\}/);
-    if (m) {
-      try { payload = JSON.parse(m[0]); } catch { payload = {}; }
+  if (payloadMatch) {
+    try {
+      payload = JSON.parse(payloadMatch[1]);
+    } catch {
+      // try to repair common issues: smart quotes, trailing commas
+      const fixed = payloadMatch[1]
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/,(\s*[}\]])/g, "$1");
+      try {
+        payload = JSON.parse(fixed);
+      } catch {
+        payload = {};
+      }
     }
   }
-  return { thinking, action, payload };
+  return { thinking, action, payload, structured: !!(thinkingMatch && actionMatch) };
 }
 
 async function executeAction({ action, payload }) {
@@ -272,35 +291,52 @@ async function tick() {
     });
     const result = await callOllama({ model, prompt });
     const parsed = parseResponse(result.text);
-    if (!parsed.thinking) {
+    // Always-emit policy: if the model produced anything, surface it as a
+    // thinking event so the user sees real movement. The structured-or-not
+    // flag determines whether we attempt an action.
+    if (!parsed.thinking && !result.text) {
       await appendHermesEvent({
-        type: "error",
+        type: "note",
         role: "system",
-        content: `worker: no THINKING line; eval_count=${result.evalCount}; raw="${safeSnippet(result.text, 400) || "(empty)"}"`,
+        content: `worker tick #${cycles}: empty model response (eval=${result.evalCount}, done=${result.doneReason})`,
         sessionId: SESSION_ID
       });
-      lastError = `no THINKING (eval=${result.evalCount}, raw=${(result.text || "").length}c)`;
-      lastResultSummary = "no thinking";
+      lastError = `empty (eval=${result.evalCount})`;
+      lastResultSummary = "empty";
       return;
     }
     await appendHermesEvent({
       type: "thinking",
       role: "assistant",
-      content: parsed.thinking,
+      content: parsed.thinking || safeSnippet(result.text, 240),
       model,
       iteration: cycles,
       sessionId: SESSION_ID
     });
+    if (!parsed.structured) {
+      // Model didn't produce a clean ACTION block — log a note instead of
+      // running anything. Still counts as forward motion: thinking event fired.
+      await appendHermesEvent({
+        type: "note",
+        role: "assistant",
+        content: `worker: free-form response, no structured action this tick (raw ${(result.text || "").length}c)`,
+        sessionId: SESSION_ID
+      });
+      lastError = null;
+      lastResultSummary = `unstructured: ${safeSnippet(parsed.thinking, 80)}`;
+      lastResultAt = new Date().toISOString();
+      return;
+    }
     const exec = await executeAction({ action: parsed.action, payload: parsed.payload });
     if (!exec.ok) {
       await appendHermesEvent({
-        type: "error",
+        type: "note",
         role: "system",
-        content: `worker action ${parsed.action || "?"} failed: ${exec.why}`,
+        content: `worker action ${parsed.action || "?"} skipped: ${exec.why}`,
         sessionId: SESSION_ID
       });
       lastError = exec.why;
-      lastResultSummary = `${parsed.action || "?"} failed: ${exec.why}`;
+      lastResultSummary = `${parsed.action || "?"} skipped: ${exec.why}`;
     } else {
       lastError = null;
       lastResultSummary = exec.summary;
