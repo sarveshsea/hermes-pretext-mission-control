@@ -30,9 +30,17 @@ async function readHomeChatId() {
   try {
     const text = await fs.readFile(CHANNEL_FILE, "utf8");
     const parsed = JSON.parse(text);
+    // Newer schema: {platforms: {telegram: [{id, name, type}]}}
+    if (parsed.platforms?.telegram?.length) {
+      const tg = parsed.platforms.telegram.find((entry) => entry?.is_home || entry?.role === "home") || parsed.platforms.telegram[0];
+      if (tg?.id) return String(tg.id);
+      if (tg?.chat_id) return String(tg.chat_id);
+    }
+    // Older schema: {targets: [...]}
     const targets = Array.isArray(parsed.targets) ? parsed.targets : Object.values(parsed.targets || {});
     const home = targets.find((entry) => entry?.is_home || entry?.role === "home") || targets[0];
     if (home?.chat_id) return String(home.chat_id);
+    if (home?.id) return String(home.id);
   } catch {
     // unconfigured
   }
