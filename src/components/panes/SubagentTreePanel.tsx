@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { DashboardPayload } from "../../api";
 
 type SubagentNode = { id: string; intent: string; mission: string; status: string };
@@ -6,7 +7,7 @@ function renderTree(
   nodes: SubagentNode[],
   byParent: Record<string, SubagentNode[]>,
   depth: number
-): React.ReactNode[] {
+): ReactNode[] {
   return nodes.flatMap((node) => {
     const children = byParent[node.id] || [];
     const tone =

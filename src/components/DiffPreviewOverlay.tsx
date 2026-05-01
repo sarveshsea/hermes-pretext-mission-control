@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Proposal } from "../api";
 
 type Props = {
@@ -14,7 +14,7 @@ type Preview = {
   exitCode?: number;
 };
 
-function colorizeDiff(diff: string): React.ReactNode[] {
+function colorizeDiff(diff: string): ReactNode[] {
   return diff.split("\n").slice(0, 80).map((line, idx) => {
     let cls = "diff-context";
     if (line.startsWith("+++") || line.startsWith("---")) cls = "diff-meta";
