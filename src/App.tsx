@@ -405,17 +405,22 @@ export default function App() {
         {cell("subagents", <SubagentTreePanel payload={payload} />)}
         {cell("themed", <ThemedSurfacesPanel themed={payload.themed} />)}
 
-        {cell("sessions", <SessionsPanel sessions={payload.sessions?.sessions || []} />)}
-        {cell("skills", <SkillsPanel skills={payload.skills?.skills || []} activeCount={payload.skills?.activeCount || 0} disabledCount={payload.skills?.disabledCount || 0} totalCount={payload.skills?.totalCount || 0} />)}
-        {cell("memfiles", <MemoryFilesPanel files={payload.memoryFiles?.files || []} count={payload.memoryFiles?.count || 0} />)}
-
-        {cell("runlog", <RunLogPanel runs={payload.runRequests} />)}
-        {cell("local", <LocalConsolePanel messages={payload.localMessages} />)}
-        {cell("changelog", <ChangelogPanel entries={payload.changelog} />)}
-
-        {cell("git", <GitStatePanel git={payload.git} />)}
-        {cell("publish", <GithubPublishPanel publishStatus={payload.publishStatus} />)}
-        {cell("improve", <ImprovementLoopPanel payload={payload} />)}
+        {cell("archives",
+          <ArchivesPanel
+            defaultId="runlog"
+            tabs={[
+              { id: "runlog", label: "RUN_LOG", count: payload.runRequests?.length, body: <RunLogPanel runs={payload.runRequests} /> },
+              { id: "local", label: "LOCAL", count: payload.localMessages?.length, body: <LocalConsolePanel messages={payload.localMessages} /> },
+              { id: "git", label: "GIT", body: <GitStatePanel git={payload.git} /> },
+              { id: "publish", label: "PUBLISH", body: <GithubPublishPanel publishStatus={payload.publishStatus} /> },
+              { id: "improve", label: "IMPROVE", body: <ImprovementLoopPanel payload={payload} /> },
+              { id: "changelog", label: "CHANGELOG", count: payload.changelog?.length, body: <ChangelogPanel entries={payload.changelog} /> },
+              { id: "sessions", label: "SESSIONS", count: payload.sessions?.sessions?.length, body: <SessionsPanel sessions={payload.sessions?.sessions || []} /> },
+              { id: "skills", label: "SKILLS", count: payload.skills?.activeCount, body: <SkillsPanel skills={payload.skills?.skills || []} activeCount={payload.skills?.activeCount || 0} disabledCount={payload.skills?.disabledCount || 0} totalCount={payload.skills?.totalCount || 0} /> },
+              { id: "memfiles", label: "MEMORY_FILES", count: payload.memoryFiles?.count, body: <MemoryFilesPanel files={payload.memoryFiles?.files || []} count={payload.memoryFiles?.count || 0} /> }
+            ]}
+          />
+        )}
       </div>
 
       <div className="bento-canvas-stage">
