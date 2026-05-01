@@ -1660,34 +1660,40 @@ option {
 .why-cell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-3);
   min-width: 0;
-  font-size: 11px;
-  padding: 0 6px;
+  font-size: var(--t-meta);
+  padding: 0 var(--s-3);
+  border-right: 1px dashed rgba(255, 255, 255, 0.06);
   overflow: hidden;
 }
+.why-cell:last-child {
+  border-right: 0;
+}
 .why-label {
-  font-size: 9px;
-  letter-spacing: 0.10em;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
   text-transform: uppercase;
   flex-shrink: 0;
+  font-weight: 500;
 }
 .why-dot {
   font-size: 8px;
   flex-shrink: 0;
   filter: drop-shadow(0 0 3px currentColor);
 }
-.why-dot-green { color: rgb(208, 241, 0); }
+.why-dot-green { color: var(--color-chartreuse-pulse); }
 .why-dot-amber { color: rgb(255, 200, 90); }
 .why-dot-red { color: rgb(255, 110, 110); }
 .why-content {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--t-meta);
+  color: var(--text-base);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+  flex: 1;
 }
 
 /* Playbook scoreboard pane */
@@ -1695,42 +1701,47 @@ option {
 .playbook-scoreboard {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--s-2);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-body);
 }
 .pb-row {
   display: grid;
-  grid-template-columns: 140px 1fr 50px 80px;
-  gap: 8px;
+  grid-template-columns: minmax(120px, 1.4fr) minmax(120px, 1fr) 50px 80px;
+  gap: var(--s-4);
   align-items: center;
-  padding: 2px 4px;
+  padding: var(--s-2) var(--s-2);
   border-radius: 3px;
+  min-width: 0;
 }
 .pb-row:hover {
   background: rgba(255, 255, 255, 0.03);
 }
 .pb-id {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-strong);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 .pb-bar {
-  color: rgb(208, 241, 0);
+  color: var(--color-chartreuse-pulse);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .pb-counts {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 .pb-recent {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-base);
   letter-spacing: 0.15em;
+  white-space: nowrap;
 }
 
 /* Goals pane — 2-column grid so 4 goals fit in one row each */
@@ -1804,18 +1815,20 @@ option {
 .ollama-queue {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--s-3);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-body);
 }
 .ollama-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 6px;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.02);
   border-left: 2px solid rgba(255, 255, 255, 0.18);
+  min-width: 0;
 }
 .ollama-row-green { border-left-color: rgb(208, 241, 0); }
 .ollama-row-amber { border-left-color: rgb(255, 200, 90); }
