@@ -117,7 +117,12 @@ async function callOllama({ model, prompt }) {
         model,
         keep_alive: "24h",
         stream: false,
-        options: { temperature: 0.4, num_predict: 500, num_ctx: 8192, top_p: 0.9 },
+        options: {
+          temperature: 0.35,
+          num_predict: 320,
+          num_ctx: 8192,
+          top_p: 0.9
+        },
         messages: [
           {
             role: "system",
@@ -144,9 +149,19 @@ async function callOllama({ model, prompt }) {
     clearTimeout(timeout);
     if (!res.ok) throw new Error(`ollama ${res.status}`);
     const data = await res.json();
+    // Reasoning models (gpt-oss:*) put output in message.thinking until the
+    // reasoning phase completes; only then does content populate. Take
+    // whichever has structured THINKING/ACTION/PAYLOAD lines.
+    const content = data.message?.content || "";
+    const thinking = data.message?.thinking || "";
+    const text = /THINKING:/i.test(content) ? content : /THINKING:/i.test(thinking) ? thinking : content || thinking;
     return {
-      text: data.message?.content || "",
-      tokensPerSec: data.eval_count && data.eval_duration ? Math.round((data.eval_count / (data.eval_duration / 1e9)) * 100) / 100 : null,
+      text,
+      doneReason: data.done_reason || null,
+      tokensPerSec:
+        data.eval_count && data.eval_duration
+          ? Math.round((data.eval_count / (data.eval_duration / 1e9)) * 100) / 100
+          : null,
       evalCount: data.eval_count || 0
     };
   } finally {
@@ -241,8 +256,11 @@ async function tick() {
   lastTickAt = new Date().toISOString();
   cycles += 1;
   try {
-    const runtime = await getHermesRuntime();
-    const model = runtime?.model || "gemma4:e4b";
+    // Default to gemma4:e4b — it emits direct `content`. gpt-oss:20b is a
+    // reasoning model that puts everything in `message.thinking` first and
+    // often never reaches `content` within a tight token budget. Opt-in via
+    // PRETEXT_WORKER_MODEL=gpt-oss:20b if the budget is generous.
+    const model = process.env.PRETEXT_WORKER_MODEL || "gemma4:e4b";
     const prompt = await buildPrompt();
     await appendHermesEvent({
       type: "model_call",
