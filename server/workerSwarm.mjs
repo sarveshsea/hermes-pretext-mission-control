@@ -23,7 +23,7 @@ const WORKERS = [
   {
     id: "observer",
     label: "observer",
-    intervalMs: 30_000,
+    intervalMs: 18_000,
     mission: "general",
     system:
       "You are the OBSERVER worker. Watch the dashboard's recent events and state. " +
@@ -33,7 +33,7 @@ const WORKERS = [
   {
     id: "design",
     label: "design",
-    intervalMs: 60_000,
+    intervalMs: 35_000,
     mission: "design",
     system:
       "You are the DESIGN worker. Propose ONE small dashboard visual refinement to add as a task. " +
@@ -43,7 +43,7 @@ const WORKERS = [
   {
     id: "buzzr",
     label: "buzzr",
-    intervalMs: 75_000,
+    intervalMs: 45_000,
     mission: "buzzr",
     system:
       "You are the BUZZR copywriter. Draft ONE punchy launch tweet for Buzzr — a mobile sports app for micro-fan communities (NFL/NBA/MLS). " +
@@ -53,7 +53,7 @@ const WORKERS = [
   {
     id: "memoire",
     label: "memoire",
-    intervalMs: 90_000,
+    intervalMs: 55_000,
     mission: "memoire",
     system:
       "You are the MEMOIRE audit worker. Suggest ONE design system or app to audit for Memoire (a memory/journal app). " +
@@ -62,7 +62,7 @@ const WORKERS = [
   {
     id: "autofix",
     label: "autofix",
-    intervalMs: 60_000,
+    intervalMs: 35_000,
     mission: "autofix",
     system:
       "You are the AUTOFIX worker. Look at recent run_result and error events; pick a small, concrete fix idea. " +
@@ -71,16 +71,34 @@ const WORKERS = [
   {
     id: "obsidian",
     label: "obsidian",
-    intervalMs: 90_000,
+    intervalMs: 55_000,
     mission: "obsidian",
     system:
       "You are the OBSIDIAN gardener. Suggest ONE small vault improvement (index note, link cleanup, new section). " +
       'Return JSON: {"thinking": "<short reason>", "title": "<task title>", "path_hint": "<relative vault path>"}.'
   },
   {
+    id: "planner",
+    label: "planner",
+    intervalMs: 50_000,
+    mission: "general",
+    system:
+      "You are the PLANNER. Read the open ledger and recent events; identify ONE multi-step plan that breaks a large task into 3-5 sub-tasks. " +
+      'Return JSON: {"thinking": "<one sentence>", "parent_title": "<the larger goal>", "subtasks": ["sub 1", "sub 2", "sub 3"], "mission": "<mission name>"}.'
+  },
+  {
+    id: "critic",
+    label: "critic",
+    intervalMs: 40_000,
+    mission: "general",
+    system:
+      "You are the CRITIC. Look at recent thinking and proposals; flag ONE thing that is unclear, redundant, or low-value. " +
+      'Return JSON: {"thinking": "<one sentence>", "target": "<what is flawed>", "critique": "<≤ 140 chars>", "suggestion": "<≤ 120 chars>"}.'
+  },
+  {
     id: "sports",
     label: "sports",
-    intervalMs: 75_000,
+    intervalMs: 40_000,
     mission: "sports",
     system:
       "You are the SPORTS RADAR worker. Surface ONE notable storyline from a major league (NFL / NBA / MLS / NCAA / MLB). " +
@@ -90,7 +108,7 @@ const WORKERS = [
   {
     id: "executor",
     label: "executor",
-    intervalMs: 90_000,
+    intervalMs: 55_000,
     mission: "general",
     system:
       "You are the EXECUTOR worker. Your job is to turn an OPEN LEDGER TASK into a concrete shell command that will produce a real diff. " +
@@ -318,6 +336,51 @@ async function runWorker(spec) {
               notes: [`source: ${source}`, `slug: ${slug}`, result.parsed.summary || ""].filter(Boolean)
             });
             resultSummary = `+ memoire audit task ${t.id}: ${safeSnippet(source, 60)}`;
+          }
+          break;
+        }
+        case "sports": {
+          const headline = result.parsed.headline || "";
+          const league = result.parsed.league || "general";
+          if (headline) {
+            const item = await postThemedItem("sports_radar", {
+              kind: "headline",
+              league,
+              source: result.parsed.source || "swarm",
+              headline: safeSnippet(headline, 280)
+            });
+            resultSummary = `+ sports_radar [${league}] ${item.id}: ${safeSnippet(headline, 60)}`;
+          }
+          break;
+        }
+        case "executor":
+        case "selfimprove": {
+          const command = result.parsed.command || "";
+          const title = result.parsed.title || "";
+          const rationale = result.parsed.rationale || "";
+          // Server-side safety: never let the executor escape the project dir
+          // or run anything destructive. The proposal validator will also gate.
+          const looksDestructive = /\b(rm\s+-rf|sudo|chmod\s|curl\s+[^|]*\|\s*(sh|bash)|wget\s+[^|]*\|\s*(sh|bash)|dd\s+if=|mkfs)\b/.test(command);
+          if (!command || !title) {
+            resultSummary = `${spec.id}: model returned no command/title`;
+            break;
+          }
+          if (looksDestructive) {
+            resultSummary = `${spec.id}: refused destructive command pattern`;
+            break;
+          }
+          try {
+            const proposal = await createProposal({
+              title: safeSnippet(title, 200),
+              rationale: safeSnippet(rationale || `swarm:${spec.id}`, 600),
+              kind: "shell",
+              command: safeSnippet(command, 800),
+              autoSafe: true,
+              sessionId
+            });
+            resultSummary = `+ proposal ${proposal.id} ${proposal.status}: ${safeSnippet(title, 50)}`;
+          } catch (e) {
+            resultSummary = `${spec.id}: proposal create failed — ${e?.message || "unknown"}`;
           }
           break;
         }
