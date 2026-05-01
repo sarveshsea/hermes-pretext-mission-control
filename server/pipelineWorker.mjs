@@ -19,9 +19,8 @@ import { createProposal } from "./proposals.mjs";
 import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { getCodeIndex, renderIndexBlock } from "./codeIndex.mjs";
 import { appendJournal, formatJournalForPrompt, readJournalTail } from "./pipelineJournal.mjs";
+import { runOllama } from "./ollamaQueue.mjs";
 import { safeSnippet } from "./redaction.mjs";
-
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 // Phase-specific models. Default to gemma4:e4b across all phases so we don't
 // fight the swarm for VRAM (model-swapping kills throughput). Set
 // PRETEXT_PIPELINE_*_MODEL=gpt-oss:20b once you're ready to spend the cycles
@@ -45,46 +44,37 @@ const recentOutcomes = []; // ["ship", "ship", "abandon"] (cap 6)
 const taskAttempts = new Map(); // taskId -> { lastAt: ms, attempts: n }
 
 async function callOllama({ system, user, model }) {
-  const controller = new AbortController();
   // gpt-oss:20b can take 60-120s on cold load and 20-40s warm. 240s gives
   // headroom for cold start + slow generation.
   const timeoutMs = /20b|13b|llama3.1:8b/.test(model) ? 240_000 : 90_000;
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   const start = Date.now();
-  try {
-    const res = await fetch(`${OLLAMA_BASE}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        keep_alive: "24h",
-        stream: false,
-        format: "json",
-        think: false,
-        options: { temperature: 0.3, num_predict: 1000, num_ctx: 8192, top_p: 0.9 },
-        messages: [
-          { role: "system", content: `${system}\n\nReply with ONE valid JSON object only. No markdown, no preamble.` },
-          { role: "user", content: user }
-        ]
-      }),
-      signal: controller.signal
-    });
-    if (!res.ok) throw new Error(`ollama ${res.status}`);
-    const data = await res.json();
-    const text = data.message?.content || data.message?.thinking || "";
-    let parsed = {};
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      const m = text.match(/\{[\s\S]*\}/);
-      if (m) {
-        try { parsed = JSON.parse(m[0]); } catch { parsed = {}; }
-      }
+  const data = await runOllama({
+    model,
+    endpoint: "/api/chat",
+    timeoutMs,
+    body: {
+      keep_alive: "24h",
+      stream: false,
+      format: "json",
+      think: false,
+      options: { temperature: 0.3, num_predict: 1000, num_ctx: 8192, top_p: 0.9 },
+      messages: [
+        { role: "system", content: `${system}\n\nReply with ONE valid JSON object only. No markdown, no preamble.` },
+        { role: "user", content: user }
+      ]
     }
-    return { parsed, raw: text, latencyMs: Date.now() - start, model };
-  } finally {
-    clearTimeout(timeout);
+  });
+  const text = data.message?.content || data.message?.thinking || "";
+  let parsed = {};
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    const m = text.match(/\{[\s\S]*\}/);
+    if (m) {
+      try { parsed = JSON.parse(m[0]); } catch { parsed = {}; }
+    }
   }
+  return { parsed, raw: text, latencyMs: Date.now() - start, model };
 }
 
 async function emit(phase, content, sessionId, extra) {
@@ -97,17 +87,30 @@ async function emit(phase, content, sessionId, extra) {
   });
 }
 
-// Track outcome for adaptive cadence. After 3 consecutive ships → halve
-// interval; after 3 abandons → double.
+// Track outcome for adaptive cadence.
+//   - Any ship → reset to baseline immediately (heals back-off after recovery).
+//   - 3 consecutive ships → halve below baseline (faster on a hot streak).
+//   - 3 consecutive abandons → double (back off when stuck).
 function recordCadenceOutcome(kind) {
   recentOutcomes.push(kind);
   if (recentOutcomes.length > 6) recentOutcomes.shift();
+  if (kind === "ship") {
+    // Heal the back-off on first ship after a stall.
+    if (currentInterval > TICK_MS) currentInterval = TICK_MS;
+  }
   const last3 = recentOutcomes.slice(-3);
   if (last3.length === 3 && last3.every((o) => o === "ship")) {
     currentInterval = Math.max(MIN_INTERVAL_MS, Math.floor(currentInterval / 2));
   } else if (last3.length === 3 && last3.every((o) => o === "abandon")) {
     currentInterval = Math.min(MAX_INTERVAL_MS, currentInterval * 2);
   }
+}
+
+// Manual override: operator-triggered reset (button in WHY strip).
+export function resetPipelineCadence() {
+  currentInterval = TICK_MS;
+  recentOutcomes.length = 0;
+  return { intervalMs: currentInterval };
 }
 
 async function pickTask() {

@@ -17,6 +17,7 @@ import { safeSnippet } from "./redaction.mjs";
 import { spawnSubagent, updateSubagent, listSubagents } from "./subagents.mjs";
 import { getSharedContext, formatSharedContextBlock } from "./swarmContext.mjs";
 import { ROOTS } from "./config.mjs";
+import { runOllama } from "./ollamaQueue.mjs";
 
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
 const DEFAULT_MODEL = process.env.PRETEXT_SWARM_MODEL || "gemma4:e4b";
@@ -188,49 +189,38 @@ function statusFor(id) {
 }
 
 async function callOllamaJson({ model, system, user }) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 60_000);
-  try {
-    const res = await fetch(`${OLLAMA_BASE}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        keep_alive: "24h",
-        stream: false,
-        format: "json",
-        // Disable hidden reasoning channel so output lands in .content not .thinking
-        think: false,
-        options: { temperature: 0.5, num_predict: 600, num_ctx: 4096, top_p: 0.9 },
-        messages: [
-          {
-            role: "system",
-            content: `${system}\n\nReply with ONE valid JSON object only. No markdown, no preamble, no commentary.`
-          },
-          { role: "user", content: user }
-        ]
-      }),
-      signal: controller.signal
-    });
-    clearTimeout(timer);
-    if (!res.ok) throw new Error(`ollama ${res.status}`);
-    const data = await res.json();
-    const content = data.message?.content || "";
-    const thinkingField = data.message?.thinking || "";
-    const text = content || thinkingField;
-    let parsed = {};
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      const m = text.match(/\{[\s\S]*\}/);
-      if (m) {
-        try { parsed = JSON.parse(m[0]); } catch { parsed = {}; }
-      }
+  const data = await runOllama({
+    model,
+    endpoint: "/api/chat",
+    timeoutMs: 90_000,
+    body: {
+      keep_alive: "24h",
+      stream: false,
+      format: "json",
+      think: false,
+      options: { temperature: 0.5, num_predict: 600, num_ctx: 4096, top_p: 0.9 },
+      messages: [
+        {
+          role: "system",
+          content: `${system}\n\nReply with ONE valid JSON object only. No markdown, no preamble, no commentary.`
+        },
+        { role: "user", content: user }
+      ]
     }
-    return { parsed, raw: text, evalCount: data.eval_count || 0 };
-  } finally {
-    clearTimeout(timer);
+  });
+  const content = data.message?.content || "";
+  const thinkingField = data.message?.thinking || "";
+  const text = content || thinkingField;
+  let parsed = {};
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    const m = text.match(/\{[\s\S]*\}/);
+    if (m) {
+      try { parsed = JSON.parse(m[0]); } catch { parsed = {}; }
+    }
   }
+  return { parsed, raw: text, evalCount: data.eval_count || 0 };
 }
 
 async function buildUserContext(missionFilter) {
