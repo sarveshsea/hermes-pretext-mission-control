@@ -1,3 +1,1 @@
-# Audit Scan: First Portfolio
-## Portfolio Scan Findings
-Review key areas in the first design portfolio.
+Scanning design portfolio for review areas...
