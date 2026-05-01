@@ -1,10 +1,12 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { ROOTS } from "./config.mjs";
+import { publishProjectChanges } from "./publisher.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
 const DEFAULT_INTERVAL_MS = Number(process.env.PRETEXT_IMPROVEMENT_LOOP_MS || 5 * 60_000);
 const DEFAULT_COOLDOWN_MS = Number(process.env.PRETEXT_IMPROVEMENT_COOLDOWN_MS || 15 * 60_000);
+const DEFAULT_AUTO_PUBLISH = process.env.PRETEXT_AUTO_PUBLISH !== "false";
 
 let loopTimer = null;
 let lastTickAt = null;
@@ -127,6 +129,7 @@ export function getImprovementLoopStatus() {
     state: loopTimer ? "running" : "stopped",
     intervalMs: DEFAULT_INTERVAL_MS,
     cooldownMs: DEFAULT_COOLDOWN_MS,
+    autoPublish: DEFAULT_AUTO_PUBLISH,
     lastTickAt,
     lastCreatedAt,
     lastError
@@ -140,7 +143,9 @@ export async function getImprovementEvents() {
 export async function runImprovementLoopOnce({
   dashboard,
   now = new Date(),
-  cooldownMs = DEFAULT_COOLDOWN_MS
+  cooldownMs = DEFAULT_COOLDOWN_MS,
+  autoPublish = DEFAULT_AUTO_PUBLISH,
+  publish = publishProjectChanges
 } = {}) {
   lastTickAt = now.toISOString();
   const events = await readEvents();
@@ -165,6 +170,13 @@ export async function runImprovementLoopOnce({
   await writeEvents([event, ...events].slice(0, 100));
   await appendChangelog(event);
   await appendMarkdown(event);
+  if (autoPublish && payload.publishStatus?.state === "ready") {
+    event.publishResult = await publish({
+      publishStatus: payload.publishStatus,
+      message: `Automated Pretext improvement: ${event.title}`
+    });
+    await writeEvents([event, ...events].slice(0, 100));
+  }
   lastCreatedAt = event.createdAt;
   return event;
 }

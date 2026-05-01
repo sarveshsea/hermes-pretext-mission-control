@@ -59,3 +59,9 @@
 - Created the Vite, React, TypeScript, Node API, and `@chenglou/pretext@0.0.6` localhost dashboard.
 - Added APIs for status, review queues, projects, learnings, run requests, design references, and dashboard payload.
 - Saved Antimetal and Refero style references into Obsidian for Hermes memory.
+
+## 2026-05-01 - Local Console Follow-Through
+
+- Improvement loop observed local instruction: Smoke test: local console channel is connected
+- Publish state: ready.
+- Status: recorded.
