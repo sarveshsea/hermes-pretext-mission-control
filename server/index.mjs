@@ -67,6 +67,7 @@ import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mj
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
 import { batchConcretizeLedger, seedDogfoodTasks } from "./maintenance.mjs";
+import { readGoals } from "./goals.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
@@ -411,6 +412,9 @@ async function apiRoute(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/seed-dogfood") {
     return sendJson(res, 200, await seedDogfoodTasks());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/goals") {
+    return sendJson(res, 200, { goals: await readGoals() });
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/event-archive") {
     return sendJson(res, 200, getEventArchiveStatus());

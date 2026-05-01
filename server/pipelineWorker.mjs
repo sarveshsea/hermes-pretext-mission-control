@@ -43,7 +43,10 @@ const taskAttempts = new Map(); // taskId -> { lastAt: ms, attempts: n }
 
 async function callOllama({ system, user, model }) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 120_000);
+  // gpt-oss:20b can take 60-120s on cold load and 20-40s warm. 240s gives
+  // headroom for cold start + slow generation.
+  const timeoutMs = /20b|13b|llama3.1:8b/.test(model) ? 240_000 : 90_000;
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   const start = Date.now();
   try {
     const res = await fetch(`${OLLAMA_BASE}/api/chat`, {

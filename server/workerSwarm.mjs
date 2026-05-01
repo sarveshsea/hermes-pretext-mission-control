@@ -127,6 +127,14 @@ const WORKERS = [
     mission: "general",
     deterministic: true,
     system: "Deterministic worker — no LLM call. Merges open tasks with near-identical titles to keep the ledger small."
+  },
+  {
+    id: "runner",
+    label: "runner",
+    intervalMs: 180_000,
+    mission: "general",
+    deterministic: true,
+    system: "Deterministic worker — no LLM call. Picks tasks tagged 'long_running' and dispatches a real shell run via createRunRequest."
   }
 ];
 
@@ -309,6 +317,46 @@ async function runCloserTick() {
   return `closer closed=${closed} abandoned=${abandoned} (of ${open.length} open)`;
 }
 
+async function runRunnerTick() {
+  // Picks the oldest task tagged "long_running" or "test_and_ship" and
+  // dispatches a real shell run. The run streams events so the dashboard
+  // sees output flow. Auto-approve fires for source:"hermes".
+  const open = await listTasks({ status: "open" });
+  const candidates = open.filter((t) =>
+    (t.tags || []).some((tag) => tag === "long_running" || tag === "test_and_ship") &&
+    !(t.pipelineState?.phase === "running")
+  );
+  if (!candidates.length) return "no long_running tasks pending";
+  const task = candidates.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))[0];
+  // Pick the command from the task's pipelineState.command, or default to a
+  // safe diagnostic if not specified.
+  const command = task.pipelineState?.command || "npm run typecheck";
+  // Lazy import to avoid circular dependency at module load.
+  const { createRunRequest } = await import("./runRequests.mjs");
+  try {
+    await updateTask(task.id, {
+      pipelineState: { ...(task.pipelineState || {}), phase: "running", startedAt: new Date().toISOString() },
+      note: `runner dispatching: ${command.slice(0, 80)}`
+    });
+    const result = await createRunRequest({
+      source: "hermes",
+      reason: `runner: ${task.title}`,
+      command
+    });
+    if (result.exitCode === 0) {
+      await updateTask(task.id, { status: "done", note: `runner shipped (exit 0): ${command.slice(0, 80)}` });
+      return `ran ${task.id}: exit 0`;
+    }
+    await updateTask(task.id, {
+      pipelineState: { ...(task.pipelineState || {}), phase: "ran", lastError: `exit ${result.exitCode}` },
+      note: `runner exit ${result.exitCode}: ${(result.output || "").slice(0, 200)}`
+    });
+    return `ran ${task.id}: exit ${result.exitCode}`;
+  } catch (error) {
+    return `runner error: ${error?.message || "unknown"}`;
+  }
+}
+
 async function runDedupTick() {
   const open = await listTasks({ status: "open" });
   if (open.length < 3) return `dedup: only ${open.length} open tasks, skipping`;
@@ -347,6 +395,7 @@ async function runWorker(spec) {
       let summary;
       if (spec.id === "closer") summary = await runCloserTick();
       else if (spec.id === "dedup") summary = await runDedupTick();
+      else if (spec.id === "runner") summary = await runRunnerTick();
       else summary = "deterministic worker without handler";
       status.lastResult = summary;
       status.lastResultAt = new Date().toISOString();
