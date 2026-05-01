@@ -273,3 +273,9 @@
 - Publish state: ready.
 - Status: recorded.
 ## Audit Documentation Finalization - 2026-05-01
+
+## 2026-05-01 - Local Console Follow-Through
+
+- Improvement loop observed local instruction: /codex review the diff_preview module for race conditions
+- Publish state: ready.
+- Status: recorded.
