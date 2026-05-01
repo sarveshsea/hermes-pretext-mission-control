@@ -16,6 +16,16 @@ export const ROOTS = {
   hermes: path.join(home, ".hermes"),
   hermesLogs: path.join(home, ".hermes/logs"),
   hermesSessions: path.join(home, ".hermes/sessions"),
+  // Hermes operational data lives here, not in the vault. Session reports,
+  // briefs, run digests, distilled memory, task ledger markdown, reflections,
+  // subscription ledger, proposal markdown — all of it. The vault stays
+  // curated (Design Library + Playbooks + Buzzr + Daily digest only).
+  hermesOps: path.join(home, ".hermes/ops"),
+  hermesOpsSessions: path.join(home, ".hermes/ops/sessions"),
+  hermesOpsBriefs: path.join(home, ".hermes/ops/briefs"),
+  hermesOpsRuns: path.join(home, ".hermes/ops/runs"),
+  // Vault: only the daily digest goes here.
+  hermesDailyDigest: path.join(vault, "Agent/Hermes Daily"),
   personalAgent: path.join(home, "Documents/Personal Agent"),
   styleReferences: path.join(vault, "Agent/Context/Style References"),
   runRequestsMarkdown: path.join(vault, "Agent/Review Queues/Run Requests.md"),

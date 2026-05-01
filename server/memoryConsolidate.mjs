@@ -11,7 +11,7 @@ import { generateSessionReport } from "./sessionReport.mjs";
 import { getProposals } from "./proposals.mjs";
 
 const TICK_MS = 60 * 60_000; // every hour
-const NOTE_PATH = path.join(ROOTS.agent, "Hermes Memory/Distilled.md");
+const NOTE_PATH = path.join(ROOTS.hermesOps, "distilled.md");
 const LESSONS_PATH = path.join(ROOTS.hermes, "memories/recent_lessons.md");
 const NOTE_HEADER =
   "# Hermes Distilled Memory\n\nAutonomous hourly distillation of recent activity. Hermes reads this on the next tick to maintain working memory across cron runs.\n\n";
