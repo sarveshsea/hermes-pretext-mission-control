@@ -7,6 +7,7 @@ import { getAutoApplyStatus } from "./autoApply.mjs";
 import { getOllamaWarmStatus } from "./ollamaWarm.mjs";
 import { getMemoryConsolidatorStatus } from "./memoryConsolidate.mjs";
 import { getContinuousWorkerStatus } from "./continuousWorker.mjs";
+import { getSwarmStatus } from "./workerSwarm.mjs";
 
 async function readCronJobs() {
   try {
@@ -32,26 +33,27 @@ async function readCronJobs() {
 }
 
 export async function getProcessSummary() {
-  const [builder, improvement, autoApply, ollamaWarm, memory, worker, crons] = await Promise.all([
+  const [builder, improvement, autoApply, ollamaWarm, memory, swarm, crons] = await Promise.all([
     Promise.resolve(getBuilderLoopStatus()),
     Promise.resolve(getImprovementLoopStatus()),
     Promise.resolve(getAutoApplyStatus()),
     Promise.resolve(getOllamaWarmStatus()),
     Promise.resolve(getMemoryConsolidatorStatus()),
-    Promise.resolve(getContinuousWorkerStatus()),
+    Promise.resolve(getSwarmStatus()),
     readCronJobs()
   ]);
 
+  const swarmRows = (swarm.workers || []).map((w) => ({
+    id: `swarm-${w.id}`,
+    label: `🜂 ${w.label}`,
+    state: w.inFlight ? "in-flight" : w.cycles > 0 ? "running" : "starting",
+    detail: `every ${Math.round(w.intervalMs / 1000)}s · cycles ${w.cycles}${w.lastResult ? ` · ${w.lastResult.slice(0, 40)}` : ""}`,
+    lastAt: w.lastResultAt || w.lastTickAt,
+    lastError: w.lastError || null
+  }));
+
   const processes = [
-    {
-      id: "ai-worker",
-      label: "ai worker",
-      state: worker.state,
-      detail: `every ${Math.round(worker.intervalMs / 1000)}s · cycles ${worker.cycles}${worker.inFlight ? " · IN-FLIGHT" : ""}`,
-      lastAt: worker.lastResultAt || worker.lastTickAt,
-      lastError: worker.lastError || null,
-      lastResult: worker.lastResultSummary || null
-    },
+    ...swarmRows,
     {
       id: "builder-loop",
       label: "builder",
