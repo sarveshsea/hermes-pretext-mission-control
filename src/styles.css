@@ -114,8 +114,10 @@ button {
   gap: 8px;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
+    "why         why         why         why         why         why         why         why         why         why         why         why"
     "health      health      health      cadence     cadence     cadence     sparkline   sparkline   sparkline   perf        perf        perf"
-    "report      report      report      report      report      report      power       power       power       power       power       power"
+    "power       power       power       power       power       power       scoreboard  scoreboard  scoreboard  scoreboard  scoreboard  scoreboard"
+    "report      report      report      report      report      report      goals       goals       goals       goals       goals       goals"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "mission     mission     mission     mission     live        live        live        live        thinking    thinking    memory      memory"
     "proposals   proposals   proposals   proposals   search      search      search      search      graph       graph       graph       graph"
@@ -125,8 +127,10 @@ button {
     "runlog      runlog      runlog      runlog      local       local       local       local       changelog   changelog   changelog   changelog"
     "subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions subscriptions";
   grid-template-rows:
+    44px
     100px
-    140px 60px
+    140px
+    140px
     220px 0
     180px
     140px
@@ -1541,6 +1545,194 @@ option {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+/* Pane tier system — H1 prominent, H3 dim. */
+
+.bento-cell[data-tier="1"] {
+  border-color: rgba(208, 241, 0, 0.32) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(208, 241, 0, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    0 16px 36px -22px rgba(208, 241, 0, 0.20);
+}
+.bento-cell[data-tier="3"] {
+  opacity: 0.55;
+  transition: opacity 180ms ease;
+}
+.bento-cell[data-tier="3"]:hover,
+.bento-cell[data-tier="3"]:focus-within {
+  opacity: 1;
+}
+
+.pane-dot {
+  font-size: 10px;
+  margin-left: 8px;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+.pane-dot-green { color: rgb(208, 241, 0); }
+.pane-dot-amber { color: rgb(255, 200, 90); }
+.pane-dot-red { color: rgb(255, 110, 110); }
+
+.bento-summary {
+  padding: 4px 9px 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  flex-shrink: 0;
+}
+
+/* WHY strip — top-of-bento. Three lanes: thinking | pipeline | swarm. */
+
+.bento-why-row {
+  grid-area: why;
+}
+.why-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  height: 44px;
+  padding: 4px 8px;
+  border: 1px solid rgba(208, 241, 0, 0.22);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(208, 241, 0, 0.06), rgba(208, 241, 0, 0.01)),
+    rgba(17, 17, 20, 0.7);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
+}
+.why-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 11px;
+  padding: 0 6px;
+  overflow: hidden;
+}
+.why-label {
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.why-dot {
+  font-size: 8px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+.why-dot-green { color: rgb(208, 241, 0); }
+.why-dot-amber { color: rgb(255, 200, 90); }
+.why-dot-red { color: rgb(255, 110, 110); }
+.why-content {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Playbook scoreboard pane */
+
+.playbook-scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.pb-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 50px 80px;
+  gap: 8px;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.pb-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.pb-id {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pb-bar {
+  color: rgb(208, 241, 0);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: -0.02em;
+}
+.pb-counts {
+  color: rgba(255, 255, 255, 0.55);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.pb-recent {
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.15em;
+}
+
+/* Goals pane */
+
+.goals-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.goal-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+.goal-row:last-child { border-bottom: 0; }
+.goal-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.goal-title {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+}
+.goal-deadline {
+  font-size: 10px;
+  color: rgba(255, 200, 90, 0.85);
+}
+.goal-target {
+  font-size: 10px;
+}
+.goal-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.goal-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.goal-bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, rgb(208, 241, 0), rgba(208, 241, 0, 0.6));
+  transition: width 200ms ease;
+}
+.goal-pct {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 1024px) {

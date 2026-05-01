@@ -45,6 +45,9 @@ import RunningProcessesPanel from "./components/panes/RunningProcessesPanel";
 import SubscriptionLedgerPanel from "./components/panes/SubscriptionLedgerPanel";
 import SessionReportPanel from "./components/panes/SessionReportPanel";
 import PowerMetricsPanel from "./components/panes/PowerMetricsPanel";
+import PlaybookScoreboardPanel from "./components/panes/PlaybookScoreboardPanel";
+import GoalsPanel from "./components/panes/GoalsPanel";
+import WhyStrip from "./components/WhyStrip";
 
 const POLL_MS = 12_000;
 const DEFAULT_NODE: ConsoleNodeId = "hermes";
@@ -62,35 +65,39 @@ type CellSpec = {
   area: string;
   title: string;
   accent?: string;
+  tier?: 1 | 2 | 3;
+  summaryKey?: string;
 };
 
 const CELLS: Record<string, CellSpec> = {
-  health: { area: "health", title: "HEALTH", accent: "rgba(208, 241, 0, 0.7)" },
-  cadence: { area: "cadence", title: "CADENCE", accent: "rgba(208, 241, 0, 0.6)" },
-  sparkline: { area: "sparkline", title: "EVENTS / 60min", accent: "rgba(140, 200, 255, 0.6)" },
-  perf: { area: "perf", title: "PERFORMANCE", accent: "rgba(140, 200, 255, 0.6)" },
-  mission: { area: "mission", title: "MISSION", accent: "rgba(208, 241, 0, 0.7)" },
-  thinking: { area: "thinking", title: "THINKING", accent: "rgba(180, 160, 255, 0.7)" },
-  live: { area: "live", title: "HERMES_LIVE", accent: "rgba(140, 200, 255, 0.7)" },
-  memory: { area: "memory", title: "MEMORY", accent: "rgba(160, 240, 200, 0.7)" },
-  proposals: { area: "proposals", title: "HERMES_PROPOSALS", accent: "rgba(255, 200, 120, 0.8)" },
-  ledger: { area: "ledger", title: "TASK_LEDGER", accent: "rgba(208, 241, 0, 0.6)" },
-  subscriptions: { area: "subscriptions", title: "SUBSCRIPTIONS", accent: "rgba(180, 160, 255, 0.6)" },
-  report: { area: "report", title: "SESSION_REPORT", accent: "rgba(208, 241, 0, 0.7)" },
-  power: { area: "power", title: "POWER_METRICS", accent: "rgba(208, 241, 0, 0.85)" },
-  search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)" },
-  graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)" },
-  subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)" },
-  themed: { area: "themed", title: "THEMED_SURFACES", accent: "rgba(208, 241, 0, 0.5)" },
-  sessions: { area: "sessions", title: "TELEGRAM_SESSIONS", accent: "rgba(160, 240, 200, 0.6)" },
-  skills: { area: "skills", title: "SKILLS", accent: "rgba(180, 160, 255, 0.6)" },
-  memfiles: { area: "memfiles", title: "MEMORY_FILES", accent: "rgba(160, 240, 200, 0.6)" },
-  runlog: { area: "runlog", title: "RUN_LOG", accent: "rgba(224, 246, 255, 0.4)" },
-  local: { area: "local", title: "LOCAL_CONSOLE", accent: "rgba(224, 246, 255, 0.4)" },
-  changelog: { area: "changelog", title: "CHANGELOG", accent: "rgba(208, 241, 0, 0.4)" },
-  git: { area: "git", title: "GIT_STATE", accent: "rgba(208, 241, 0, 0.5)" },
-  publish: { area: "publish", title: "GITHUB_PUBLISH", accent: "rgba(208, 241, 0, 0.7)" },
-  improve: { area: "improve", title: "IMPROVEMENT_LOOP", accent: "rgba(180, 160, 255, 0.6)" }
+  health: { area: "health", title: "HEALTH", accent: "rgba(208, 241, 0, 0.7)", tier: 2 },
+  cadence: { area: "cadence", title: "CADENCE", accent: "rgba(208, 241, 0, 0.6)", tier: 3 },
+  sparkline: { area: "sparkline", title: "EVENTS / 60min", accent: "rgba(140, 200, 255, 0.6)", tier: 3 },
+  perf: { area: "perf", title: "PERFORMANCE", accent: "rgba(140, 200, 255, 0.6)", tier: 3 },
+  mission: { area: "mission", title: "MISSION", accent: "rgba(208, 241, 0, 0.7)", tier: 2 },
+  thinking: { area: "thinking", title: "THINKING", accent: "rgba(180, 160, 255, 0.7)", tier: 1, summaryKey: "thinking" },
+  live: { area: "live", title: "HERMES_LIVE", accent: "rgba(140, 200, 255, 0.7)", tier: 1, summaryKey: "live" },
+  memory: { area: "memory", title: "MEMORY", accent: "rgba(160, 240, 200, 0.7)", tier: 2 },
+  proposals: { area: "proposals", title: "HERMES_PROPOSALS", accent: "rgba(255, 200, 120, 0.8)", tier: 1, summaryKey: "proposals" },
+  ledger: { area: "ledger", title: "TASK_LEDGER", accent: "rgba(208, 241, 0, 0.6)", tier: 1, summaryKey: "ledger" },
+  subscriptions: { area: "subscriptions", title: "SUBSCRIPTIONS", accent: "rgba(180, 160, 255, 0.6)", tier: 3 },
+  report: { area: "report", title: "SESSION_REPORT", accent: "rgba(208, 241, 0, 0.7)", tier: 2 },
+  power: { area: "power", title: "POWER_METRICS", accent: "rgba(208, 241, 0, 0.85)", tier: 1, summaryKey: "power" },
+  scoreboard: { area: "scoreboard", title: "PLAYBOOK_SCOREBOARD", accent: "rgba(208, 241, 0, 0.7)", tier: 1 },
+  goals: { area: "goals", title: "GOALS", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
+  search: { area: "search", title: "CODE_SEARCH", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
+  graph: { area: "graph", title: "OBSIDIAN_GRAPH", accent: "rgba(160, 240, 200, 0.6)", tier: 2 },
+  subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)", tier: 2, summaryKey: "swarm" },
+  themed: { area: "themed", title: "THEMED_SURFACES", accent: "rgba(208, 241, 0, 0.5)", tier: 2 },
+  sessions: { area: "sessions", title: "TELEGRAM_SESSIONS", accent: "rgba(160, 240, 200, 0.6)", tier: 3 },
+  skills: { area: "skills", title: "SKILLS", accent: "rgba(180, 160, 255, 0.6)", tier: 3 },
+  memfiles: { area: "memfiles", title: "MEMORY_FILES", accent: "rgba(160, 240, 200, 0.6)", tier: 3 },
+  runlog: { area: "runlog", title: "RUN_LOG", accent: "rgba(224, 246, 255, 0.4)", tier: 3 },
+  local: { area: "local", title: "LOCAL_CONSOLE", accent: "rgba(224, 246, 255, 0.4)", tier: 3 },
+  changelog: { area: "changelog", title: "CHANGELOG", accent: "rgba(208, 241, 0, 0.4)", tier: 3 },
+  git: { area: "git", title: "GIT_STATE", accent: "rgba(208, 241, 0, 0.5)", tier: 3 },
+  publish: { area: "publish", title: "GITHUB_PUBLISH", accent: "rgba(208, 241, 0, 0.7)", tier: 3 },
+  improve: { area: "improve", title: "IMPROVEMENT_LOOP", accent: "rgba(180, 160, 255, 0.6)", tier: 3 }
 };
 
 function isActionable(request: RunRequest) {
@@ -137,6 +144,8 @@ export default function App() {
   const [liveIntents, setLiveIntents] = useState<PublicIntent[]>([]);
   const [inspectedEvent, setInspectedEvent] = useState<HermesEvent | null>(null);
   const [diffProposal, setDiffProposal] = useState<Proposal | null>(null);
+  const [paneSummaries, setPaneSummaries] = useState<Record<string, string>>({});
+  const [paneDots, setPaneDots] = useState<Record<string, "green" | "amber" | "red">>({});
 
   const refresh = useCallback(async () => {
     try {
@@ -155,6 +164,30 @@ export default function App() {
     const timer = window.setInterval(refresh, POLL_MS);
     return () => window.clearInterval(timer);
   }, [refresh]);
+
+  // Pane summaries + health dots — refreshed independently from the main payload.
+  useEffect(() => {
+    let cancelled = false;
+    const fetchSummaries = async () => {
+      try {
+        const res = await fetch("/api/hermes/pane-summaries", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setPaneSummaries(data.summaries || {});
+          setPaneDots(data.dots || {});
+        }
+      } catch {
+        // best-effort
+      }
+    };
+    void fetchSummaries();
+    const id = window.setInterval(fetchSummaries, 8_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, []);
 
   useEffect(() => {
     const off = subscribeHermesStream({
@@ -272,11 +305,15 @@ export default function App() {
 
   function cell(key: keyof typeof CELLS, body: React.ReactNode) {
     const spec = CELLS[key];
+    const summary = spec.summaryKey ? paneSummaries[spec.summaryKey] : null;
+    const dot = paneDots[String(key)] || paneDots[spec.summaryKey || ""] || null;
     return (
-      <section className="bento-cell" style={{ gridArea: spec.area }}>
+      <section className="bento-cell" data-tier={spec.tier || 2} style={{ gridArea: spec.area }}>
         <header className="bento-header">
           <span className="bento-title">{spec.title}</span>
+          {dot ? <span className={`pane-dot pane-dot-${dot}`} aria-hidden>●</span> : null}
         </header>
+        {summary ? <div className="bento-summary">{summary}</div> : null}
         <div className="bento-body">{body}</div>
       </section>
     );
@@ -302,6 +339,9 @@ export default function App() {
       </aside>
 
       <div className="bento-grid">
+        <div className="bento-why-row" style={{ gridArea: "why" }}>
+          <WhyStrip />
+        </div>
         {cell("health", <HealthPanel payload={payload} />)}
         {cell("cadence", <CadencePanel cadence={payload.cadence} />)}
         {cell("sparkline", <SparklinePanel buckets={payload.timeline?.buckets || []} total={payload.timeline?.total || 0} peak={payload.timeline?.peak || 0} />)}
@@ -352,6 +392,8 @@ export default function App() {
 
         {cell("report", <SessionReportPanel />)}
         {cell("power", <PowerMetricsPanel />)}
+        {cell("scoreboard", <PlaybookScoreboardPanel />)}
+        {cell("goals", <GoalsPanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
         {cell("search", <CodeSearchPanel />)}
         {cell("graph", <ObsidianGraphPanel />)}
