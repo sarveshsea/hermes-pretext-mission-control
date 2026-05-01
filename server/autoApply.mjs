@@ -28,8 +28,11 @@ function commandLooksSafe(proposal) {
 async function tick() {
   lastTickAt = new Date().toISOString();
   try {
+    if (process.env.PRETEXT_AUTO_APPLY === "false") return;
     const cadence = await getCadence();
-    if (!cadence.recommendedAutoApply) return;
+    // Auto-apply is now always armed by default. Cadence still tracked but the
+    // `recommendedAutoApply` gate is informational; the validator (no-op
+    // rejection + thinking-window) is the actual safety floor.
     const pending = await getPendingProposals();
     if (!pending.length) return;
     const candidates = pending

@@ -103,9 +103,22 @@ export async function appendHermesEvent(input = {}) {
 
   buffer.push(event);
   if (buffer.length > MAX_BUFFER) buffer.splice(0, buffer.length - MAX_BUFFER);
+  if (event.type === "thinking" || event.type === "model_call" || event.type === "model_result") {
+    const at = Date.now();
+    globalLastThinking = at;
+    if (event.sessionId) sessionLastThinking.set(event.sessionId, at);
+  }
   emitter.emit("event", event);
   await persist();
   return event;
+}
+
+export function lastThinkingAge(sessionId) {
+  const now = Date.now();
+  if (sessionId && sessionLastThinking.has(sessionId)) {
+    return now - sessionLastThinking.get(sessionId);
+  }
+  return globalLastThinking ? now - globalLastThinking : Infinity;
 }
 
 export async function getHermesEvents(limit = 200) {

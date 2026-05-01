@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { ROOTS } from "./config.mjs";
-import { appendHermesEvent } from "./hermesEvents.mjs";
+import { appendHermesEvent, lastThinkingAge } from "./hermesEvents.mjs";
 import { createRunRequest } from "./runRequests.mjs";
 import { safeSnippet } from "./redaction.mjs";
 import { previewProposedCommand } from "./diffPreview.mjs";
@@ -95,7 +95,19 @@ async function hydrate() {
 // the title implies code change ("add", "tweak", "refine", "fix"), refuse.
 const NO_OP_TITLE_RE = /\b(add|fix|tweak|refine|polish|improve|enhance|update|implement|ship|new)\b/i;
 
+const THINKING_WINDOW_MS = 60_000;
+
 async function validateProposalActuallyChanges(proposal) {
+  // Pattern 4 enforced server-side: require Hermes to have narrated reasoning
+  // (thinking / model_call / model_result event) within the last minute before
+  // it can submit an autoSafe proposal. Forces the model to use bridge.thinking().
+  const age = lastThinkingAge(proposal.sessionId);
+  if (age > THINKING_WINDOW_MS) {
+    return {
+      ok: false,
+      reason: `No bridge.thinking() / model_call event in the last 60s${proposal.sessionId ? ` for session ${proposal.sessionId}` : ""}. Call bridge.thinking('<one-line reasoning>') before proposing.`
+    };
+  }
   if (proposal.kind !== "shell") return { ok: true };
   if (!proposal.command && !proposal.argv?.length) return { ok: true };
   // Reservation: typecheck / test / build / lint are diagnostic-only by design.

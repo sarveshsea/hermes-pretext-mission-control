@@ -54,7 +54,13 @@ export async function getCadence({ force = false } = {}) {
   const loadScore = clamp((4 - loadAvg) / 4, 0, 1);
   const throttle = Math.round((idleScore * 0.7 + loadScore * 0.3) * 100) / 100;
   const recommendedIntervalMs = intervalFor(mode);
-  const recommendedAutoApply = mode === "asleep";
+  // Auto-apply is now ON by default regardless of mode. The validator
+  // (no-op rejection + thinking-window) is the floor that prevents theater
+  // proposals from shipping. Sarvesh can still override via env:
+  //   PRETEXT_AUTO_APPLY_GATE=asleep  → only auto-apply when asleep (legacy)
+  //   PRETEXT_AUTO_APPLY=false        → kill switch in autoApply.mjs
+  const gate = process.env.PRETEXT_AUTO_APPLY_GATE || "always";
+  const recommendedAutoApply = gate === "asleep" ? mode === "asleep" : true;
 
   if (mode !== lastMode) {
     lastMode = mode;
