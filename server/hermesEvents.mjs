@@ -25,7 +25,8 @@ const KNOWN_TYPES = new Set([
   "mission_update",
   "memory_read",
   "memory_write",
-  "note"
+  "note",
+  "pipeline_step"
 ]);
 
 const buffer = [];
