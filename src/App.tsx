@@ -47,6 +47,8 @@ import PlaybookScoreboardPanel from "./components/panes/PlaybookScoreboardPanel"
 import GoalsPanel from "./components/panes/GoalsPanel";
 import OllamaQueuePanel from "./components/panes/OllamaQueuePanel";
 import ArchivesPanel from "./components/panes/ArchivesPanel";
+import DelegationInboxPanel from "./components/panes/DelegationInboxPanel";
+import AgentVoicePanel from "./components/panes/AgentVoicePanel";
 import WhyStrip from "./components/WhyStrip";
 
 const POLL_MS = 12_000;
@@ -209,10 +211,7 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
-      if (e.key === "/") {
-        e.preventDefault();
-        document.querySelector<HTMLInputElement>('[data-pane-input="code-search"]')?.focus();
-      } else if (e.key === "Escape") {
+      if (e.key === "Escape") {
         setInspectedEvent(null);
         setDiffProposal(null);
       } else if (e.key === "g") {
@@ -224,7 +223,7 @@ export default function App() {
         const latestEvent = liveEvents[0];
         if (latestEvent) setInspectedEvent(latestEvent);
       } else if (e.key === "?") {
-        alert("g: focus hermes · p: preview top proposal · m: inspect latest event · /: code-search · Esc: close overlays");
+        alert("g: focus hermes · p: preview top proposal · m: inspect latest event · Esc: close overlays");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -333,7 +332,7 @@ export default function App() {
         <span className="topbar-mode muted">
           {payload.cadence.mode.toUpperCase()} · idle {payload.cadence.idleSec}s · {Math.round(payload.cadence.recommendedIntervalMs / 1000)}s · {payload.cadence.recommendedAutoApply ? "AUTO-APPLY" : "manual"}
         </span>
-        <span className="kbd-hint muted">/ search · g focus · p propose · m inspect · ? help</span>
+        <span className="kbd-hint muted">g focus · p propose · m inspect · ? help</span>
       </header>
 
       <aside className="bento-rail">
@@ -353,6 +352,8 @@ export default function App() {
         {cell("thinking", <ThinkingPanel mission={payload.mission} />)}
         {cell("live", <HermesLivePanel events={liveEvents} onSelect={setInspectedEvent} />)}
         {cell("memory", <MemoryPanel mission={payload.mission} events={liveEvents} />)}
+        {cell("agentvoice", <AgentVoicePanel events={liveEvents} onSelect={setInspectedEvent} />)}
+        {cell("delegation", <DelegationInboxPanel />)}
 
         {cell("proposals",
           payload.pendingProposals.length === 0 ? (

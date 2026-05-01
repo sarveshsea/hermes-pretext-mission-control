@@ -241,53 +241,85 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
         drawConcentricRings(context, pos.x, pos.y, frame, intensity);
       }
 
-      // 5. Hermes nodes with pulse-driven halo
+      // 5. Hermes nodes with pulse-driven halo. Cleaner typography, softer
+      //    halo gradient so it doesn't clash with the dark bg.
       nodes.forEach((node) => {
         const pos = effectiveNodePosition(node, nodePositionOverrides, rect);
         const isActive = node.id === activeNode;
         const pulse = nodePulseRef.current.get(node.id) || 0;
         nodePulseRef.current.set(node.id, decay(pulse, dt, 600));
         const breathing = isActive ? Math.sin(frame * 0.06) * 1.4 : 0;
-        const radius = 24 + pulse * 8 + breathing;
-        const haloAlpha = Math.min(0.55, 0.04 + pulse * 0.18 + (isActive ? 0.15 : 0));
+        const radius = 22 + pulse * 6 + breathing;
+        const haloAlpha = Math.min(0.45, 0.03 + pulse * 0.14 + (isActive ? 0.12 : 0));
 
-        const grad = context.createRadialGradient(pos.x, pos.y, 4, pos.x, pos.y, radius * 1.4);
-        grad.addColorStop(0, isActive ? `rgba(208, 241, 0, ${haloAlpha + 0.2})` : `rgba(140, 200, 255, ${haloAlpha})`);
-        grad.addColorStop(1, "rgba(0, 16, 51, 0)");
+        const grad = context.createRadialGradient(pos.x, pos.y, 3, pos.x, pos.y, radius * 1.6);
+        grad.addColorStop(0, isActive ? `rgba(208, 241, 0, ${haloAlpha + 0.18})` : `rgba(140, 200, 255, ${haloAlpha})`);
+        grad.addColorStop(1, "rgba(10, 10, 12, 0)");
         context.fillStyle = grad;
         context.beginPath();
-        context.arc(pos.x, pos.y, radius * 1.4, 0, Math.PI * 2);
+        context.arc(pos.x, pos.y, radius * 1.6, 0, Math.PI * 2);
         context.fill();
 
-        context.font = `13px ${MONO}`;
+        // Label + metric with consistent baseline.
+        context.font = `600 12px ${MONO}`;
         context.textAlign = "center";
-        context.fillStyle = isActive ? "#d0f100" : "rgba(224, 246, 255, 0.92)";
+        context.fillStyle = isActive ? "#d0f100" : "rgba(237, 237, 240, 0.92)";
         context.fillText(
-          isActive ? `> ${node.label.toUpperCase()} <` : `[${node.label.toUpperCase()}]`,
+          isActive ? `> ${node.label.toUpperCase()} <` : node.label.toUpperCase(),
           pos.x,
           pos.y
         );
-        context.fillStyle = isActive ? "rgba(208, 241, 0, 0.78)" : "rgba(180, 220, 255, 0.55)";
-        context.fillText(node.metric.slice(0, 30), pos.x, pos.y + 16);
+        context.font = `400 10.5px ${MONO}`;
+        context.fillStyle = isActive ? "rgba(208, 241, 0, 0.7)" : "rgba(255, 255, 255, 0.42)";
+        context.fillText(node.metric.slice(0, 32), pos.x, pos.y + 14);
         context.textAlign = "left";
       });
 
-      // 6. Center kinetic headline
-      const prepared = prepareWithSegments(headline, `15px ${MONO}`);
-      const headlineWidth = Math.min(640, rect.width * 0.42);
-      const layout = layoutWithLines(prepared, headlineWidth, 22);
+      // 6. Center kinetic headline — softer panel-style backdrop, no hard
+      //    navy rectangle.
+      const prepared = prepareWithSegments(headline, `13px ${MONO}`);
+      const headlineWidth = Math.min(560, rect.width * 0.78);
+      const layout = layoutWithLines(prepared, headlineWidth, 19);
       const textX = centerX - headlineWidth / 2;
-      const textY = centerY - 70;
-      context.fillStyle = "rgba(0, 16, 51, 0.6)";
-      context.fillRect(textX - 16, textY - 14, headlineWidth + 32, 134);
-      context.strokeStyle = "rgba(208, 241, 0, 0.32)";
-      context.strokeRect(textX - 16.5, textY - 14.5, headlineWidth + 33, 135);
-      context.font = `15px ${MONO}`;
+      const textY = centerY - 56;
+      const lineCount = Math.min(5, layout.lines.length);
+      const panelHeight = 14 + lineCount * 19 + 10;
+
+      // Translucent bg matching the bento panel surface, with subtle
+      // chartreuse glow on the left edge instead of a hard outline.
+      context.fillStyle = "rgba(17, 17, 20, 0.72)";
+      const r = 6;
+      const px = textX - 14;
+      const py = textY - 10;
+      const pw = headlineWidth + 28;
+      const ph = panelHeight;
+      // rounded rect
+      context.beginPath();
+      context.moveTo(px + r, py);
+      context.lineTo(px + pw - r, py);
+      context.quadraticCurveTo(px + pw, py, px + pw, py + r);
+      context.lineTo(px + pw, py + ph - r);
+      context.quadraticCurveTo(px + pw, py + ph, px + pw - r, py + ph);
+      context.lineTo(px + r, py + ph);
+      context.quadraticCurveTo(px, py + ph, px, py + ph - r);
+      context.lineTo(px, py + r);
+      context.quadraticCurveTo(px, py, px + r, py);
+      context.closePath();
+      context.fill();
+      // accent left bar
+      context.fillStyle = "rgba(208, 241, 0, 0.55)";
+      context.fillRect(px, py + 2, 2, ph - 4);
+      // hairline border
+      context.strokeStyle = "rgba(255, 255, 255, 0.08)";
+      context.lineWidth = 1;
+      context.stroke();
+
+      context.font = `13px ${MONO}`;
       context.textBaseline = "top";
       layout.lines.slice(0, 5).forEach((line, index) => {
-        context.fillStyle = index === 0 ? "#d0f100" : "rgba(250, 254, 255, 0.86)";
-        context.globalAlpha = 0.98 - index * 0.06;
-        context.fillText(index === 0 ? `$ ${line.text}` : `  ${line.text}`, textX, textY + index * 22);
+        context.fillStyle = index === 0 ? "#d0f100" : "rgba(237, 237, 240, 0.82)";
+        context.globalAlpha = 0.96 - index * 0.05;
+        context.fillText(index === 0 ? `$ ${line.text}` : `  ${line.text}`, textX, textY + index * 19);
       });
       context.globalAlpha = 1;
       context.textBaseline = "alphabetic";
