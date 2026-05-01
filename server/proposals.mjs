@@ -102,6 +102,8 @@ export async function createProposal(input = {}) {
     argv: Array.isArray(input.argv) ? input.argv.map((part) => String(part)) : null,
     cwd: input.cwd ? String(input.cwd) : null,
     sessionId: input.sessionId ? String(input.sessionId).slice(0, 80) : null,
+    autoSafe: input.autoSafe === true,
+    autoAppliedAt: null,
     decidedAt: null,
     decision: null,
     declineReason: null,
