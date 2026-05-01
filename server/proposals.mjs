@@ -1,16 +1,25 @@
 import { promises as fs } from "node:fs";
+import { execFile } from "node:child_process";
 import path from "node:path";
 import { ROOTS } from "./config.mjs";
 import { appendHermesEvent, lastThinkingAge } from "./hermesEvents.mjs";
 import { createRunRequest } from "./runRequests.mjs";
 import { safeSnippet } from "./redaction.mjs";
-import { previewProposedCommand } from "./diffPreview.mjs";
+import { previewProposedCommand, previewProposedEdit } from "./diffPreview.mjs";
 
 const MAX_HISTORY = 200;
 const STORE_FILE = path.join(ROOTS.project, "data/improvement-proposals.json");
 const MARKDOWN_FILE = path.join(ROOTS.reviewQueues, "Hermes Proposals.md");
 
-const VALID_KIND = new Set(["shell", "patch", "note"]);
+const VALID_KIND = new Set(["shell", "patch", "note", "edit"]);
+
+function execGit(args, options = {}) {
+  return new Promise((resolve) => {
+    execFile("git", args, { cwd: ROOTS.project, timeout: 30_000, maxBuffer: 4 * 1024 * 1024, ...options }, (error, stdout, stderr) => {
+      resolve({ ok: !error, stdout: (stdout || "").toString(), stderr: (stderr || "").toString(), code: error?.code ?? 0 });
+    });
+  });
+}
 
 let proposals = [];
 let storeOverride = null;
@@ -107,6 +116,25 @@ async function validateProposalActuallyChanges(proposal) {
       ok: false,
       reason: `No bridge.thinking() / model_call event in the last 60s${proposal.sessionId ? ` for session ${proposal.sessionId}` : ""}. Call bridge.thinking('<one-line reasoning>') before proposing.`
     };
+  }
+  if (proposal.kind === "edit") {
+    if (!proposal.filePath) return { ok: false, reason: "edit proposal missing filePath" };
+    try {
+      const preview = await previewProposedEdit({
+        filePath: proposal.filePath,
+        find: proposal.find,
+        replace: proposal.replace,
+        content: proposal.content,
+        allowCreate: proposal.allowCreate === true,
+        overwrite: proposal.overwrite === true
+      });
+      if (!preview.ok) return { ok: false, reason: `edit preview failed: ${preview.reason}` };
+      const stat = (preview.diffStat || "").trim();
+      if (!stat) return { ok: false, reason: "edit preview produced no diff" };
+      return { ok: true, preview };
+    } catch (error) {
+      return { ok: false, reason: `edit preview error: ${error?.message || "unknown"}` };
+    }
   }
   if (proposal.kind !== "shell") return { ok: true };
   if (!proposal.command && !proposal.argv?.length) return { ok: true };

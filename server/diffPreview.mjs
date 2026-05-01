@@ -76,3 +76,89 @@ export async function previewProposedCommand({ command, argv, allowNetwork = fal
     void rmrf(sandbox).catch(() => {});
   }
 }
+
+// Preview a structured file edit without going through a shell pipeline.
+// Two modes:
+//   - find/replace: replace `find` (literal, single occurrence required) with `replace`
+//   - content + allowCreate: write a fresh file (must not exist already unless overwrite=true)
+// Sandboxed via the same git-clone trick as previewProposedCommand so the live
+// tree is never touched. Returns { ok, diffStat, diff, reason }.
+export async function previewProposedEdit({
+  filePath,
+  find,
+  replace,
+  content,
+  allowCreate = false,
+  overwrite = false
+} = {}) {
+  if (!filePath || typeof filePath !== "string") {
+    const error = new Error("filePath required");
+    error.status = 400;
+    throw error;
+  }
+  // Path containment: filePath must be relative and resolve inside ROOTS.project.
+  const normalized = path.normalize(filePath).replace(/^\/+/, "");
+  if (normalized.startsWith("..") || path.isAbsolute(normalized)) {
+    return { ok: false, reason: "filePath must be relative to project root" };
+  }
+  const usingFindReplace = typeof find === "string" && find.length > 0;
+  const usingContent = typeof content === "string";
+  if (!usingFindReplace && !usingContent) {
+    return { ok: false, reason: "either find/replace or content must be provided" };
+  }
+  if (usingFindReplace && typeof replace !== "string") {
+    return { ok: false, reason: "replace must be a string when find is provided" };
+  }
+
+  const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), "pretext-edit-preview-"));
+  try {
+    const clone = await execFileAsync("git", ["clone", "--shared", "--no-checkout", ROOTS.project, sandbox]);
+    if (!clone.ok) return { ok: false, reason: `git clone failed: ${safeSnippet(clone.stderr, 200)}` };
+    const checkout = await execFileAsync("git", ["-C", sandbox, "checkout"]);
+    if (!checkout.ok) return { ok: false, reason: `git checkout failed: ${safeSnippet(checkout.stderr, 200)}` };
+
+    const target = path.join(sandbox, normalized);
+    let original = null;
+    try {
+      original = await fs.readFile(target, "utf8");
+    } catch {
+      original = null;
+    }
+
+    if (usingFindReplace) {
+      if (original === null) return { ok: false, reason: `file does not exist: ${normalized}` };
+      const idx = original.indexOf(find);
+      if (idx === -1) return { ok: false, reason: `find string not found in ${normalized}` };
+      const next = original.indexOf(find, idx + find.length);
+      if (next !== -1) return { ok: false, reason: `find string is not unique in ${normalized} (matches at ${idx} and ${next})` };
+      const updated = original.slice(0, idx) + replace + original.slice(idx + find.length);
+      if (updated === original) return { ok: false, reason: "replace produces no change" };
+      await fs.writeFile(target, updated, "utf8");
+    } else {
+      if (original !== null && !overwrite) {
+        return { ok: false, reason: `file already exists: ${normalized} (set overwrite=true to replace)` };
+      }
+      if (original === null && !allowCreate) {
+        return { ok: false, reason: `file does not exist: ${normalized} (set allowCreate=true to create)` };
+      }
+      await fs.mkdir(path.dirname(target), { recursive: true });
+      await fs.writeFile(target, content, "utf8");
+    }
+
+    const add = await execFileAsync("git", ["-C", sandbox, "add", "-A", "--"]);
+    if (!add.ok) return { ok: false, reason: `git add failed: ${safeSnippet(add.stderr, 200)}` };
+    const diffStat = await execFileAsync("git", ["-C", sandbox, "diff", "--no-color", "--stat", "--cached"]);
+    const diffFull = await execFileAsync("git", ["-C", sandbox, "diff", "--no-color", "--cached"]);
+    const stat = (diffStat.stdout || "").trim();
+    return {
+      ok: true,
+      diffStat: safeSnippet(stat, 8000),
+      diff: diffFull.stdout.length > MAX_DIFF_BYTES
+        ? `${diffFull.stdout.slice(0, MAX_DIFF_BYTES)}\n…[truncated]`
+        : diffFull.stdout,
+      reason: stat ? "preview applied" : "no change"
+    };
+  } finally {
+    void rmrf(sandbox).catch(() => {});
+  }
+}
