@@ -21,8 +21,84 @@ type Props = {
   nodePositionOverrides?: Record<string, { x: number; y: number }>;
 };
 
+type PulseRing = { x: number; y: number; born: number; ttl: number; hue: string };
+
 const MONO = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
-const BG = "#001033";
+const BG = "#0a0a0c";
+
+function drawHexGrid(ctx: CanvasRenderingContext2D, w: number, h: number, frame: number) {
+  const r = 22;
+  const dx = r * Math.sqrt(3);
+  const dy = r * 1.5;
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+  ctx.lineWidth = 0.5;
+  for (let row = -1, ry = 0; ry < h + r; row++, ry = row * dy) {
+    const offset = row % 2 === 0 ? 0 : dx / 2;
+    for (let cx = -dx; cx < w + dx; cx += dx) {
+      const x = cx + offset;
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i + Math.PI / 6;
+        const px = x + Math.cos(angle) * r;
+        const py = ry + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  // subtle scanline
+  const scan = ((frame * 0.6) % h) - 40;
+  const grad = ctx.createLinearGradient(0, scan, 0, scan + 40);
+  grad.addColorStop(0, "rgba(208, 241, 0, 0)");
+  grad.addColorStop(0.5, "rgba(208, 241, 0, 0.04)");
+  grad.addColorStop(1, "rgba(208, 241, 0, 0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, scan, w, 40);
+}
+
+function drawConcentricRings(ctx: CanvasRenderingContext2D, x: number, y: number, frame: number, intensity: number) {
+  const radii = [44, 60, 80, 102];
+  const rotations = [0.004, -0.0024, 0.0016, -0.001];
+  radii.forEach((r, i) => {
+    const phase = frame * rotations[i];
+    ctx.strokeStyle = `rgba(208, 241, 0, ${0.08 + intensity * 0.18 * (1 - i / radii.length)})`;
+    ctx.lineWidth = i === 0 ? 1.4 : 0.6;
+    ctx.setLineDash(i === 1 ? [5, 9] : i === 2 ? [2, 6] : []);
+    ctx.beginPath();
+    const start = phase % (Math.PI * 2);
+    const arcLen = i === 0 ? Math.PI * 2 : Math.PI * 1.4;
+    ctx.arc(x, y, r, start, start + arcLen);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    if (i === 0) {
+      // tick marks every 30°
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+        const ax = x + Math.cos(a + phase) * (r - 3);
+        const ay = y + Math.sin(a + phase) * (r - 3);
+        const bx = x + Math.cos(a + phase) * (r + 3);
+        const by = y + Math.sin(a + phase) * (r + 3);
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.stroke();
+      }
+    }
+  });
+}
+
+function drawPulseRing(ctx: CanvasRenderingContext2D, ring: PulseRing, now: number): boolean {
+  const t = (now - ring.born) / ring.ttl;
+  if (t >= 1) return false;
+  const radius = 10 + t * 80;
+  ctx.strokeStyle = ring.hue.replace(/[\d.]+\)/, `${(1 - t) * 0.8})`);
+  ctx.lineWidth = 2 * (1 - t);
+  ctx.beginPath();
+  ctx.arc(ring.x, ring.y, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  return true;
+}
 
 function buildHeadline(payload: DashboardPayload, nodes: ConsoleNode[], activeNode: ConsoleNodeId) {
   const active = nodes.find((node) => node.id === activeNode);
@@ -58,6 +134,7 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
   const nodePulseRef = useRef<Map<string, number>>(new Map());
   const lastEventIdRef = useRef<string | null>(null);
   const lastFrameRef = useRef<number>(performance.now());
+  const pulseRingsRef = useRef<PulseRing[]>([]);
 
   // Spawn particles for new events, boost edge heat + node pulse.
   useEffect(() => {
@@ -90,6 +167,12 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
         nodePulseRef.current.set(traj.target, Math.min((nodePulseRef.current.get(traj.target) || 0) + 1, 4));
         const particle = spawnParticle(event, resolveNode, now);
         if (particle) particlesRef.current.push(particle);
+        // Pulse ring on the destination node
+        const dest = resolveNode(traj.target);
+        if (dest) {
+          const hueMatch = particle?.hue || "rgba(208, 241, 0, 0.8)";
+          pulseRingsRef.current.push({ x: dest.x, y: dest.y, born: now, ttl: 1100, hue: hueMatch });
+        }
       });
   }, [liveEvents, nodes, nodePositionOverrides]);
 
@@ -114,25 +197,12 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       context.clearRect(0, 0, rect.width, rect.height);
 
-      // 1. Flat background — no gradient, no matrix rain.
+      // 1. Flat background.
       context.fillStyle = BG;
       context.fillRect(0, 0, rect.width, rect.height);
 
-      // 2. Subtle grid, every 80px, very faint.
-      context.strokeStyle = "rgba(140, 200, 255, 0.04)";
-      context.lineWidth = 1;
-      for (let x = 80; x < rect.width; x += 80) {
-        context.beginPath();
-        context.moveTo(x, 0);
-        context.lineTo(x, rect.height);
-        context.stroke();
-      }
-      for (let y = 80; y < rect.height; y += 80) {
-        context.beginPath();
-        context.moveTo(0, y);
-        context.lineTo(rect.width, y);
-        context.stroke();
-      }
+      // 2. Hex-grid backdrop with slow scanline.
+      drawHexGrid(context, rect.width, rect.height, frame);
 
       const centerX = rect.width / 2;
       const centerY = rect.height * 0.5;
@@ -157,8 +227,19 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
         });
       });
 
-      // 4. Particles
+      // 4a. Pulse rings (event arrival pop)
+      pulseRingsRef.current = pulseRingsRef.current.filter((ring) => drawPulseRing(context, ring, now));
+
+      // 4b. Particles travelling along edges
       particlesRef.current = particlesRef.current.filter((particle) => drawParticle(context, particle, now));
+
+      // 4c. Concentric rings around the HERMES node
+      const hermesNode = nodes.find((n) => n.id === "hermes");
+      if (hermesNode) {
+        const pos = effectiveNodePosition(hermesNode, nodePositionOverrides, rect);
+        const intensity = Math.min(1, (nodePulseRef.current.get("hermes") || 0) / 2);
+        drawConcentricRings(context, pos.x, pos.y, frame, intensity);
+      }
 
       // 5. Hermes nodes with pulse-driven halo
       nodes.forEach((node) => {
