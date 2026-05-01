@@ -24,6 +24,8 @@ import { listPlans } from "./harness.mjs";
 import { getOutboundStatus } from "./telegram.mjs";
 import { getPerfMetrics } from "./perfMetrics.mjs";
 import { getSubagentTree } from "./subagents.mjs";
+import { getProcessSummary } from "./processes.mjs";
+import { listSubscriptionTasks } from "./subscriptions.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
 import { getRunRequests } from "./runRequests.mjs";
@@ -338,7 +340,9 @@ export async function getDashboardPayload() {
     plans,
     telegramOutbound,
     perf,
-    subagentTree
+    subagentTree,
+    processes,
+    subscriptions
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -367,7 +371,9 @@ export async function getDashboardPayload() {
     listPlans(8),
     Promise.resolve(getOutboundStatus()),
     getPerfMetrics(),
-    getSubagentTree()
+    getSubagentTree(),
+    getProcessSummary(),
+    listSubscriptionTasks()
   ]);
   return {
     status,
@@ -397,6 +403,8 @@ export async function getDashboardPayload() {
     plans,
     telegramOutbound,
     perf,
-    subagentTree
+    subagentTree,
+    processes,
+    subscriptions
   };
 }

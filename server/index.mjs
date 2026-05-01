@@ -55,6 +55,12 @@ import { THEMED_SURFACES, getAllThemedSummaries, getThemedItems, postThemedItem 
 import { getOutboundStatus, sendTelegramMessage, setOutboundEnabled } from "./telegram.mjs";
 import { getOllamaWarmStatus, startOllamaWarm } from "./ollamaWarm.mjs";
 import { getLayout, resetLayout, updateLayout } from "./dashboardLayout.mjs";
+import { getProcessSummary } from "./processes.mjs";
+import {
+  dispatchSubscriptionTask,
+  listSubscriptionTasks,
+  logSubscriptionResult
+} from "./subscriptions.mjs";
 import { searchCode } from "./codeSearch.mjs";
 import { previewProposedCommand } from "./diffPreview.mjs";
 import { getActiveDevRuns, listDevChecks, runDevCheck } from "./devTools.mjs";
@@ -356,6 +362,23 @@ async function apiRoute(req, res) {
   }
   if (req.method === "DELETE" && url.pathname === "/api/dashboard-layout") {
     return sendJson(res, 200, await resetLayout());
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/hermes/processes") {
+    return sendJson(res, 200, await getProcessSummary());
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/hermes/subscriptions") {
+    return sendJson(res, 201, await dispatchSubscriptionTask(await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/subscriptions") {
+    const provider = url.searchParams.get("provider") || undefined;
+    const status = url.searchParams.get("status") || undefined;
+    return sendJson(res, 200, await listSubscriptionTasks({ provider, status }));
+  }
+  const subUpdate = url.pathname.match(/^\/api\/hermes\/subscriptions\/([^/]+)$/);
+  if (req.method === "PATCH" && subUpdate) {
+    return sendJson(res, 200, await logSubscriptionResult(decodeURIComponent(subUpdate[1]), await readJsonBody(req)));
   }
 
   if (req.method === "POST" && url.pathname === "/api/code/search") {

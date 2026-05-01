@@ -360,6 +360,49 @@ export type TelegramOutboundStatus = {
   lastSendAt: string | null;
 };
 
+export type ProcessRow = {
+  id: string;
+  label: string;
+  state: string;
+  detail: string;
+  lastAt: string | null;
+  lastError: string | null;
+};
+
+export type CronRow = {
+  id: string;
+  name: string;
+  everyMinutes: number | null;
+  enabled: boolean;
+  state: string;
+  model: string | null;
+  lastRunAt: string | null;
+  lastStatus: string | null;
+  lastError: string | null;
+  nextRunAt: string | null;
+  completed: number;
+  workdir: string | null;
+};
+
+export type ProcessSummary = {
+  generatedAt: string;
+  processes: ProcessRow[];
+  crons: CronRow[];
+};
+
+export type SubscriptionTask = {
+  id: string;
+  provider: string;
+  intent: string;
+  payload: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string | null;
+  result: string | null;
+  notes: string[];
+};
+
 export type DashboardPayload = {
   status: StatusPayload;
   reviewQueues: ReviewQueue[];
@@ -387,6 +430,8 @@ export type DashboardPayload = {
   tasks: Task[];
   plans: PlanState[];
   telegramOutbound: TelegramOutboundStatus;
+  processes: ProcessSummary;
+  subscriptions: SubscriptionTask[];
   perf: {
     generatedAt: string;
     ollama: { residentModels: { name: string; sizeVramMb: number; contextLen: number; expiresAt: string | null }[] };
