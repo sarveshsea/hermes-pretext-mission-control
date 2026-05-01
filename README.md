@@ -29,3 +29,5 @@ Reference notes:
 
 - `/Users/sarveshchidambaram/Documents/Obsidian/Sarvesh Brain/Agent/Context/Style References/Antimetal Style Reference.md`
 - `/Users/sarveshchidambaram/Documents/Obsidian/Sarvesh Brain/Agent/Context/Style References/Refero Styles Reference.md`
+
+<!-- smoke -->
