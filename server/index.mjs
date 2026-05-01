@@ -63,6 +63,10 @@ import { generateSessionReport } from "./sessionReport.mjs";
 import { listPlaybooks } from "./playbookLoader.mjs";
 import { getPipelineStatus, startPipelineWorker } from "./pipelineWorker.mjs";
 import { getPowerMetrics } from "./powerMetrics.mjs";
+import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
+import { readJournalTail } from "./pipelineJournal.mjs";
+import { readAllStats } from "./playbookStats.mjs";
+import { batchConcretizeLedger, seedDogfoodTasks } from "./maintenance.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
@@ -390,6 +394,24 @@ async function apiRoute(req, res) {
     const minutes = Number(url.searchParams.get("minutes") || 60);
     return sendJson(res, 200, await getPowerMetrics({ windowMinutes: Math.min(Math.max(minutes, 5), 720) }));
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/code-index") {
+    return sendJson(res, 200, { status: getCodeIndexStatus(), index: await getCodeIndex() });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/pipeline-journal") {
+    const n = Number(url.searchParams.get("limit") || 30);
+    return sendJson(res, 200, { entries: await readJournalTail(Math.min(Math.max(n, 1), 60)) });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/playbook-stats") {
+    return sendJson(res, 200, { stats: await readAllStats() });
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/concretize-ledger") {
+    const body = await readJsonBody(req);
+    const limit = Number(body?.limit || 50);
+    return sendJson(res, 200, await batchConcretizeLedger({ limit: Math.min(Math.max(limit, 1), 200) }));
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/maintenance/seed-dogfood") {
+    return sendJson(res, 200, await seedDogfoodTasks());
+  }
   if (req.method === "GET" && url.pathname === "/api/hermes/event-archive") {
     return sendJson(res, 200, getEventArchiveStatus());
   }
@@ -514,6 +536,7 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startMemoryConsolidator();
   // Disable the old single-worker and run the parallel swarm instead.
   if (process.env.PRETEXT_LEGACY_WORKER === "true") startContinuousWorker();
+  startCodeIndex();
   startWorkerSwarm();
   startPipelineWorker();
   startEventArchive();

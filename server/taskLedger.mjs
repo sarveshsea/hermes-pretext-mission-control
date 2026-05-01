@@ -108,7 +108,9 @@ export async function addTask(input = {}) {
     createdBy: safeSnippet(input.createdBy || "hermes", 80),
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
-    notes: Array.isArray(input.notes) ? input.notes.map((note) => safeSnippet(String(note), 400)) : []
+    notes: Array.isArray(input.notes) ? input.notes.map((note) => safeSnippet(String(note), 400)) : [],
+    tags: Array.isArray(input.tags) ? input.tags.map((t) => String(t).slice(0, 32)).slice(0, 8) : [],
+    pipelineState: input.pipelineState && typeof input.pipelineState === "object" ? input.pipelineState : null
   };
   cache.push(task);
   await persist();
@@ -131,6 +133,12 @@ export async function updateTask(id, patch = {}) {
     task.notes = (task.notes || []).concat(patch.notes.map((note) => safeSnippet(String(note), 400))).slice(-30);
   } else if (typeof patch.note === "string" && patch.note) {
     task.notes = (task.notes || []).concat([safeSnippet(patch.note, 400)]).slice(-30);
+  }
+  if (Array.isArray(patch.tags)) {
+    task.tags = Array.from(new Set([...(task.tags || []), ...patch.tags.map((t) => String(t).slice(0, 32))])).slice(0, 8);
+  }
+  if (patch.pipelineState !== undefined) {
+    task.pipelineState = patch.pipelineState;
   }
   task.updatedAt = new Date().toISOString();
   await persist();
