@@ -1517,7 +1517,7 @@ option {
   line-height: 1;
 }
 .power-num-on {
-  color: rgb(208, 241, 0);
+  color: var(--color-chartreuse);
   text-shadow: 0 0 12px rgba(208, 241, 0, 0.35);
 }
 .power-num-off {
