@@ -32,6 +32,11 @@ const buffer = [];
 const emitter = new EventEmitter();
 emitter.setMaxListeners(0);
 let storeOverride = null;
+// Tracks when each session last fired a thinking-class event. Validators
+// use this to enforce that the model actually narrates its reasoning before
+// proposing changes.
+const sessionLastThinking = new Map();
+let globalLastThinking = 0;
 
 function storePath() {
   return storeOverride || path.join(ROOTS.project, "data/hermes-events.json");
