@@ -85,6 +85,20 @@ async function appendChangelog(event) {
     existing = "# Changelog\n";
   }
 
+  // Dedup gate: if the most recent heading already has the exact same title
+  // AND the same summary as what we're about to write, skip. This stops the
+  // 5-minute loop from spamming identical "Local Console Follow-Through"
+  // entries when the underlying observation hasn't changed.
+  const lastHeadingMatch = existing.match(/##\s+([^\n]+)\n+([\s\S]*?)(?=\n##\s|$)/);
+  if (lastHeadingMatch) {
+    const lastTitle = lastHeadingMatch[1].trim();
+    const lastBody = lastHeadingMatch[2];
+    const incomingTitle = `${event.date} - ${event.title}`;
+    if (lastTitle === incomingTitle && lastBody.includes(event.summary.slice(0, 80))) {
+      return; // identical; skip
+    }
+  }
+
   const entry = [
     "",
     `## ${event.date} - ${event.title}`,
