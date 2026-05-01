@@ -44,7 +44,8 @@ export async function searchCode({ pattern, scope = "project", maxResults = MAX_
     error.status = 400;
     throw error;
   }
-  const args = [
+  // Try ripgrep first (fast); fall back to grep -rn (always available on macOS).
+  const rgArgs = [
     "--no-heading",
     "--line-number",
     "--column",
@@ -53,38 +54,53 @@ export async function searchCode({ pattern, scope = "project", maxResults = MAX_
     "--max-columns",
     "200",
     "--smart-case",
-    "--ignore-case",
     "--max-depth",
-    "8",
-    "--type-add",
-    "tsx:*.tsx",
-    "--type-add",
-    "mjs:*.mjs"
+    "8"
   ];
   if (fileGlob && typeof fileGlob === "string" && /^[a-zA-Z0-9_./*-]+$/.test(fileGlob)) {
-    args.push("--glob", fileGlob);
+    rgArgs.push("--glob", fileGlob);
   }
-  args.push("--", pattern);
-  const result = await execFileAsync("rg", args, { cwd, maxBuffer: 2 * 1024 * 1024 });
+  rgArgs.push("--", pattern);
+  let result = await execFileAsync("rg", rgArgs, { cwd, maxBuffer: 2 * 1024 * 1024 });
+  let usedTool = "rg";
+
+  // Fallback: grep -rn. Different output shape (no column), so we synthesize.
+  const rgMissing = result.code === "ENOENT" || (typeof result.code === "number" && result.code > 1);
+  if (rgMissing || (!result.stdout && result.stderr.includes("not found"))) {
+    const grepArgs = ["-rn", "-I", "--max-count=5", "--exclude-dir=node_modules", "--exclude-dir=.git", "--exclude-dir=dist", "--exclude-dir=build"];
+    if (fileGlob && /^[a-zA-Z0-9_./*-]+$/.test(fileGlob)) {
+      grepArgs.push(`--include=${fileGlob}`);
+    }
+    grepArgs.push(pattern, ".");
+    const grepResult = await execFileAsync("grep", grepArgs, { cwd, maxBuffer: 2 * 1024 * 1024 });
+    result = grepResult;
+    usedTool = "grep";
+  }
+
+  const parseLine = usedTool === "rg"
+    ? (line) => {
+        const match = line.match(/^([^:]+):(\d+):(\d+):(.*)$/);
+        if (!match) return null;
+        return { file: match[1], line: Number(match[2]), column: Number(match[3]), snippet: safeSnippet(match[4], 240) };
+      }
+    : (line) => {
+        // grep: "./path/file.mjs:line:content"
+        const match = line.match(/^\.?\/?([^:]+):(\d+):(.*)$/);
+        if (!match) return null;
+        return { file: match[1], line: Number(match[2]), column: 1, snippet: safeSnippet(match[3], 240) };
+      };
+
   const lines = result.stdout
     .split("\n")
     .filter(Boolean)
     .slice(0, maxResults)
-    .map((line) => {
-      const match = line.match(/^([^:]+):(\d+):(\d+):(.*)$/);
-      if (!match) return null;
-      return {
-        file: match[1],
-        line: Number(match[2]),
-        column: Number(match[3]),
-        snippet: safeSnippet(match[4], 240)
-      };
-    })
+    .map(parseLine)
     .filter(Boolean);
   return {
     generatedAt: new Date().toISOString(),
     pattern,
     scope,
+    tool: usedTool,
     truncated: result.stdout.split("\n").length > maxResults,
     matches: lines,
     error: result.code > 1 ? safeSnippet(result.stderr, 200) : null
