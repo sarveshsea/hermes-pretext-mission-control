@@ -53,6 +53,7 @@ import { addTask, listTasks, updateTask } from "./taskLedger.mjs";
 import { createPlan, getPlan, listPlans, recordStepResult, reflect } from "./harness.mjs";
 import { THEMED_SURFACES, getAllThemedSummaries, getThemedItems, postThemedItem } from "./themedSurfaces.mjs";
 import { getOutboundStatus, sendTelegramMessage, setOutboundEnabled } from "./telegram.mjs";
+import { getOllamaWarmStatus, startOllamaWarm } from "./ollamaWarm.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
@@ -336,6 +337,9 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/telegram/status") {
     return sendJson(res, 200, getOutboundStatus());
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/ollama-warm") {
+    return sendJson(res, 200, getOllamaWarmStatus());
+  }
 
   return false;
 }
@@ -399,4 +403,5 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startObsidianLogger();
   startObsidianWatcher();
   startAutoApplyLoop();
+  startOllamaWarm();
 });
