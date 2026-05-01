@@ -68,6 +68,7 @@ import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
 import { batchConcretizeLedger, seedDogfoodTasks } from "./maintenance.mjs";
 import { readGoals } from "./goals.mjs";
+import { getPaneSummaries } from "./paneSummaries.mjs";
 import {
   dispatchSubscriptionTask,
   listSubscriptionTasks,
@@ -415,6 +416,9 @@ async function apiRoute(req, res) {
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/goals") {
     return sendJson(res, 200, { goals: await readGoals() });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/pane-summaries") {
+    return sendJson(res, 200, await getPaneSummaries());
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/event-archive") {
     return sendJson(res, 200, getEventArchiveStatus());

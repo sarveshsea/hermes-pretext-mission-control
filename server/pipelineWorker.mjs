@@ -22,10 +22,13 @@ import { appendJournal, formatJournalForPrompt, readJournalTail } from "./pipeli
 import { safeSnippet } from "./redaction.mjs";
 
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
-// Phase-specific models: cheap for pickTask/search, smart for concretize/playbook.
+// Phase-specific models. Default to gemma4:e4b across all phases so we don't
+// fight the swarm for VRAM (model-swapping kills throughput). Set
+// PRETEXT_PIPELINE_*_MODEL=gpt-oss:20b once you're ready to spend the cycles
+// for sharper concretize/playbook output.
 const SEARCH_MODEL = process.env.PRETEXT_PIPELINE_SEARCH_MODEL || "gemma4:e4b";
-const CONCRETIZE_MODEL = process.env.PRETEXT_PIPELINE_CONCRETIZE_MODEL || "gpt-oss:20b";
-const PLAYBOOK_MODEL = process.env.PRETEXT_PIPELINE_PLAYBOOK_MODEL || "gpt-oss:20b";
+const CONCRETIZE_MODEL = process.env.PRETEXT_PIPELINE_CONCRETIZE_MODEL || "gemma4:e4b";
+const PLAYBOOK_MODEL = process.env.PRETEXT_PIPELINE_PLAYBOOK_MODEL || "gemma4:e4b";
 const TICK_MS = Number(process.env.PRETEXT_PIPELINE_TICK_MS || 90_000);
 const ATTEMPT_COOLDOWN_MS = 5 * 60_000;
 const MIN_INTERVAL_MS = 15_000;
