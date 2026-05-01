@@ -22,6 +22,8 @@ import { getAllThemedSummaries } from "./themedSurfaces.mjs";
 import { listTasks } from "./taskLedger.mjs";
 import { listPlans } from "./harness.mjs";
 import { getOutboundStatus } from "./telegram.mjs";
+import { getPerfMetrics } from "./perfMetrics.mjs";
+import { getSubagentTree } from "./subagents.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
 import { getRunRequests } from "./runRequests.mjs";
@@ -334,7 +336,9 @@ export async function getDashboardPayload() {
     themed,
     tasks,
     plans,
-    telegramOutbound
+    telegramOutbound,
+    perf,
+    subagentTree
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -361,7 +365,9 @@ export async function getDashboardPayload() {
     getAllThemedSummaries(),
     listTasks(),
     listPlans(8),
-    Promise.resolve(getOutboundStatus())
+    Promise.resolve(getOutboundStatus()),
+    getPerfMetrics(),
+    getSubagentTree()
   ]);
   return {
     status,
@@ -389,6 +395,8 @@ export async function getDashboardPayload() {
     themed,
     tasks,
     plans,
-    telegramOutbound
+    telegramOutbound,
+    perf,
+    subagentTree
   };
 }

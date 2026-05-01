@@ -54,6 +54,12 @@ import { createPlan, getPlan, listPlans, recordStepResult, reflect } from "./har
 import { THEMED_SURFACES, getAllThemedSummaries, getThemedItems, postThemedItem } from "./themedSurfaces.mjs";
 import { getOutboundStatus, sendTelegramMessage, setOutboundEnabled } from "./telegram.mjs";
 import { getOllamaWarmStatus, startOllamaWarm } from "./ollamaWarm.mjs";
+import { searchCode } from "./codeSearch.mjs";
+import { previewProposedCommand } from "./diffPreview.mjs";
+import { getActiveDevRuns, listDevChecks, runDevCheck } from "./devTools.mjs";
+import { getPerfMetrics } from "./perfMetrics.mjs";
+import { getSubagentTree, listSubagents, spawnSubagent, updateSubagent } from "./subagents.mjs";
+import { getMemoryConsolidatorStatus, startMemoryConsolidator } from "./memoryConsolidate.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
@@ -341,6 +347,43 @@ async function apiRoute(req, res) {
     return sendJson(res, 200, getOllamaWarmStatus());
   }
 
+  if (req.method === "POST" && url.pathname === "/api/code/search") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await searchCode(body));
+  }
+  if (req.method === "POST" && url.pathname === "/api/code/diff-preview") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await previewProposedCommand(body));
+  }
+  if (req.method === "POST" && url.pathname === "/api/dev/run") {
+    const body = await readJsonBody(req);
+    return sendJson(res, 200, await runDevCheck(body.name || "check"));
+  }
+  if (req.method === "GET" && url.pathname === "/api/dev/checks") {
+    return sendJson(res, 200, { available: listDevChecks(), active: getActiveDevRuns() });
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/perf") {
+    const probeSpeed = url.searchParams.get("speed") === "true";
+    return sendJson(res, 200, await getPerfMetrics({ probeSpeed }));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/subagents") {
+    const parentId = url.searchParams.get("parentId") || null;
+    return sendJson(res, 200, await listSubagents({ parentId }));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/subagents/tree") {
+    return sendJson(res, 200, await getSubagentTree());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/subagents") {
+    return sendJson(res, 201, await spawnSubagent(await readJsonBody(req)));
+  }
+  const subUpdateMatch = url.pathname.match(/^\/api\/hermes\/subagents\/([^/]+)$/);
+  if (req.method === "PATCH" && subUpdateMatch) {
+    return sendJson(res, 200, await updateSubagent(decodeURIComponent(subUpdateMatch[1]), await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/memory-consolidator") {
+    return sendJson(res, 200, getMemoryConsolidatorStatus());
+  }
+
   return false;
 }
 
@@ -404,4 +447,5 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startObsidianWatcher();
   startAutoApplyLoop();
   startOllamaWarm();
+  startMemoryConsolidator();
 });

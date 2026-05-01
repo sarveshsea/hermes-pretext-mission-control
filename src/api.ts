@@ -387,6 +387,20 @@ export type DashboardPayload = {
   tasks: Task[];
   plans: PlanState[];
   telegramOutbound: TelegramOutboundStatus;
+  perf: {
+    generatedAt: string;
+    ollama: { residentModels: { name: string; sizeVramMb: number; contextLen: number; expiresAt: string | null }[] };
+    node: { rssMb: number; heapUsedMb: number; cpuUserMs: number; cpuSystemMs: number; uptimeSec: number };
+    cpu: { cores: number; model: string; loadAvg: number[] };
+    memory: { totalGb: number; freeGb: number };
+    speed: { model: string; evalCount: number; tokensPerSec: number; wallMs: number } | null;
+  };
+  subagentTree: {
+    generatedAt: string;
+    total: number;
+    roots: { id: string; intent: string; mission: string; status: string }[];
+    byParent: Record<string, { id: string; intent: string; mission: string; status: string }[]>;
+  };
 };
 
 export async function fetchDashboard(): Promise<DashboardPayload> {
