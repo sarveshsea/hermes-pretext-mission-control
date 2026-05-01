@@ -367,6 +367,169 @@ export default function PretextConsole({ payload, nodes, activeNode, liveEvents,
         });
       }
 
+      // 9a. HEALTH pills (top-center band)
+      const health = payload.health;
+      const pills: { label: string; value: string; ok: boolean }[] = [
+        { label: "OLLAMA", value: health?.ollama?.up ? `${health.ollama.latencyMs}ms · ${health.ollama.models.length}m` : "DOWN", ok: !!health?.ollama?.up },
+        { label: "GATEWAY", value: health?.gateway?.running ? `pid${health.gateway.pid}` : "DOWN", ok: !!health?.gateway?.running },
+        { label: "DASH", value: health?.dashboard?.running ? `pid${health.dashboard.pid}` : "DOWN", ok: !!health?.dashboard?.running },
+        { label: "VAULT", value: health?.vault?.accessible ? "ok" : "missing", ok: !!health?.vault?.accessible },
+        { label: "DISK", value: health?.disk?.freeGb != null ? `${health.disk.freeGb}GB free` : "?", ok: (health?.disk?.usedPct ?? 0) < 90 },
+        { label: "PUSH", value: payload.git?.pushAuth?.ok ? "ok" : "fail", ok: !!payload.git?.pushAuth?.ok },
+        { label: "MEM", value: health?.memory ? `${health.memory.usedPct}%` : "?", ok: (health?.memory?.usedPct ?? 100) < 90 },
+        { label: "SCORE", value: `${health?.healthScore ?? 0}/100`, ok: (health?.healthScore ?? 0) >= 70 }
+      ];
+      let pillX = 48;
+      const pillY = 100;
+      const pillH = 22;
+      context.font = `11px ${MONO}`;
+      pills.forEach((pill) => {
+        const text = `${pill.label} ${pill.value}`;
+        const w = context.measureText(text).width + 16;
+        const fill = pill.ok ? "rgba(208, 241, 0, 0.12)" : "rgba(255, 130, 130, 0.18)";
+        const stroke = pill.ok ? "rgba(208, 241, 0, 0.6)" : "rgba(255, 130, 130, 0.7)";
+        context.fillStyle = fill;
+        context.fillRect(pillX, pillY, w, pillH);
+        context.strokeStyle = stroke;
+        context.strokeRect(pillX + 0.5, pillY + 0.5, w - 1, pillH - 1);
+        context.fillStyle = pill.ok ? "rgba(208, 241, 0, 0.95)" : "rgba(255, 180, 180, 0.95)";
+        context.fillText(text, pillX + 8, pillY + 15);
+        pillX += w + 8;
+      });
+
+      // 9b. SPARKLINE — events per minute over last hour
+      const sparkX = 48;
+      const sparkY = 132;
+      const sparkW = Math.min(420, rect.width * 0.32);
+      const sparkH = 36;
+      paneBox(context, sparkX, sparkY, sparkW, sparkH, "rgba(140, 200, 255, 0.32)", 0.4);
+      context.font = `10px ${MONO}`;
+      context.fillStyle = "rgba(140, 200, 255, 0.85)";
+      context.fillText("EVENTS/min · last 60min", sparkX + 8, sparkY + 12);
+      const buckets = payload.timeline?.buckets || [];
+      const peak = Math.max(1, payload.timeline?.peak || 1);
+      const innerW = sparkW - 16;
+      const colW = innerW / Math.max(1, buckets.length);
+      buckets.forEach((bucket, idx) => {
+        const h = (bucket.count / peak) * (sparkH - 18);
+        const x = sparkX + 8 + idx * colW;
+        const y = sparkY + sparkH - 4 - h;
+        context.fillStyle = bucket.count > 0 ? "rgba(208, 241, 0, 0.78)" : "rgba(140, 200, 255, 0.18)";
+        context.fillRect(x, y, Math.max(1, colW - 1), Math.max(1, h));
+      });
+      context.fillStyle = "rgba(224, 246, 255, 0.5)";
+      context.font = `10px ${MONO}`;
+      context.fillText(`peak=${peak}  total=${payload.timeline?.total ?? 0}`, sparkX + sparkW - 130, sparkY + 12);
+
+      // 9c. GIT_STATE — branch, head, dirty, ahead, push auth
+      const git = payload.git;
+      const gitX = sparkX + sparkW + 12;
+      const gitY = sparkY;
+      const gitW = Math.min(360, rect.width - gitX - 420);
+      paneBox(context, gitX, gitY, gitW, sparkH, git?.pushAuth?.ok ? "rgba(208, 241, 0, 0.42)" : "rgba(255, 200, 120, 0.55)", 0.45);
+      context.font = `11px ${MONO}`;
+      context.fillStyle = git?.pushAuth?.ok ? "rgba(208, 241, 0, 0.92)" : "rgba(255, 200, 120, 0.92)";
+      context.fillText(`GIT  ${git?.branch || "?"}@${git?.head || "?"}`, gitX + 8, gitY + 14);
+      context.fillStyle = "rgba(224, 246, 255, 0.78)";
+      const gitLine2 = git
+        ? `${git.dirty ? `${git.dirtyFiles}* dirty` : "clean"}  ahead:${git.ahead}  push:${git.pushAuth?.ok ? "ok" : "FAIL"}`
+        : "no git probe";
+      context.fillText(gitLine2, gitX + 8, gitY + 28);
+      context.fillStyle = "rgba(180, 220, 255, 0.6)";
+      const lastSubject = clip(git?.lastCommit?.subject || "—", Math.max(20, Math.floor(gitW / 7)));
+      context.fillText(`last: ${git?.lastCommit?.short || "?"}  ${lastSubject}`, gitX + 8, gitY + sparkH + 14);
+
+      // 9d. SESSIONS pane (left-middle)
+      const sessionsBoxX = 48;
+      const sessionsBoxY = 196;
+      const sessionsBoxW = sparkW;
+      const sessionsBoxH = 96;
+      paneBox(context, sessionsBoxX, sessionsBoxY, sessionsBoxW, sessionsBoxH, "rgba(160, 240, 200, 0.4)");
+      paneTitle(context, sessionsBoxX + 12, sessionsBoxY + 16, "TELEGRAM_SESSIONS", "rgba(160, 240, 200, 0.92)");
+      const sessionRows = payload.sessions?.sessions?.slice(0, 4) || [];
+      if (!sessionRows.length) {
+        paneLine(context, sessionsBoxX + 12, sessionsBoxY + 36, "no active sessions tracked", "rgba(224, 246, 255, 0.5)");
+      } else {
+        sessionRows.forEach((session, idx) => {
+          const last = session.updatedAt ? session.updatedAt.slice(11, 19) : "—";
+          const line = `${last}  ${session.platform.padEnd(8)} ${session.chatId || "?"}  ${session.userName || "anon"}`;
+          context.fillStyle = "rgba(224, 246, 255, 0.78)";
+          context.font = `11px ${MONO}`;
+          context.fillText(clip(line, Math.floor(sessionsBoxW / 7)), sessionsBoxX + 12, sessionsBoxY + 34 + idx * 14);
+        });
+      }
+
+      // 9e. SKILLS pane (left-middle, below sessions)
+      const skillsBoxX = 48;
+      const skillsBoxY = sessionsBoxY + sessionsBoxH + 8;
+      const skillsBoxW = sparkW;
+      const skillsBoxH = 96;
+      paneBox(context, skillsBoxX, skillsBoxY, skillsBoxW, skillsBoxH, "rgba(180, 160, 255, 0.4)");
+      const skillsHeader = payload.skills
+        ? `SKILLS  active=${payload.skills.activeCount}  disabled=${payload.skills.disabledCount}  total=${payload.skills.totalCount}`
+        : "SKILLS";
+      paneTitle(context, skillsBoxX + 12, skillsBoxY + 16, skillsHeader, "rgba(225, 218, 255, 0.92)");
+      const activeSkills = (payload.skills?.skills || []).filter((s) => !s.disabled).slice(0, 4);
+      if (!activeSkills.length) {
+        paneLine(context, skillsBoxX + 12, skillsBoxY + 36, "no skills loaded", "rgba(224, 246, 255, 0.5)");
+      } else {
+        activeSkills.forEach((skill, idx) => {
+          context.fillStyle = "rgba(225, 218, 255, 0.85)";
+          context.font = `11px ${MONO}`;
+          context.fillText(
+            clip(`· ${skill.name.padEnd(22)} ${skill.description}`, Math.floor(skillsBoxW / 7)),
+            skillsBoxX + 12,
+            skillsBoxY + 34 + idx * 14
+          );
+        });
+      }
+
+      // 9f. MEMORY_FILES pane (left-middle, below skills)
+      const memFilesBoxX = 48;
+      const memFilesBoxY = skillsBoxY + skillsBoxH + 8;
+      const memFilesBoxW = sparkW;
+      const memFilesBoxH = 96;
+      paneBox(context, memFilesBoxX, memFilesBoxY, memFilesBoxW, memFilesBoxH, "rgba(160, 240, 200, 0.4)");
+      paneTitle(
+        context,
+        memFilesBoxX + 12,
+        memFilesBoxY + 16,
+        `MEMORY_FILES  ${payload.memoryFiles?.count || 0} loaded`,
+        "rgba(160, 240, 200, 0.92)"
+      );
+      const memFiles = payload.memoryFiles?.files?.slice(0, 4) || [];
+      if (!memFiles.length) {
+        paneLine(context, memFilesBoxX + 12, memFilesBoxY + 36, "~/.hermes/memories empty", "rgba(224, 246, 255, 0.5)");
+      } else {
+        memFiles.forEach((file, idx) => {
+          context.fillStyle = "rgba(224, 246, 255, 0.82)";
+          context.font = `11px ${MONO}`;
+          context.fillText(
+            clip(`· ${file.name.padEnd(28)} ${file.description}`, Math.floor(memFilesBoxW / 7)),
+            memFilesBoxX + 12,
+            memFilesBoxY + 34 + idx * 14
+          );
+        });
+      }
+
+      // 9g. PROPOSALS strip (right side, only if pending)
+      const proposals = payload.pendingProposals || [];
+      if (proposals.length) {
+        const propX = rect.width - 380;
+        const propY = 110;
+        const propW = 332;
+        const propH = Math.min(180, 22 + proposals.length * 32);
+        paneBox(context, propX, propY, propW, propH, "rgba(255, 200, 120, 0.6)", 0.45);
+        paneTitle(context, propX + 12, propY + 16, `HERMES_PROPOSALS  pending=${proposals.length}`, "rgba(255, 200, 120, 0.95)");
+        proposals.slice(0, 4).forEach((proposal, idx) => {
+          context.fillStyle = "rgba(255, 240, 200, 0.92)";
+          context.font = `11px ${MONO}`;
+          context.fillText(clip(`◆ ${proposal.title}`, Math.floor(propW / 7)), propX + 12, propY + 34 + idx * 28);
+          context.fillStyle = "rgba(224, 246, 255, 0.6)";
+          context.fillText(clip(proposal.rationale, Math.floor(propW / 6)), propX + 12, propY + 48 + idx * 28);
+        });
+      }
+
       // 9. Bottom-left footer panes (RUN_LOG, LOCAL_CONSOLE)
       const footerY = rect.height - 230;
       paneBox(context, 40, footerY, 480, 90, "rgba(224, 246, 255, 0.22)");

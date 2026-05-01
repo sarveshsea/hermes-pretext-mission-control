@@ -3,6 +3,7 @@ import {
   approveRunRequest,
   createLocalMessage,
   createRunRequest,
+  decideProposal,
   decidePublicIntent,
   fetchDashboard,
   rejectRunRequest,
@@ -10,6 +11,7 @@ import {
   subscribeHermesStream,
   type DashboardPayload,
   type HermesEvent,
+  type Proposal,
   type PublicIntent,
   type RunRequest
 } from "./api";
@@ -173,6 +175,18 @@ export default function App() {
     }
   }
 
+  async function handleProposalDecision(proposal: Proposal, decision: "confirm" | "decline") {
+    setBusy(`prop:${proposal.id}`);
+    try {
+      await decideProposal(proposal.id, decision, decision === "decline" ? { reason: "declined locally" } : {});
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Proposal decision failed");
+    } finally {
+      setBusy("");
+    }
+  }
+
   if (!payload) {
     return (
       <main className="console-stage loading-stage">
@@ -231,6 +245,39 @@ export default function App() {
           />
         ))}
       </div>
+
+      {payload.pendingProposals.length > 0 && (
+        <aside className="proposal-dock" aria-label="Pending Hermes proposals">
+          <header className="proposal-dock-header">HERMES_PROPOSALS · {payload.pendingProposals.length}</header>
+          {payload.pendingProposals.slice(0, 4).map((proposal) => (
+            <article className="proposal-row" key={proposal.id}>
+              <header>
+                <strong>◆ {proposal.title}</strong>
+                <span className="proposal-kind"> ({proposal.kind})</span>
+              </header>
+              <p className="proposal-rationale">{proposal.rationale}</p>
+              {proposal.command ? <code className="proposal-cmd">{proposal.command}</code> : null}
+              {proposal.argv?.length ? <code className="proposal-cmd">{proposal.argv.join(" ")}</code> : null}
+              <div className="proposal-actions">
+                <button
+                  className="button button-mini button-primary"
+                  disabled={busy === `prop:${proposal.id}`}
+                  onClick={() => handleProposalDecision(proposal, "confirm")}
+                >
+                  apply
+                </button>
+                <button
+                  className="button button-mini button-light"
+                  disabled={busy === `prop:${proposal.id}`}
+                  onClick={() => handleProposalDecision(proposal, "decline")}
+                >
+                  decline
+                </button>
+              </div>
+            </article>
+          ))}
+        </aside>
+      )}
 
       {liveIntents.length > 0 && (
         <aside className="intent-dock" aria-label="Pending public actions">

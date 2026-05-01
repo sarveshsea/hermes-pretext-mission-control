@@ -131,6 +131,7 @@ describe("console model", () => {
     expect(trace.join("\n")).toContain("DECIDE");
     expect(trace.join("\n")).toContain("GUARD");
     expect(trace.join("\n")).toContain("Can you tighten");
-    expect(trace.join("\n")).toContain("no arbitrary shell");
+    expect(trace.join("\n")).toContain("yolo_local");
+    expect(trace.join("\n")).toContain("sarvesh_code_loaded");
   });
 });

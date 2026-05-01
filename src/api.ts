@@ -200,6 +200,87 @@ export type MissionState = {
   lastEventAt: string | null;
 };
 
+export type SystemHealth = {
+  generatedAt: string;
+  ollama: { up: boolean; latencyMs: number; models: { name: string; sizeBytes: number; modifiedAt: string | null; family: string | null; paramSize: string | null }[]; reason: string };
+  gateway: { running: boolean; pid: number | null; etimeSec: number | null; command: string | null };
+  dashboard: { running: boolean; pid: number | null; etimeSec: number | null; command: string | null };
+  disk: { freeGb: number | null; sizeGb: number | null; usedPct: number | null };
+  memory: { totalGb: number; freeGb: number; usedPct: number; loadAvg: number[] };
+  vault: { accessible: boolean; path: string };
+  channel: { homeChatId: string | null; homePlatform: string | null; homeName: string | null; total: number };
+  healthScore: number;
+};
+
+export type SessionRow = {
+  key: string;
+  platform: string;
+  chatId: string | null;
+  sessionId: string | null;
+  userName: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  messageCount: number;
+  modelOverride: string | null;
+};
+
+export type SkillRow = {
+  name: string;
+  description: string;
+  version: string;
+  tags: string[];
+  sizeBytes: number;
+  modifiedAt: string;
+  path: string;
+  disabled: boolean;
+};
+
+export type MemoryFile = {
+  name: string;
+  description: string;
+  type: string;
+  file: string;
+  sizeBytes: number;
+  modifiedAt: string;
+  excerpt: string;
+};
+
+export type TimelineBucket = {
+  minutesAgo: number;
+  epoch: number;
+  count: number;
+  byType: Record<string, number>;
+};
+
+export type GitState = {
+  generatedAt: string;
+  branch: string | null;
+  head: string | null;
+  lastCommit: { sha: string; short: string; author: string; email: string; subject: string; committedAt: string } | null;
+  remote: string | null;
+  dirty: boolean;
+  dirtyFiles: number;
+  ahead: number;
+  pushAuth: { ok: boolean; reason: string };
+};
+
+export type Proposal = {
+  id: string;
+  createdAt: string;
+  status: "pending" | "confirmed" | "declined" | "applied" | "ran" | "failed";
+  kind: "shell" | "patch" | "note";
+  title: string;
+  rationale: string;
+  command: string | null;
+  argv: string[] | null;
+  cwd: string | null;
+  sessionId: string | null;
+  decidedAt: string | null;
+  decision: "confirmed" | "declined" | null;
+  declineReason: string | null;
+  runResult: null | { id?: string; status?: string; exitCode?: number | null; durationMs?: number | null; output?: string; error?: string };
+};
+
 export type DashboardPayload = {
   status: StatusPayload;
   reviewQueues: ReviewQueue[];
@@ -215,6 +296,13 @@ export type DashboardPayload = {
   hermesRuntime: HermesRuntime;
   pendingPublicIntents: PublicIntent[];
   mission: MissionState;
+  health: SystemHealth;
+  sessions: { generatedAt: string; sessions: SessionRow[] };
+  skills: { generatedAt: string; activeCount: number; disabledCount: number; totalCount: number; skills: SkillRow[] };
+  memoryFiles: { generatedAt: string; count: number; totalBytes: number; files: MemoryFile[] };
+  timeline: { generatedAt: string; minutes: number; total: number; peak: number; buckets: TimelineBucket[] };
+  git: GitState;
+  pendingProposals: Proposal[];
 };
 
 export async function fetchDashboard(): Promise<DashboardPayload> {
@@ -326,6 +414,23 @@ export async function decidePublicIntent(
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
     throw new Error(payload.error || `Decision failed: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function decideProposal(
+  id: string,
+  decision: "confirm" | "decline",
+  options: { reason?: string } = {}
+): Promise<Proposal> {
+  const response = await fetch(`/api/hermes/proposal/${encodeURIComponent(id)}/${decision}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(options)
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(payload.error || `Proposal decision failed: ${response.status}`);
   }
   return response.json();
 }

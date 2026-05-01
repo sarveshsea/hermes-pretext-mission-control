@@ -33,6 +33,18 @@ import {
 } from "./publicIntents.mjs";
 import { getMissionState } from "./missions.mjs";
 import { startObsidianLogger } from "./obsidianLogger.mjs";
+import { probeSystem } from "./systemProbe.mjs";
+import { getHermesSessions } from "./sessions.mjs";
+import { getHermesSkills } from "./skills.mjs";
+import { getMemoryFiles } from "./memoryFiles.mjs";
+import { getEventTimeline } from "./timeline.mjs";
+import { getGitState } from "./git.mjs";
+import {
+  createProposal,
+  decideProposal,
+  getPendingProposals,
+  getProposals
+} from "./proposals.mjs";
 import { createLocalMessage, getLocalMessages } from "./localMessages.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { approveRunRequest, createRunRequest, getRunRequests, rejectRunRequest } from "./runRequests.mjs";
@@ -165,6 +177,42 @@ async function apiRoute(req, res) {
   }
   if (req.method === "GET" && url.pathname === "/api/hermes/mission") {
     return sendJson(res, 200, await getMissionState());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/health") {
+    return sendJson(res, 200, await probeSystem());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/sessions") {
+    return sendJson(res, 200, await getHermesSessions());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/skills") {
+    return sendJson(res, 200, await getHermesSkills());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/memory-files") {
+    return sendJson(res, 200, await getMemoryFiles());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/timeline") {
+    const minutes = Number(url.searchParams.get("minutes") || 60);
+    return sendJson(res, 200, await getEventTimeline({ minutes: Math.min(Math.max(minutes, 5), 240) }));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/git") {
+    return sendJson(res, 200, await getGitState());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/proposal") {
+    return sendJson(res, 201, await createProposal(await readJsonBody(req)));
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/proposals") {
+    return sendJson(res, 200, await getProposals());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/pending-proposals") {
+    return sendJson(res, 200, await getPendingProposals());
+  }
+  const proposalDecideMatch = url.pathname.match(/^\/api\/hermes\/proposal\/([^/]+)\/(confirm|decline)$/);
+  if (req.method === "POST" && proposalDecideMatch) {
+    const id = decodeURIComponent(proposalDecideMatch[1]);
+    const action = proposalDecideMatch[2];
+    const body = await readJsonBody(req);
+    const decision = action === "confirm" ? "confirmed" : "declined";
+    return sendJson(res, 200, await decideProposal(id, { decision, reason: body.reason }));
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/public-intent") {
     return sendJson(res, 201, await createPublicIntent(await readJsonBody(req)));

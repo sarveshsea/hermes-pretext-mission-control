@@ -235,6 +235,78 @@ button {
   gap: 6px;
 }
 
+.proposal-dock {
+  position: absolute;
+  z-index: 2;
+  top: 92px;
+  right: 432px;
+  width: min(380px, calc(100vw - 460px));
+  border: 1px solid rgba(255, 200, 120, 0.6);
+  border-radius: 4px;
+  background: var(--panel);
+  box-shadow: rgba(0, 39, 80, 0.22) 0 18px 60px -28px;
+  backdrop-filter: blur(12px);
+  padding: 10px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.proposal-dock-header {
+  margin: 0 0 6px;
+  color: rgba(255, 200, 120, 0.95);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.proposal-row {
+  border-top: 1px solid rgba(224, 246, 255, 0.12);
+  padding: 8px 0;
+  margin-top: 8px;
+}
+
+.proposal-row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.proposal-row header {
+  color: rgba(255, 240, 200, 0.92);
+  font-size: 12px;
+}
+
+.proposal-kind {
+  color: rgba(255, 200, 120, 0.7);
+  font-style: italic;
+}
+
+.proposal-rationale {
+  margin: 6px 0;
+  color: rgba(224, 246, 255, 0.8);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.proposal-cmd {
+  display: block;
+  margin: 4px 0;
+  padding: 4px 6px;
+  border: 1px solid rgba(208, 241, 0, 0.3);
+  background: rgba(0, 16, 51, 0.5);
+  color: rgba(208, 241, 0, 0.85);
+  font-size: 10px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.proposal-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 .node-layer {
   inset: 0;
   z-index: 1;

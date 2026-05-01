@@ -10,6 +10,13 @@ import { getImprovementEvents, getImprovementLoopStatus } from "./improvementLoo
 import { getLocalMessages } from "./localMessages.mjs";
 import { getMissionState } from "./missions.mjs";
 import { getPendingPublicIntents } from "./publicIntents.mjs";
+import { probeSystem } from "./systemProbe.mjs";
+import { getHermesSessions } from "./sessions.mjs";
+import { getHermesSkills } from "./skills.mjs";
+import { getMemoryFiles } from "./memoryFiles.mjs";
+import { getEventTimeline } from "./timeline.mjs";
+import { getGitState } from "./git.mjs";
+import { getPendingProposals } from "./proposals.mjs";
 import { getPublishStatus } from "./publishStatus.mjs";
 import { isExcludedPath, publicPath, safeSnippet, sanitizeText } from "./redaction.mjs";
 import { getRunRequests } from "./runRequests.mjs";
@@ -85,12 +92,33 @@ export async function getStatus() {
     } catch {
       telegramSession = "unreadable";
     }
+    let homeChannel = "not set";
+    try {
+      const dirText = await fs.readFile(path.join(ROOTS.hermes, "channel_directory.json"), "utf8");
+      const dir = JSON.parse(dirText);
+      const targets = Array.isArray(dir.targets) ? dir.targets : Object.values(dir.targets || {});
+      const home = targets.find((entry) => entry?.is_home || entry?.role === "home") || targets[0];
+      if (home?.chat_id) {
+        const cid = String(home.chat_id);
+        const masked = cid.length > 4 ? `${cid.slice(0, 2)}***${cid.slice(-3)}` : cid;
+        homeChannel = `${home.platform || "telegram"}:${masked}`;
+      }
+    } catch {
+      homeChannel = "unconfigured";
+    }
+    let gatewayState = "not running";
+    if (gateway.stdout.includes("state = running")) {
+      gatewayState = "running";
+    } else {
+      const probe = await execFileSafe("pgrep", ["-f", "hermes_cli.main gateway"], { timeout: 1500 });
+      if (probe.ok && probe.stdout.trim()) gatewayState = "running";
+    }
     return {
       generatedAt: new Date().toISOString(),
       model: parseDefaultModel(config),
-      gateway: gateway.stdout.includes("state = running") ? "running" : "not running",
+      gateway: gatewayState,
       telegramSession,
-      homeChannel: "set via /sethome if configured in Telegram",
+      homeChannel,
       dashboardHost: "127.0.0.1",
       writeSafeRoot: ROOTS.vault,
       projectSandbox: ROOTS.project,
@@ -289,7 +317,14 @@ export async function getDashboardPayload() {
     hermesEvents,
     hermesRuntime,
     pendingPublicIntents,
-    mission
+    mission,
+    health,
+    sessions,
+    skills,
+    memoryFiles,
+    timeline,
+    git,
+    pendingProposals
   ] = await Promise.all([
     getStatus(),
     getReviewQueues(),
@@ -301,10 +336,17 @@ export async function getDashboardPayload() {
     getChangelog(),
     getPublishStatus(),
     getImprovementEvents(),
-    getHermesEvents(120),
+    getHermesEvents(160),
     getHermesRuntime(),
     getPendingPublicIntents(),
-    getMissionState()
+    getMissionState(),
+    probeSystem(),
+    getHermesSessions(),
+    getHermesSkills(),
+    getMemoryFiles(),
+    getEventTimeline({ minutes: 60 }),
+    getGitState(),
+    getPendingProposals()
   ]);
   return {
     status,
@@ -320,6 +362,13 @@ export async function getDashboardPayload() {
     hermesEvents,
     hermesRuntime,
     pendingPublicIntents,
-    mission
+    mission,
+    health,
+    sessions,
+    skills,
+    memoryFiles,
+    timeline,
+    git,
+    pendingProposals
   };
 }

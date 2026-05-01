@@ -4,8 +4,8 @@ import path from "node:path";
 import { ROOTS } from "./config.mjs";
 import { safeSnippet, sanitizeText } from "./redaction.mjs";
 
-const MAX_BUFFER = 500;
-const MAX_PERSISTED = 200;
+const MAX_BUFFER = 2000;
+const MAX_PERSISTED = 600;
 const KNOWN_TYPES = new Set([
   "telegram_in",
   "telegram_out",
