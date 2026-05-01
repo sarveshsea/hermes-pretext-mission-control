@@ -5,7 +5,7 @@
 // inference can't make progress" loop.
 
 import { readJournalTail } from "./pipelineJournal.mjs";
-import { dispatchSubscriptionTask, listSubscriptionTasks } from "./subscriptions.mjs";
+import { dispatchSubscriptionTask, listSubscriptionTasks, isDangerousIntent } from "./subscriptions.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 import { createPublicIntent } from "./publicIntents.mjs";
 import { createProposal } from "./proposals.mjs";
@@ -56,29 +56,36 @@ async function tick() {
         `Please produce the concrete edit as JSON: {"filePath": "...", "find": "...", "replace": "..."}. ` +
         `If the task is too abstract to map to a file, return {"needs_design": true, "reason": "..."}.`;
       try {
-        // Queue the subscription (status: queued, no autoExecute yet).
+        const danger = isDangerousIntent(intent);
+        // Auto-execute by default. Only gate truly destructive intents
+        // (force-push, rm -rf, send email, post to twitter, etc.) through a
+        // public_intent for Sarvesh approval.
         const sub = await dispatchSubscriptionTask({
           provider: "claude-code",
           intent,
-          payload: { taskId: sample.taskId, taskTitle: sample.taskTitle, lastReason: sample.reason },
-          notes: [`auto-delegated by agentDelegation after ${info.count} abandons`],
-          autoExecute: false
+          payload: { taskId: sample.taskId, taskTitle: sample.taskTitle, lastReason: sample.reason, danger },
+          notes: [
+            `auto-delegated after ${info.count} abandons`,
+            danger.dangerous ? `GATED: matched dangerous pattern ${danger.matchedPattern}` : "auto-fire (non-dangerous)"
+          ],
+          autoExecute: !danger.dangerous
         });
-        // Also queue a public_intent so Sarvesh can approve/decline. Approval
-        // will trigger the actual claude-code shell-out (via the public-intent
-        // confirm handler in index.mjs — see route below).
-        await createPublicIntent({
-          channel: "claude-dispatch",
-          content: `Ask Claude Code: ${safeSnippet(sample.taskTitle, 100)} (${info.count} abandons)`,
-          extra: { subscriptionId: sub.id, taskId: sample.taskId }
-        });
+        if (danger.dangerous) {
+          await createPublicIntent({
+            channel: "claude-dispatch",
+            content: `[DANGEROUS] Ask Claude Code: ${safeSnippet(sample.taskTitle, 100)} — matched ${danger.matchedPattern}`,
+            extra: { subscriptionId: sub.id, taskId: sample.taskId, danger }
+          });
+        }
         dispatchedClasses.set(cls, Date.now());
         dispatched += 1;
         await appendHermesEvent({
           type: "mission_update",
           role: "assistant",
-          content: `[delegate] ${info.count} abandons → queued claude-code dispatch (${sub.id}); awaiting Sarvesh approval`,
-          extra: { taskId: sample.taskId, subscriptionId: sub.id }
+          content: danger.dangerous
+            ? `[delegate] ${info.count} abandons → DANGEROUS dispatch queued (${sub.id}); awaiting approval`
+            : `[delegate] ${info.count} abandons → auto-firing claude-code (${sub.id})`,
+          extra: { taskId: sample.taskId, subscriptionId: sub.id, dangerous: danger.dangerous }
         });
       } catch {
         // best-effort

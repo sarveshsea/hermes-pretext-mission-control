@@ -6,11 +6,43 @@ import { safeSnippet } from "./redaction.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 
 const CLAUDE_BIN = process.env.PRETEXT_CLAUDE_BIN || `${ROOTS.home}/.local/bin/claude`;
-const CLAUDE_DISPATCH_LIMIT_PER_HOUR = Number(process.env.PRETEXT_CLAUDE_DISPATCH_LIMIT || 5);
+const CLAUDE_DISPATCH_LIMIT_PER_HOUR = Number(process.env.PRETEXT_CLAUDE_DISPATCH_LIMIT || 12);
 const CLAUDE_TIMEOUT_MS = 5 * 60_000;
 const CLAUDE_SPEND_LOG = path.join(ROOTS.project, "data/claude-spend.jsonl");
 
 const recentClaudeDispatches = []; // [{ts, taskId, ok}]
+
+// Truly-dangerous intent predicate. Only THESE require human approval; the
+// rest auto-fire. Sarvesh explicitly said no approval needed unless something
+// is actually destructive.
+const DANGEROUS_PATTERNS = [
+  /\bforce[\s-]?push\b/i,
+  /\bgit\s+push\s+(?:-f|--force)/i,
+  /\bdelete\s+(?:branch|repo|database|table)/i,
+  /\brm\s+-rf/i,
+  /\bdrop\s+(?:database|table|schema)/i,
+  /\bsend\s+(?:email|telegram|slack|sms|tweet)/i,
+  /\bpost\s+(?:to\s+)?(?:twitter|x\.com|linkedin|github)/i,
+  /\bcreate\s+(?:pr|pull[\s-]?request|issue)\s+(?!for\s+sarveshsea\/hermes-pretext)/i,
+  /\bmerge\s+(?:to|into)\s+main/i,
+  /\bpush\s+to\s+(?!sarveshsea\/hermes-pretext)/i,
+  /\bsudo\b/i,
+  /\bchmod\s+777/i,
+  /\bcurl\s+[^|]*\|\s*(?:sh|bash)/i,
+  /\bnpm\s+publish/i,
+  /\bcargo\s+publish/i,
+  /\bbrew\s+uninstall/i,
+  /\.env\b/i,                          // touching env files
+  /\bsecrets?\b.*\b(?:read|write|delete)/i
+];
+
+export function isDangerousIntent(intent) {
+  if (!intent || typeof intent !== "string") return { dangerous: false };
+  for (const re of DANGEROUS_PATTERNS) {
+    if (re.test(intent)) return { dangerous: true, matchedPattern: String(re) };
+  }
+  return { dangerous: false };
+}
 
 const STORE = path.join(ROOTS.project, "data/subscriptions.json");
 const MARKDOWN = path.join(ROOTS.hermesOps, "subscriptions.md");
