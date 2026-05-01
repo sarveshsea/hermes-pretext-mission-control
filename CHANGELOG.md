@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-05-01 - Telegram Mirror Hook In Hermes Gateway
+
+- Patched `~/.hermes/hermes-agent/gateway/run.py` to emit `telegram_in` and
+  `telegram_out` events to the Pretext dashboard on every Telegram turn.
+  Previously the `pretext-bridge` skill existed but Hermes only called it
+  when it remembered to, so real Telegram conversations did not show up on
+  `HERMES_LIVE`. The hook is now unconditional and fire-and-forget: a daemon
+  thread POSTs to `http://127.0.0.1:4317/api/hermes/event`; failures (offline
+  dashboard) are swallowed without affecting Hermes.
+- Hook points: after the `inbound message` log line in
+  `_handle_message_with_agent` (~line 5256) and after the `response ready`
+  log line (~line 5855). Override the dashboard URL via
+  `PRETEXT_DASHBOARD_URL` env if the port ever changes.
+- Verification: send a Telegram message to the Hermes bot. The dashboard's
+  HERMES_LIVE pane should show a `telegram_in` row within ~1s and a
+  `telegram_out` row when the response is generated.
+
 ## 2026-04-30 - Hermes Bridge, Local Unlock, Sarvesh Code
 
 - Wired Hermes ↔ Pretext live: new `/api/hermes/event`, `/api/hermes/events`, `/api/hermes/stream` (SSE), `/api/hermes/run-request`, `/api/hermes/model`, `/api/hermes/runtime`, `/api/hermes/public-intent`, and `/api/runtime/auto-approve` endpoints. Hermes now mirrors its work to the dashboard in real time and can be remote-controlled from it.
