@@ -22,6 +22,12 @@ type DelegationStatus = {
 // Replaces the OBSIDIAN_GRAPH cell — same area, much higher signal/value.
 export default function DelegationInboxPanel() {
   const [items, setItems] = useState<Subscription[]>([]);
+
+{items.length === 0 && (
+  <div className="muted">
+    Hermes auto-fires Claude Code unless an intent matches a danger pattern.
+  </div>
+)}
   const [status, setStatus] = useState<DelegationStatus | null>(null);
 
   useEffect(() => {
