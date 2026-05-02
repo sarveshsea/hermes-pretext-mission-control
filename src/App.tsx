@@ -52,6 +52,7 @@ import ArchivesPanel from "./components/panes/ArchivesPanel";
 import DraftPoolPanel from "./components/panes/DraftPoolPanel";
 import ImprovementsLogPanel from "./components/panes/ImprovementsLogPanel";
 import SystemPulsePanel from "./components/panes/SystemPulsePanel";
+import LastShippedChip from "./components/LastShippedChip";
 import DelegationInboxPanel from "./components/panes/DelegationInboxPanel";
 import AgentVoicePanel from "./components/panes/AgentVoicePanel";
 import WhyStrip from "./components/WhyStrip";
@@ -172,6 +173,14 @@ export default function App() {
     const timer = window.setInterval(refresh, POLL_MS);
     return () => window.clearInterval(timer);
   }, [refresh]);
+
+  // Persist + restore theme on mount.
+  useEffect(() => {
+    const saved = localStorage.getItem("pretext-theme");
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  }, []);
 
   // Pane summaries + health dots — refreshed independently from the main payload.
   useEffect(() => {
@@ -333,9 +342,21 @@ export default function App() {
         </select>
         <button className="button button-ghost" onClick={refresh}>refresh</button>
         <WorkingIndicator payload={payload} eventCount={liveEvents.length} latestEvent={liveEvents[0]} />
+        <LastShippedChip />
         <span className="topbar-mode muted">
           {payload.cadence.mode.toUpperCase()} · idle {payload.cadence.idleSec}s · {Math.round(payload.cadence.recommendedIntervalMs / 1000)}s · {payload.cadence.recommendedAutoApply ? "AUTO-APPLY" : "manual"}
         </span>
+        <button
+          className="button button-ghost theme-toggle"
+          onClick={() => {
+            const cur = document.documentElement.getAttribute("data-theme");
+            const next = cur === "light" ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("pretext-theme", next);
+          }}
+          title="toggle dark/light theme"
+          aria-label="toggle theme"
+        >🌗</button>
         <span className="kbd-hint muted">g focus · p propose · m inspect · ? help</span>
       </header>
 
@@ -361,22 +382,33 @@ export default function App() {
             <div className="muted">no pending proposals · validator running</div>
           ) : (
             <div className="proposal-stack">
-              {payload.pendingProposals.slice(0, 4).map((proposal) => (
-                <article className="proposal-card" key={proposal.id}>
-                  <header>
-                    <strong>◆ {proposal.title}</strong>
-                    <span className="proposal-kind">({proposal.kind})</span>
-                  </header>
-                  <p className="proposal-rationale">{proposal.rationale}</p>
-                  {proposal.command ? <code className="proposal-cmd">{proposal.command}</code> : null}
-                  {proposal.argv?.length ? <code className="proposal-cmd">{proposal.argv.join(" ")}</code> : null}
-                  <div className="proposal-actions">
-                    <button className="button button-mini button-primary" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "confirm")}>apply</button>
-                    <button className="button button-mini button-light" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "decline")}>decline</button>
-                    <button className="button button-mini button-light" onClick={() => setDiffProposal(proposal)}>diff</button>
-                  </div>
-                </article>
-              ))}
+              {payload.pendingProposals.slice(0, 4).map((proposal) => {
+                const p = proposal as unknown as { kind: string; filePath?: string; find?: string; replace?: string };
+                const showInlineDiff = p.kind === "edit" && p.filePath && p.find && typeof p.replace === "string";
+                return (
+                  <article className="proposal-card" key={proposal.id}>
+                    <header>
+                      <strong>◆ {proposal.title}</strong>
+                      <span className="proposal-kind">({proposal.kind})</span>
+                    </header>
+                    <p className="proposal-rationale">{proposal.rationale}</p>
+                    {proposal.command ? <code className="proposal-cmd">{proposal.command}</code> : null}
+                    {proposal.argv?.length ? <code className="proposal-cmd">{proposal.argv.join(" ")}</code> : null}
+                    {showInlineDiff ? (
+                      <div className="proposal-inline-diff">
+                        <div className="proposal-diff-file muted">{p.filePath}</div>
+                        <div className="proposal-diff-line proposal-diff-find">- {p.find?.slice(0, 140)}</div>
+                        <div className="proposal-diff-line proposal-diff-replace">+ {p.replace?.slice(0, 140)}</div>
+                      </div>
+                    ) : null}
+                    <div className="proposal-actions">
+                      <button className="button button-mini button-primary" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "confirm")}>apply</button>
+                      <button className="button button-mini button-light" disabled={busy === `prop:${proposal.id}`} onClick={() => handleProposalDecision(proposal, "decline")}>decline</button>
+                      <button className="button button-mini button-light" onClick={() => setDiffProposal(proposal)}>diff</button>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )
         )}
@@ -384,13 +416,27 @@ export default function App() {
         {cell("ledger",
           <ul className="row-list">
             {payload.tasks.length === 0 && <li className="muted">no tasks · ledger empty</li>}
-            {payload.tasks.slice(0, 12).map((t) => (
-              <li key={t.id} className="row" title={t.notes?.[t.notes.length - 1] || ""}>
-                <span className={`row-tag ${t.status === "done" ? "ok" : t.status === "blocked" ? "warn" : "muted"}`}>{t.status}</span>
-                <span className="row-id">[{t.mission}]</span>
-                <span className="row-content truncate">{t.title}</span>
-              </li>
-            ))}
+            {payload.tasks.slice(0, 12).map((t) => {
+              const ps = (t as unknown as { pipelineState?: { attempts?: number; updatedAt?: string; lastError?: string } }).pipelineState;
+              const attempts = ps?.attempts || 0;
+              const stuck = attempts >= 2;
+              const stuckSince = stuck && ps?.updatedAt
+                ? Math.round((Date.now() - new Date(ps.updatedAt).getTime()) / 60_000)
+                : null;
+              return (
+                <li
+                  key={t.id}
+                  className="row"
+                  data-stuck={stuck ? "true" : undefined}
+                  title={ps?.lastError || t.notes?.[t.notes.length - 1] || ""}
+                >
+                  <span className={`row-tag ${t.status === "done" ? "ok" : t.status === "blocked" ? "warn" : "muted"}`}>{t.status}</span>
+                  <span className="row-id">[{t.mission}]</span>
+                  <span className="row-content truncate">{t.title}</span>
+                  {stuck ? <span className="row-stuck" title={ps?.lastError || ""}>stuck {stuckSince}m · {attempts}×</span> : null}
+                </li>
+              );
+            })}
           </ul>
         )}
 

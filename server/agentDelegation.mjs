@@ -105,7 +105,10 @@ async function tick() {
 
 export function startAgentDelegation() {
   if (timer) return timer;
-  if (process.env.PRETEXT_DELEGATION === "false") return null;
+  // Default OFF — same reason as claudeAgent: nested Claude Code sessions
+  // are blocked. Re-enable with PRETEXT_DELEGATION=true once Sarvesh's
+  // Claude Code session is closed.
+  if (process.env.PRETEXT_DELEGATION !== "true") return null;
   setTimeout(() => void tick(), 60_000);
   timer = setInterval(() => void tick(), 5 * 60_000);
   timer.unref?.();

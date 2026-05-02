@@ -148,8 +148,12 @@ async function tick() {
 
 export function startClaudeAgent() {
   if (timer) return timer;
-  if (process.env.PRETEXT_CLAUDE_AGENT === "false") return null;
-  // First tick at 30s so swarm + pipeline boot first.
+  // Default OFF. Claude Code refuses to spawn nested under another Claude
+  // Code session, and Sarvesh runs Claude Code himself — so the dispatcher
+  // can't actually deliver. Re-enable with PRETEXT_CLAUDE_AGENT=true after
+  // closing his Claude Code session, OR call /api/hermes/claude-agent/fire
+  // manually for one-off dispatches.
+  if (process.env.PRETEXT_CLAUDE_AGENT !== "true") return null;
   setTimeout(() => void tick(), 30_000);
   timer = setInterval(() => void tick(), TICK_MS);
   timer.unref?.();

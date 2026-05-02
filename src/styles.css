@@ -2747,6 +2747,103 @@ option {
   min-width: 0;
 }
 
+/* ===== New shipped UI elements ===== */
+
+/* Topbar theme toggle + last-shipped chip */
+.theme-toggle {
+  font-size: 14px;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: var(--s-2);
+}
+.theme-toggle:hover {
+  border-color: var(--accent-glow);
+}
+.last-shipped {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-size: var(--t-meta);
+  padding: 2px var(--s-3);
+  border-radius: 999px;
+  background: rgba(63, 205, 255, 0.06);
+  border: 1px solid rgba(63, 205, 255, 0.18);
+  margin: 0 var(--s-3);
+  white-space: nowrap;
+  color: var(--text-base);
+}
+.last-shipped-dot {
+  color: var(--accent-go);
+  font-size: 8px;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+.last-shipped-sha {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  color: var(--text-strong);
+}
+.last-shipped-time {
+  font-size: var(--t-label);
+}
+
+/* Stuck-since indicator on TASK_LEDGER rows */
+.row-stuck {
+  font-size: var(--t-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-warn);
+  background: rgba(255, 165, 82, 0.10);
+  border: 1px solid rgba(255, 165, 82, 0.32);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: var(--s-2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.row[data-stuck="true"] {
+  border-left: 2px solid var(--accent-warn);
+  padding-left: var(--s-2);
+}
+
+/* Inline diff in PROPOSALS pane */
+.proposal-inline-diff {
+  margin: var(--s-2) 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.18);
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+.proposal-diff-file {
+  font-size: var(--t-label);
+  letter-spacing: 0.04em;
+}
+.proposal-diff-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.35;
+}
+.proposal-diff-find {
+  color: rgba(255, 110, 110, 0.92);
+  background: rgba(255, 110, 110, 0.08);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+.proposal-diff-replace {
+  color: var(--accent-go);
+  background: rgba(63, 205, 255, 0.06);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
 /* CONTINUOUS_IMPROVEMENTS pane — proof Hermes is shipping real changes,
    filtered to drop the auto-publish noise. UI / AGENT / INFR pills.   */
 
