@@ -168,8 +168,16 @@ async function executeClaudeCode(task) {
     task.intent
   ];
   const startedAt = Date.now();
+  // Strip Claude Code parent-session env vars so the spawned `claude --print`
+  // doesn't think it's nested. This was causing every dispatch to fail with
+  // "Claude Code cannot be launched inside another Claude Code session" when
+  // the dashboard happens to be running under a Claude Code session.
+  const cleanEnv = { ...process.env };
+  for (const k of Object.keys(cleanEnv)) {
+    if (k.startsWith("CLAUDE_") || k === "CLAUDECODE" || k === "CLAUDE_CODE_ENTRYPOINT") delete cleanEnv[k];
+  }
   const exec = await new Promise((resolve) => {
-    execFile(CLAUDE_BIN, args, { timeout: CLAUDE_TIMEOUT_MS, maxBuffer: 4 * 1024 * 1024 }, (error, stdout, stderr) => {
+    execFile(CLAUDE_BIN, args, { timeout: CLAUDE_TIMEOUT_MS, maxBuffer: 4 * 1024 * 1024, env: cleanEnv }, (error, stdout, stderr) => {
       resolve({
         ok: !error,
         exitCode: error?.code ?? 0,
