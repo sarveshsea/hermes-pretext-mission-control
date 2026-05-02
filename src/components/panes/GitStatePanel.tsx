@@ -1,7 +1,7 @@
 import type { GitState } from "../../api";
 
 export default function GitStatePanel({ git }: { git: GitState }) {
-  if (!git) return <div className="muted">no git probe</div>;
+  if (!git) return <div className="muted" data-testid="pane-git">no git probe</div>;
   return (
     <div className="kv">
       <div className="kv-row">
