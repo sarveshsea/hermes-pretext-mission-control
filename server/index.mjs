@@ -68,6 +68,7 @@ import { getOllamaQueueStatus } from "./ollamaQueue.mjs";
 import { getOllamaHealthStatus } from "./ollamaHealth.mjs";
 import { startAgentDelegation, getAgentDelegationStatus } from "./agentDelegation.mjs";
 import { startProactiveDigest, getProactiveDigestStatus, fireDigestNow } from "./proactiveDigest.mjs";
+import { getImprovementsLog } from "./improvementsLog.mjs";
 import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
@@ -413,6 +414,10 @@ async function apiRoute(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/hermes/digest/fire") {
     return sendJson(res, 200, await fireDigestNow());
+  }
+  if (req.method === "GET" && url.pathname === "/api/hermes/improvements-log") {
+    const minutes = Number(url.searchParams.get("minutes") || 1440);
+    return sendJson(res, 200, await getImprovementsLog({ minutes: Math.min(Math.max(minutes, 60), 7 * 24 * 60) }));
   }
   const promoteMatch = url.pathname.match(/^\/api\/hermes\/tasks\/([^/]+)\/promote-to-plan$/);
   if (req.method === "POST" && promoteMatch) {

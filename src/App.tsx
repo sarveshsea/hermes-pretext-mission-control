@@ -50,6 +50,8 @@ import GoalsPanel from "./components/panes/GoalsPanel";
 import OllamaQueuePanel from "./components/panes/OllamaQueuePanel";
 import ArchivesPanel from "./components/panes/ArchivesPanel";
 import DraftPoolPanel from "./components/panes/DraftPoolPanel";
+import ImprovementsLogPanel from "./components/panes/ImprovementsLogPanel";
+import SystemPulsePanel from "./components/panes/SystemPulsePanel";
 import DelegationInboxPanel from "./components/panes/DelegationInboxPanel";
 import AgentVoicePanel from "./components/panes/AgentVoicePanel";
 import WhyStrip from "./components/WhyStrip";
@@ -75,10 +77,7 @@ type CellSpec = {
 };
 
 const CELLS: Record<string, CellSpec> = {
-  health: { area: "health", title: "HEALTH", accent: "rgba(208, 241, 0, 0.7)", tier: 2 },
-  cadence: { area: "cadence", title: "CADENCE", accent: "rgba(208, 241, 0, 0.6)", tier: 3 },
-  sparkline: { area: "sparkline", title: "EVENTS / 60min", accent: "rgba(140, 200, 255, 0.6)", tier: 3 },
-  perf: { area: "perf", title: "PERFORMANCE", accent: "rgba(140, 200, 255, 0.6)", tier: 3 },
+  pulse: { area: "pulse", title: "SYSTEM PULSE", accent: "rgba(63, 205, 255, 0.7)", tier: 1 },
   mission: { area: "mission", title: "MISSION", accent: "rgba(208, 241, 0, 0.7)", tier: 2 },
   thinking: { area: "thinking", title: "THINKING", accent: "rgba(180, 160, 255, 0.7)", tier: 1, summaryKey: "thinking" },
   live: { area: "live", title: "HERMES_LIVE", accent: "rgba(140, 200, 255, 0.7)", tier: 1, summaryKey: "live" },
@@ -93,6 +92,7 @@ const CELLS: Record<string, CellSpec> = {
   ollama: { area: "ollama", title: "OLLAMA_QUEUE", accent: "rgba(140, 200, 255, 0.7)", tier: 2 },
   archives: { area: "archives", title: "ARCHIVES", accent: "rgba(255, 255, 255, 0.18)", tier: 3 },
   drafts: { area: "drafts", title: "DRAFT_POOL", accent: "rgba(255, 200, 90, 0.6)", tier: 2 },
+  improvements: { area: "improvements", title: "CONTINUOUS_IMPROVEMENTS", accent: "rgba(63, 205, 255, 0.7)", tier: 1 },
   delegation: { area: "delegation", title: "DELEGATION_INBOX", accent: "rgba(180, 160, 255, 0.7)", tier: 1 },
   agentvoice: { area: "agentvoice", title: "AGENT_VOICE", accent: "rgba(140, 200, 255, 0.6)", tier: 2 },
   subagents: { area: "subagents", title: "SUBAGENT_TREE", accent: "rgba(180, 160, 255, 0.6)", tier: 2, summaryKey: "swarm" },
@@ -347,10 +347,7 @@ export default function App() {
         <div className="bento-why-row" style={{ gridArea: "why" }}>
           <WhyStrip />
         </div>
-        {cell("health", <HealthPanel payload={payload} />)}
-        {cell("cadence", <CadencePanel cadence={payload.cadence} />)}
-        {cell("sparkline", <SparklinePanel buckets={payload.timeline?.buckets || []} total={payload.timeline?.total || 0} peak={payload.timeline?.peak || 0} />)}
-        {cell("perf", <PerformancePanel payload={payload} />)}
+        {cell("pulse", <SystemPulsePanel payload={payload} eventCount={liveEvents.length} />)}
 
         {cell("mission", <MissionPanel mission={payload.mission} />)}
         {cell("thinking", <ThinkingPanel mission={payload.mission} />)}
@@ -404,6 +401,7 @@ export default function App() {
         {cell("ollama", <OllamaQueuePanel />)}
         {cell("subscriptions", <SubscriptionLedgerPanel tasks={payload.subscriptions} />)}
         {cell("drafts", <DraftPoolPanel />)}
+        {cell("improvements", <ImprovementsLogPanel />)}
         {cell("subagents", <SubagentTreePanel payload={payload} />)}
         {cell("themed", <ThemedSurfacesPanel themed={payload.themed} />)}
 

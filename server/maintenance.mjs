@@ -206,6 +206,70 @@ const DOGFOOD_TASKS = [
     file_path: "src/components/panes/GoalsPanel.tsx",
     target_change: "add data-testid=\"pane-goals\" to the outer .goals-pane div"
   },
+  // === Communication-focused dogfood tasks (per Sarvesh's directive) ===
+  // These target what each pane EXPLAINS to the operator, not just structural
+  // attributes. The pipeline picks these and adds tooltips, captions, and
+  // empty-state copy that helps Sarvesh understand what's happening.
+  {
+    title: "Add aria-label to refresh button in PowerMetricsPanel",
+    mission: "design",
+    file_path: "src/components/panes/PowerMetricsPanel.tsx",
+    target_change: "add aria-label to any unlabeled <button> describing the refresh action"
+  },
+  {
+    title: "Add a helpful empty-state caption to GoalsPanel when goals are empty",
+    mission: "design",
+    file_path: "src/components/panes/GoalsPanel.tsx",
+    target_change: "extend the empty-state div to include a short helper line: \"Edit ~/.hermes/memories/goals.md and reload to populate.\""
+  },
+  {
+    title: "Add a `title` attribute to the .pane-bar count in PlaybookScoreboardPanel",
+    mission: "design",
+    file_path: "src/components/panes/PlaybookScoreboardPanel.tsx",
+    target_change: "find the count display and add title=\"successes / total attempts\" so hover explains it"
+  },
+  {
+    title: "Add aria-live polite to LiveTimeline for screen readers",
+    mission: "design",
+    file_path: "src/components/LiveTimeline.tsx",
+    target_change: "ensure the timeline list element has aria-live=\"polite\" so updates are announced"
+  },
+  {
+    title: "Add helpful empty-state to OllamaQueuePanel when no model traffic",
+    mission: "design",
+    file_path: "src/components/panes/OllamaQueuePanel.tsx",
+    target_change: "extend the no-traffic empty state to mention \"models warm up after first request\""
+  },
+  {
+    title: "Add data-testid pane-delegation-inbox helper text",
+    mission: "design",
+    file_path: "src/components/panes/DelegationInboxPanel.tsx",
+    target_change: "in the no-pending empty state, add a one-liner: \"Hermes auto-fires Claude Code unless an intent matches a danger pattern.\""
+  },
+  {
+    title: "Add a tooltip explaining the pipeline-river phase columns",
+    mission: "design",
+    file_path: "src/components/PipelineRiver.tsx",
+    target_change: "add title attribute to .pr-label spans summarizing what each phase does"
+  },
+  {
+    title: "Add aria-label to refresh button in OllamaQueuePanel",
+    mission: "design",
+    file_path: "src/components/panes/OllamaQueuePanel.tsx",
+    target_change: "if there is a refresh button add aria-label, otherwise add a small visible refresh hint"
+  },
+  {
+    title: "Caption AGENT_INTENT lane in WhyStrip with a one-line meaning",
+    mission: "design",
+    file_path: "src/components/WhyStrip.tsx",
+    target_change: "add a title attribute to the AGENT INTENT label explaining \"what the agent wants to do that is awaiting your approval\""
+  },
+  {
+    title: "Make timestamps in AgentVoicePanel relative (e.g. 5s ago) when fresh",
+    mission: "design",
+    file_path: "src/components/panes/AgentVoicePanel.tsx",
+    target_change: "when the event is < 5min old, render the time as a relative phrase like \"5s ago\" rather than HH:MM:SS"
+  },
   {
     title: "Add data-testid to PlaybookScoreboardPanel root",
     mission: "design",

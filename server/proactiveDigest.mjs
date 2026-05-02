@@ -15,6 +15,7 @@ import { listSubscriptionTasks } from "./subscriptions.mjs";
 import { sendTelegramMessage } from "./telegram.mjs";
 import { listTasks } from "./taskLedger.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
+import { getImprovementsLog } from "./improvementsLog.mjs";
 
 const TICK_MS = Number(process.env.PRETEXT_DIGEST_INTERVAL_MS || 4 * 60 * 60_000); // 4h
 const QUIET_HOURS = (process.env.PRETEXT_DIGEST_QUIET_HOURS || "0,1,2,3,4,5,6").split(",").map(Number);
@@ -56,13 +57,14 @@ async function readLatestCareerNote() {
 }
 
 async function buildDigest() {
-  const [power, pipeline, openTasks, queuedSubs, commitsResult, careerNote] = await Promise.all([
+  const [power, pipeline, openTasks, queuedSubs, commitsResult, careerNote, improvements] = await Promise.all([
     getPowerMetrics({ windowMinutes: 4 * 60 }),
     Promise.resolve(getPipelineStatus()),
     listTasks({ status: "open" }),
     listSubscriptionTasks({ status: "queued" }),
     execGit(["log", "--since=4 hours ago", "--pretty=format:%h %s"]),
-    readLatestCareerNote()
+    readLatestCareerNote(),
+    getImprovementsLog({ minutes: 4 * 60 })
   ]);
   const commits = (commitsResult.stdout || "")
     .split("\n")
@@ -81,6 +83,9 @@ async function buildDigest() {
   }
   lines.push("");
 
+  // Continuous-improvement signal: surface UI commits explicitly.
+  const counts = improvements?.counts || { ui: 0, agent: 0, infra: 0, other: 0 };
+  lines.push(`*Continuous improvements (4h):* UI=${counts.ui} · AGENT=${counts.agent} · INFRA=${counts.infra}`);
   if (commits.length) {
     lines.push(`*Real commits this window (${commits.length}):*`);
     for (const c of commits) lines.push(`  • \`${c}\``);

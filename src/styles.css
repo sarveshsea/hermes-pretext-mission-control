@@ -249,12 +249,13 @@ button {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "why          why          why          why          why          why          why          why          why          why          why          why"
-    "health       health       health       cadence      cadence      cadence      sparkline    sparkline    sparkline    perf         perf         perf"
+    "pulse        pulse        pulse        pulse        pulse        pulse        pulse        pulse        pulse        pulse        pulse        pulse"
     "power        power        power        power        scoreboard   scoreboard   scoreboard   scoreboard   ollama       ollama       ollama       ollama"
     "report       report       report       report       report       report       goals        goals        goals        goals        goals        goals"
     "mission      mission      mission      live         live         live         live         thinking     thinking     thinking     memory       memory"
     "proposals    proposals    proposals    proposals    proposals    proposals    agentvoice   agentvoice   agentvoice   delegation   delegation   delegation"
     "ledger       ledger       ledger       ledger       subagents    subagents    subagents    subagents    themed       themed       themed       themed"
+    "improvements improvements improvements improvements improvements improvements improvements improvements improvements improvements improvements improvements"
     "subscriptions subscriptions subscriptions subscriptions drafts       drafts       drafts       archives     archives     archives     archives     archives";
   grid-template-rows:
     44px
@@ -264,6 +265,7 @@ button {
     200px
     200px
     136px
+    140px
     132px;
   overflow: auto;
 }
@@ -1943,8 +1945,8 @@ option {
 }
 .power-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--s-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
   flex: 1;
   min-height: 0;
 }
@@ -1953,11 +1955,12 @@ option {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: var(--s-3) var(--s-5);
+  padding: var(--s-3) var(--s-4);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.015);
   min-width: 0;
+  overflow: hidden;
 }
 .power-num {
   font-size: var(--t-hero);
@@ -2049,13 +2052,22 @@ option {
   gap: 8px;
   height: 44px;
   padding: 4px 8px;
-  border: 1px solid rgba(208, 241, 0, 0.22);
+  border: 1px solid rgba(110, 79, 224, 0.22);
   border-radius: 6px;
+  position: relative;
   background:
-    linear-gradient(180deg, rgba(208, 241, 0, 0.06), rgba(208, 241, 0, 0.01)),
-    rgba(17, 17, 20, 0.7);
+    linear-gradient(180deg, rgba(63, 205, 255, 0.05), rgba(110, 79, 224, 0.02)),
+    var(--panel);
   -webkit-backdrop-filter: blur(28px) saturate(160%);
   backdrop-filter: blur(28px) saturate(160%);
+  overflow: hidden;
+}
+.why-strip::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0; height: 1px;
+  background: var(--grad-prism);
+  opacity: 0.7;
 }
 .why-action {
   margin-left: 6px;
@@ -2063,15 +2075,15 @@ option {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(208, 241, 0, 0.08);
-  border: 1px solid rgba(208, 241, 0, 0.4);
+  background: rgba(63, 205, 255, 0.08);
+  border: 1px solid var(--accent-go);
   border-radius: 3px;
-  color: rgb(208, 241, 0);
+  color: var(--accent-go);
   cursor: pointer;
   flex-shrink: 0;
 }
 .why-action:hover {
-  background: rgba(208, 241, 0, 0.18);
+  background: rgba(63, 205, 255, 0.18);
 }
 .why-action:disabled {
   opacity: 0.5;
@@ -2127,12 +2139,19 @@ option {
 }
 .pb-row {
   display: grid;
-  grid-template-columns: minmax(120px, 1.4fr) minmax(120px, 1fr) 50px 80px;
-  gap: var(--s-4);
+  grid-template-columns: minmax(110px, 1.3fr) minmax(80px, 1fr) 56px 70px 60px;
+  gap: var(--s-3);
   align-items: center;
   padding: var(--s-2) var(--s-2);
   border-radius: 3px;
   min-width: 0;
+}
+.pb-since {
+  font-size: var(--t-label);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 .pb-row:hover {
   background: rgba(255, 255, 255, 0.03);
@@ -2589,6 +2608,225 @@ option {
   text-overflow: ellipsis;
 }
 .draft-pool-sample {
+  color: var(--text-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* SYSTEM PULSE — single widget replacing the 4 cramped top cells.
+   Five micro-cards in one row: OLLAMA / GATEWAY / CADENCE / EVENTS / QUEUE.
+   Information density without text clipping. */
+
+.system-pulse {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--s-4);
+  height: 100%;
+  align-items: stretch;
+}
+.sp-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
+  border-left: 2px solid var(--text-faint);
+  min-width: 0;
+}
+.sp-card:first-child { border-left: 0; padding-left: 0; }
+.sp-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.sp-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.sp-dot {
+  font-size: 8px;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+.sp-dot-green { color: var(--accent-go); }
+.sp-dot-amber { color: var(--accent-warn); }
+.sp-dot-red { color: var(--accent-stop); }
+.sp-dot-muted { color: var(--text-faint); }
+.sp-value {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sp-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+.sp-meta {
+  font-size: var(--t-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* OLLAMA_QUEUE: row stacks vertically (model on top, 4 stat pairs below).
+   Each pair (key + value) is its own grid cell — chars don't wrap. */
+
+.ollama-row {
+  flex-direction: column !important;
+  align-items: stretch;
+  gap: var(--s-2);
+}
+.ollama-counts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+.oc-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.oc-key {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.oc-val {
+  font-size: var(--t-row);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.oc-val.warn { color: var(--accent-stop); }
+
+/* PIPELINE_RIVER: peak labels were colliding with the bar. Add some bottom
+   space and a min-width on each column so labels don't clip. */
+.pr-col { min-width: 36px; }
+
+/* POWER_METRICS: numbers responsive — clamp font down on narrow cells */
+.power-num { font-size: clamp(20px, 2vw, 30px); }
+
+/* Universal text-clip rule for ALL pane summaries, kv values, row content.
+   Anything that should never wrap and must ellipsis when narrow. */
+.bento-summary,
+.kv-val,
+.row-content,
+.row-id,
+.tl-body,
+.delegation-intent,
+.agent-voice-text,
+.draft-pool-sample,
+.draft-pool-reason,
+.impl-subject,
+.pb-id,
+.goal-title,
+.goal-target {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Allow flex children with text to shrink + ellipsis. */
+.bento-cell, .bento-body, .row, .kv-row {
+  min-width: 0;
+}
+
+/* CONTINUOUS_IMPROVEMENTS pane — proof Hermes is shipping real changes,
+   filtered to drop the auto-publish noise. UI / AGENT / INFR pills.   */
+
+.improvements-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  height: 100%;
+  min-height: 0;
+}
+.impl-counts {
+  display: flex;
+  gap: var(--s-4);
+  align-items: baseline;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-bottom: var(--s-2);
+  flex-shrink: 0;
+}
+.impl-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.impl-count strong {
+  font-size: var(--t-row);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text-faint);
+}
+.impl-count.impl-on strong { color: var(--accent-go); }
+.impl-window {
+  margin-left: auto;
+  font-size: var(--t-label);
+}
+.impl-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+}
+.impl-row {
+  display: grid;
+  grid-template-columns: 60px 60px 1fr;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: var(--s-1) var(--s-2);
+  font-size: var(--t-meta);
+  border-radius: 2px;
+  border-left: 2px solid var(--text-faint);
+}
+.impl-row.impl-kind-ui    { border-left-color: var(--accent-go); }
+.impl-row.impl-kind-agent { border-left-color: var(--accent-think); }
+.impl-row.impl-kind-infra { border-left-color: var(--accent-info); }
+.impl-row.impl-kind-other { border-left-color: var(--text-faint); opacity: 0.65; }
+.impl-row:hover { background: rgba(255, 255, 255, 0.03); }
+.impl-sha {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-label);
+  color: var(--text-faint);
+  font-family: var(--mono);
+}
+.impl-kind-tag {
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.impl-row.impl-kind-ui    .impl-kind-tag { color: var(--accent-go); }
+.impl-row.impl-kind-agent .impl-kind-tag { color: var(--accent-think); }
+.impl-row.impl-kind-infra .impl-kind-tag { color: var(--accent-info); }
+.impl-subject {
   color: var(--text-base);
   white-space: nowrap;
   overflow: hidden;
