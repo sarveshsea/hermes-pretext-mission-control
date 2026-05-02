@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// Add data-testid to the root scoreboard container
+
 type Outcome = { ts: string; result: "ship" | "fail"; diffLines?: number; reason?: string };
 type StatRecord = { success: number; fail: number; totalDiffLines: number; recentOutcomes: Outcome[]; lastSeen?: string };
 type Stats = Record<string, StatRecord>;
