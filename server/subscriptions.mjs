@@ -12,12 +12,13 @@ const CLAUDE_SPEND_LOG = path.join(ROOTS.project, "data/claude-spend.jsonl");
 
 const recentClaudeDispatches = []; // [{ts, taskId, ok}]
 
-// Single-flight: only ONE `claude --print` may run at a time. Without this,
-// agentDelegation fired ~200 dispatches in parallel and macOS / timeout
-// killed all of them with exit 143 (SIGTERM). The semaphore is FIFO; later
-// arrivals queue up to MAX_QUEUE then get rejected with rate-limit.
+// Counting semaphore: up to MAX_CONCURRENT `claude --print` may run at once.
+// Original SIGKILL flood came from agentDelegation firing ~200 in parallel —
+// 3 concurrent is well below the OOM threshold and 3× throughput vs single-flight.
+// FIFO queue; later arrivals beyond MAX_QUEUE get rejected with rate-limit.
+const MAX_CONCURRENT = Number(process.env.PRETEXT_CLAUDE_MAX_CONCURRENT || 3);
 const MAX_QUEUE = 6;
-let inFlight = false;
+let inFlightCount = 0;
 const waitQueue = [];
 let consecutiveSigkills = 0;
 let backoffUntil = 0;
@@ -25,18 +26,18 @@ let backoffUntil = 0;
 function acquireSlot() {
   return new Promise((resolve, reject) => {
     if (waitQueue.length >= MAX_QUEUE) {
-      reject(new Error(`claude semaphore full (${waitQueue.length} waiting)`));
+      reject(new Error(`claude semaphore full (${waitQueue.length} waiting, ${inFlightCount} in flight)`));
       return;
     }
     const grant = () => {
-      inFlight = true;
+      inFlightCount += 1;
       resolve(() => {
-        inFlight = false;
+        inFlightCount = Math.max(0, inFlightCount - 1);
         const next = waitQueue.shift();
         if (next) next();
       });
     };
-    if (!inFlight) grant();
+    if (inFlightCount < MAX_CONCURRENT) grant();
     else waitQueue.push(grant);
   });
 }
