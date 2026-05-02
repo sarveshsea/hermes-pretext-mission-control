@@ -1,29 +1,73 @@
 :root {
+  /* ===== Prismatic palette (Apple Intelligence / Siri orb inspired) =====
+     A vertical gradient: warm yellow → orange → coral → magenta → violet →
+     cobalt → cyan. Used as semantic accents below; never reach for hex
+     directly in component styles. */
+  --p-warm-50:  #FFF1C2;   /* pale yellow */
+  --p-warm-300: #FFD073;
+  --p-warm-500: #FFA552;
+  --p-hot-400:  #FF6B6B;   /* coral */
+  --p-hot-500:  #E94560;   /* red */
+  --p-pink-500: #E0578F;
+  --p-magenta:  #B83D9A;
+  --p-violet-500: #6E4FE0;
+  --p-violet-700: #3F2D9C;
+  --p-cobalt-500: #2E5DD7;
+  --p-cyan-400: #3FCDFF;
+  --p-cyan-200: #A6F0FF;
+
+  /* ===== Semantic accents — meaning over color ===== */
+  --accent-go:    var(--p-cyan-400);    /* shipped / positive / live */
+  --accent-warn:  var(--p-warm-500);    /* in-progress / attention */
+  --accent-stop:  var(--p-hot-500);     /* error / blocked */
+  --accent-think: var(--p-violet-500);  /* thinking / reasoning */
+  --accent-info:  var(--p-cobalt-500);  /* info / model_call */
+  --accent-glow:  var(--p-cyan-200);    /* highlight outline / focus */
+
+  /* Headline gradient for hero accents (PIPELINE_RIVER, hermes-card border) */
+  --grad-prism: linear-gradient(180deg,
+    var(--p-warm-300) 0%,
+    var(--p-hot-400) 28%,
+    var(--p-magenta) 48%,
+    var(--p-violet-500) 65%,
+    var(--p-cobalt-500) 80%,
+    var(--p-cyan-400) 100%);
+
+  /* ===== Surfaces & lines (DARK MODE — default) ===== */
   --color-bg: #0a0a0c;
   --color-surface: #111114;
   --color-surface-2: #16161a;
   --color-deep-cosmos: #0a0a0c;
-  --color-chartreuse-pulse: #d0f100;
   --color-ice-veil: #ededf0;
   --color-slate-ink: #7a7a83;
   --color-midnight-navy: #1b2540;
   --color-ghost-canvas: #f8f9fc;
   --color-pure-surface: #ffffff;
-  --line: rgba(255, 255, 255, 0.18);
-  --line-strong: rgba(255, 255, 255, 0.28);
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.22);
   --panel: rgba(17, 17, 20, 0.86);
   --panel-strong: rgba(17, 17, 20, 0.94);
 
-  /* Type scale — used everywhere so the hierarchy stays consistent. */
-  --t-label: 9.5px;     /* uppercase pane titles, kv keys */
-  --t-meta: 10.5px;     /* small meta lines, summaries */
-  --t-body: 11.5px;     /* default body text */
-  --t-row: 12px;        /* row content */
-  --t-numeral: 13px;    /* small numerals */
-  --t-hero: 28px;       /* big numbers */
-  --t-mega: 36px;       /* ultra-prominent */
+  /* Text hierarchy */
+  --text-strong: rgba(255, 255, 255, 0.92);
+  --text-base: rgba(255, 255, 255, 0.78);
+  --text-muted: rgba(255, 255, 255, 0.52);
+  --text-faint: rgba(255, 255, 255, 0.30);
 
-  /* Spacing tokens. */
+  /* Legacy alias — still referenced in many panes; points at semantic accent.
+     New code: use --accent-go directly. */
+  --color-chartreuse-pulse: var(--accent-go);
+
+  /* ===== Type scale ===== */
+  --t-label: 9.5px;
+  --t-meta: 10.5px;
+  --t-body: 11.5px;
+  --t-row: 12px;
+  --t-numeral: 13px;
+  --t-hero: 28px;
+  --t-mega: 36px;
+
+  /* ===== Spacing ===== */
   --s-1: 2px;
   --s-2: 4px;
   --s-3: 6px;
@@ -31,12 +75,6 @@
   --s-5: 12px;
   --s-6: 16px;
   --s-7: 24px;
-
-  /* Text colors with explicit hierarchy. */
-  --text-strong: rgba(255, 255, 255, 0.92);
-  --text-base: rgba(255, 255, 255, 0.78);
-  --text-muted: rgba(255, 255, 255, 0.52);
-  --text-faint: rgba(255, 255, 255, 0.32);
 
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   color: var(--text-base);
@@ -46,6 +84,76 @@
   font-synthesis: none;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
+  color-scheme: light dark;
+}
+
+/* ===== LIGHT MODE — follows system preference ===== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-surface-2: #f4f4f6;
+    --color-deep-cosmos: #fafafa;
+    --color-ice-veil: #15151a;
+    --color-slate-ink: #6c6c75;
+    --line: rgba(0, 0, 0, 0.10);
+    --line-strong: rgba(0, 0, 0, 0.18);
+    --panel: rgba(255, 255, 255, 0.86);
+    --panel-strong: rgba(255, 255, 255, 0.96);
+
+    --text-strong: rgba(15, 15, 20, 0.92);
+    --text-base: rgba(15, 15, 20, 0.74);
+    --text-muted: rgba(15, 15, 20, 0.50);
+    --text-faint: rgba(15, 15, 20, 0.28);
+
+    /* Slightly deeper accents in light mode so they don't wash out on white */
+    --accent-go:    #00B4D8;
+    --accent-warn:  #E07B00;
+    --accent-stop:  #D42848;
+    --accent-think: #5B3DD9;
+    --accent-info:  #1E47C7;
+    --accent-glow:  #4ABED9;
+  }
+}
+
+/* Manual override for explicit `data-theme` on <html> (future toggle) */
+:root[data-theme="light"] {
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f4f4f6;
+  --color-deep-cosmos: #fafafa;
+  --color-ice-veil: #15151a;
+  --color-slate-ink: #6c6c75;
+  --line: rgba(0, 0, 0, 0.10);
+  --line-strong: rgba(0, 0, 0, 0.18);
+  --panel: rgba(255, 255, 255, 0.86);
+  --panel-strong: rgba(255, 255, 255, 0.96);
+  --text-strong: rgba(15, 15, 20, 0.92);
+  --text-base: rgba(15, 15, 20, 0.74);
+  --text-muted: rgba(15, 15, 20, 0.50);
+  --text-faint: rgba(15, 15, 20, 0.28);
+  --accent-go:    #00B4D8;
+  --accent-warn:  #E07B00;
+  --accent-stop:  #D42848;
+  --accent-think: #5B3DD9;
+  --accent-info:  #1E47C7;
+  --accent-glow:  #4ABED9;
+}
+:root[data-theme="dark"] {
+  /* Force dark — the default, but explicit for the toggle */
+  --color-bg: #0a0a0c;
+  --color-surface: #111114;
+  --color-surface-2: #16161a;
+  --color-deep-cosmos: #0a0a0c;
+  --color-ice-veil: #ededf0;
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --panel: rgba(17, 17, 20, 0.86);
+  --panel-strong: rgba(17, 17, 20, 0.94);
+  --text-strong: rgba(255, 255, 255, 0.92);
+  --text-base: rgba(255, 255, 255, 0.78);
+  --text-muted: rgba(255, 255, 255, 0.52);
+  --text-faint: rgba(255, 255, 255, 0.30);
 }
 
 * {
@@ -198,11 +306,20 @@ button {
   flex-direction: column;
   gap: var(--s-2);
   padding: var(--s-3) var(--s-4);
-  border: 1px solid rgba(208, 241, 0, 0.22);
+  border: 1px solid rgba(110, 79, 224, 0.28);
   border-radius: 4px;
+  position: relative;
   background:
-    linear-gradient(180deg, rgba(208, 241, 0, 0.06), rgba(208, 241, 0, 0.01)),
-    rgba(17, 17, 20, 0.65);
+    linear-gradient(180deg, rgba(63, 205, 255, 0.05), rgba(110, 79, 224, 0.02)),
+    var(--panel);
+}
+.hermes-card::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px; width: 2px;
+  background: var(--grad-prism);
+  border-radius: 2px;
+  opacity: 0.9;
 }
 .hermes-card-row {
   display: flex;
@@ -325,14 +442,14 @@ button {
   transition: height 200ms ease;
 }
 .pr-tone-ok .pr-bar-fill {
-  background: linear-gradient(180deg, var(--color-chartreuse-pulse), rgba(208, 241, 0, 0.4));
-  box-shadow: 0 0 12px rgba(208, 241, 0, 0.4);
+  background: linear-gradient(180deg, var(--accent-go), rgba(63, 205, 255, 0.35));
+  box-shadow: 0 0 14px rgba(63, 205, 255, 0.45);
 }
 .pr-tone-warn .pr-bar-fill {
-  background: linear-gradient(180deg, rgb(255, 200, 90), rgba(255, 200, 90, 0.3));
+  background: linear-gradient(180deg, var(--accent-warn), rgba(255, 165, 82, 0.28));
 }
 .pr-tone-alert .pr-bar-fill {
-  background: linear-gradient(180deg, rgb(255, 110, 110), rgba(255, 110, 110, 0.3));
+  background: linear-gradient(180deg, var(--accent-stop), rgba(233, 69, 96, 0.28));
 }
 .pr-tone-muted .pr-bar-fill {
   background: rgba(255, 255, 255, 0.18);
@@ -447,27 +564,29 @@ button {
   text-overflow: ellipsis;
   min-width: 0;
 }
-.tl-row.tone-pick { border-left-color: rgba(140, 200, 255, 0.5); }
-.tl-row.tone-pick .tl-phase { color: rgb(140, 200, 255); }
-.tl-row.tone-concretize { border-left-color: rgba(180, 160, 255, 0.5); }
-.tl-row.tone-concretize .tl-phase { color: rgb(180, 160, 255); }
-.tl-row.tone-search { border-left-color: rgba(160, 240, 200, 0.5); }
-.tl-row.tone-search .tl-phase { color: rgb(160, 240, 200); }
-.tl-row.tone-playbook { border-left-color: rgba(255, 200, 120, 0.5); }
-.tl-row.tone-playbook .tl-phase { color: rgb(255, 200, 120); }
+/* Phase tones map onto the prismatic palette: cool→info→think→warm→go for
+   pipeline progression, with stop reserved for errors. */
+.tl-row.tone-pick { border-left-color: var(--accent-info); }
+.tl-row.tone-pick .tl-phase { color: var(--accent-info); }
+.tl-row.tone-concretize { border-left-color: var(--accent-think); }
+.tl-row.tone-concretize .tl-phase { color: var(--accent-think); }
+.tl-row.tone-search { border-left-color: var(--p-violet-500); }
+.tl-row.tone-search .tl-phase { color: var(--p-violet-500); }
+.tl-row.tone-playbook { border-left-color: var(--accent-warn); }
+.tl-row.tone-playbook .tl-phase { color: var(--accent-warn); }
 .tl-row.tone-submit,
-.tl-row.tone-plan { border-left-color: var(--color-chartreuse-pulse); }
+.tl-row.tone-plan { border-left-color: var(--accent-go); }
 .tl-row.tone-submit .tl-phase,
-.tl-row.tone-plan .tl-phase { color: var(--color-chartreuse-pulse); }
-.tl-row.tone-abandon { border-left-color: rgb(255, 200, 90); opacity: 0.85; }
-.tl-row.tone-abandon .tl-phase { color: rgb(255, 200, 90); }
-.tl-row.tone-thinking { border-left-color: rgba(180, 160, 255, 0.4); }
-.tl-row.tone-thinking .tl-phase { color: rgb(180, 160, 255); }
-.tl-row.tone-model { border-left-color: rgba(140, 200, 255, 0.3); }
-.tl-row.tone-model .tl-phase { color: rgba(140, 200, 255, 0.7); }
-.tl-row.tone-mission { border-left-color: rgba(208, 241, 0, 0.4); }
-.tl-row.tone-error { border-left-color: rgb(255, 110, 110); }
-.tl-row.tone-error .tl-phase { color: rgb(255, 110, 110); }
+.tl-row.tone-plan .tl-phase { color: var(--accent-go); }
+.tl-row.tone-abandon { border-left-color: var(--accent-warn); opacity: 0.78; }
+.tl-row.tone-abandon .tl-phase { color: var(--accent-warn); }
+.tl-row.tone-thinking { border-left-color: var(--accent-think); }
+.tl-row.tone-thinking .tl-phase { color: var(--accent-think); }
+.tl-row.tone-model { border-left-color: var(--accent-info); opacity: 0.85; }
+.tl-row.tone-model .tl-phase { color: var(--accent-info); }
+.tl-row.tone-mission { border-left-color: var(--p-pink-500); }
+.tl-row.tone-error { border-left-color: var(--accent-stop); }
+.tl-row.tone-error .tl-phase { color: var(--accent-stop); }
 
 
 .bento-canvas-stage .pretext-console-canvas {
@@ -1848,8 +1967,8 @@ option {
   font-variant-numeric: tabular-nums;
 }
 .power-num-on {
-  color: var(--color-chartreuse-pulse);
-  text-shadow: 0 0 12px rgba(208, 241, 0, 0.35);
+  color: var(--accent-go);
+  text-shadow: 0 0 14px rgba(63, 205, 255, 0.45);
 }
 .power-num-off {
   color: var(--text-faint);
@@ -1881,11 +2000,11 @@ option {
 /* Pane tier system — H1 prominent, H3 dim. */
 
 .bento-cell[data-tier="1"] {
-  border-color: rgba(208, 241, 0, 0.32) !important;
+  border-color: rgba(110, 79, 224, 0.28) !important;   /* violet edge */
   box-shadow:
-    inset 0 1px 0 rgba(208, 241, 0, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
-    0 16px 36px -22px rgba(208, 241, 0, 0.20);
+    inset 0 1px 0 rgba(63, 205, 255, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 16px 36px -22px rgba(110, 79, 224, 0.18);
 }
 .bento-cell[data-tier="3"] {
   opacity: 0.55;
@@ -1901,9 +2020,9 @@ option {
   margin-left: 8px;
   filter: drop-shadow(0 0 4px currentColor);
 }
-.pane-dot-green { color: rgb(208, 241, 0); }
-.pane-dot-amber { color: rgb(255, 200, 90); }
-.pane-dot-red { color: rgb(255, 110, 110); }
+.pane-dot-green { color: var(--accent-go); }
+.pane-dot-amber { color: var(--accent-warn); }
+.pane-dot-red { color: var(--accent-stop); }
 
 .bento-summary {
   padding: var(--s-2) var(--s-4) var(--s-3);
@@ -1984,9 +2103,9 @@ option {
   flex-shrink: 0;
   filter: drop-shadow(0 0 3px currentColor);
 }
-.why-dot-green { color: var(--color-chartreuse-pulse); }
-.why-dot-amber { color: rgb(255, 200, 90); }
-.why-dot-red { color: rgb(255, 110, 110); }
+.why-dot-green { color: var(--accent-go); }
+.why-dot-amber { color: var(--accent-warn); }
+.why-dot-red { color: var(--accent-stop); }
 .why-content {
   font-size: var(--t-meta);
   color: var(--text-base);
