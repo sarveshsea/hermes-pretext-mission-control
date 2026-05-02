@@ -10,6 +10,9 @@
 // model on the hardest phases. Tick state on tasks lets a hard task resume
 // from its failing phase across multiple ticks.
 
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { ROOTS } from "./config.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 import { listTasks, updateTask } from "./taskLedger.mjs";
 import { searchCode } from "./codeSearch.mjs";
@@ -267,6 +270,67 @@ async function readFileContext({ concretize, sessionId }) {
   return { ok: true, pattern: "(file-direct)", glob: concretize.file_path, matches: out, fullText: text };
 }
 
+// Programmatic find-string repair. The LLM (gemma especially) often hallucinates
+// the find substring — paraphrases whitespace, gets indentation wrong, omits a
+// trailing char. This function reads the actual target file and tries to recover
+// a real verbatim substring that produces the same semantic edit. Returns:
+//   { ok: true, find: <actual file substring>, repaired: bool }
+//   { ok: false, reason }
+async function repairFindString(filePath, find) {
+  let body;
+  try {
+    body = await fs.readFile(path.join(ROOTS.project, filePath), "utf8");
+  } catch (error) {
+    return { ok: false, reason: `cannot read ${filePath}: ${error.message}` };
+  }
+  // Verbatim?
+  if (body.includes(find)) {
+    // Also reject if the substring is non-unique — we need a unique target.
+    const occurrences = body.split(find).length - 1;
+    if (occurrences > 1) return { ok: false, reason: `find string appears ${occurrences}× — not unique` };
+    return { ok: true, find, repaired: false };
+  }
+  // Whitespace-normalized search: collapse all whitespace runs into single space
+  // in both haystack and needle, find offset, then map back to the original.
+  const normWS = (s) => s.replace(/\s+/g, " ");
+  const bodyNorm = normWS(body);
+  const findNorm = normWS(find);
+  if (findNorm.length < 12) return { ok: false, reason: "find too short to safely repair" };
+  const idx = bodyNorm.indexOf(findNorm);
+  if (idx === -1) return { ok: false, reason: "find string not found in file even after whitespace-normalize" };
+  const lastIdx = bodyNorm.lastIndexOf(findNorm);
+  if (idx !== lastIdx) return { ok: false, reason: "find string non-unique under whitespace-normalize" };
+  // Map normalized offset back to raw offset by counting raw chars consumed.
+  let rawStart = 0;
+  let normCount = 0;
+  while (normCount < idx && rawStart < body.length) {
+    if (/\s/.test(body[rawStart])) {
+      while (rawStart < body.length && /\s/.test(body[rawStart])) rawStart += 1;
+      normCount += 1;
+    } else {
+      rawStart += 1;
+      normCount += 1;
+    }
+  }
+  // Now consume raw chars equivalent to findNorm.length
+  let rawEnd = rawStart;
+  let consumed = 0;
+  while (consumed < findNorm.length && rawEnd < body.length) {
+    if (/\s/.test(body[rawEnd])) {
+      while (rawEnd < body.length && /\s/.test(body[rawEnd])) rawEnd += 1;
+      consumed += 1;
+    } else {
+      rawEnd += 1;
+      consumed += 1;
+    }
+  }
+  const actualFind = body.slice(rawStart, rawEnd);
+  if (!body.includes(actualFind) || body.split(actualFind).length - 1 !== 1) {
+    return { ok: false, reason: "repair produced non-unique or missing slice" };
+  }
+  return { ok: true, find: actualFind, repaired: true };
+}
+
 async function playbookPhase({ task, concretize, search, sessionId, sharedBlock, indexBlock, journalBlock }) {
   const playbooks = await listPlaybooks();
   if (!playbooks.length) return { ok: false, reason: "no playbooks loaded" };
@@ -303,12 +367,33 @@ async function playbookPhase({ task, concretize, search, sessionId, sharedBlock,
   }
   if (parsed.find === parsed.replace) return { ok: false, reason: "find equals replace (no-op)" };
   if (parsed.find.length < 8) return { ok: false, reason: "find too short (must be ≥ 8 chars to be unique)" };
-  await emit("playbook", `${parsed.playbook_id} → ${parsed.filePath}`, sessionId, { playbook: parsed.playbook_id, latencyMs, model: PLAYBOOK_MODEL });
+  // Repair the find string against the actual file contents — the LLM often
+  // hallucinates whitespace or paraphrases. If repair fails, reject loudly.
+  const repair = await repairFindString(parsed.filePath, parsed.find);
+  if (!repair.ok) {
+    await appendHermesEvent({
+      type: "thinking",
+      role: "assistant",
+      content: `[pipeline:playbook] find-string repair failed: ${repair.reason}`,
+      sessionId
+    });
+    return { ok: false, reason: `find-string repair: ${repair.reason}` };
+  }
+  if (repair.repaired) {
+    await appendHermesEvent({
+      type: "thinking",
+      role: "assistant",
+      content: `[pipeline:playbook] repaired find-string against ${parsed.filePath} (whitespace mismatch)`,
+      sessionId
+    });
+  }
+  const finalFind = repair.find;
+  await emit("playbook", `${parsed.playbook_id} → ${parsed.filePath}${repair.repaired ? " (find repaired)" : ""}`, sessionId, { playbook: parsed.playbook_id, latencyMs, model: PLAYBOOK_MODEL, repaired: repair.repaired });
   return {
     ok: true,
     playbookId: parsed.playbook_id,
     filePath: parsed.filePath,
-    find: parsed.find,
+    find: finalFind,
     replace: parsed.replace,
     rationale: parsed.rationale || `pipeline ${parsed.playbook_id}`
   };
