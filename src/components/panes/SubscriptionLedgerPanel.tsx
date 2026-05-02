@@ -2,6 +2,7 @@ import type { SubscriptionTask } from "../../api";
 
 export default function SubscriptionLedgerPanel({ tasks }: { tasks: SubscriptionTask[] }) {
   if (!tasks?.length) {
+  return <div className="muted">no subscriptions yet</div>;
     return <div className="muted">no subscription tasks · Hermes can dispatch to Codex / Claude Max</div>;
   }
   const open = tasks.filter((t) => t.status !== "completed" && t.status !== "abandoned");
