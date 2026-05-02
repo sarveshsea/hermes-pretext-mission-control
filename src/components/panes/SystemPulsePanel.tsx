@@ -6,11 +6,14 @@ type Props = { payload: DashboardPayload; eventCount: number };
 type ModelStat = { model: string; queued: number; inFlight: number; completed: number; failed: number; consecutiveFails: number };
 type QueueStatus = { models: Record<string, ModelStat> };
 type HealthProbe = {
-  ollama?: { ok: boolean; responseMs: number | null };
-  hermesGateway?: { ok: boolean; pid: number | null };
-  dashboard?: { ok: boolean; pid: number | null };
+  ollama?: { up: boolean; latencyMs: number | null; models?: { name: string }[] };
+  gateway?: { running: boolean; pid: number | null };
+  dashboard?: { running: boolean; pid: number | null };
 };
-type Perf = { tokensPerSec?: number; rssMb?: number; cpuLoadAvg?: number[] };
+type Perf = {
+  node?: { rssMb?: number };
+  cpu?: { loadAvg?: number[]; cores?: number };
+};
 
 // One consolidated widget that replaces the four cramped top cells
 // (HEALTH | CADENCE | EVENTS | PERFORMANCE) with a single pulse strip.
@@ -61,15 +64,15 @@ export default function SystemPulsePanel({ payload, eventCount }: Props) {
   const totalFails = queueModels.reduce((acc, m) => acc + m.consecutiveFails, 0);
   const queueDot = totalFails >= 3 ? "red" : totalFails > 0 || totalQueued > 5 ? "amber" : "green";
 
-  const ollamaOk = health?.ollama?.ok;
-  const ollamaLat = health?.ollama?.responseMs ?? null;
-  const gatewayPid = health?.hermesGateway?.pid ?? null;
+  const ollamaOk = health?.ollama?.up;
+  const ollamaLat = health?.ollama?.latencyMs ?? null;
+  const ollamaModels = health?.ollama?.models?.length ?? 0;
+  const gatewayPid = health?.gateway?.pid ?? null;
   const dashPid = health?.dashboard?.pid ?? null;
 
   const eventsPeak = payload.timeline?.peak ?? 0;
-  const eventsTotal = payload.timeline?.total ?? eventCount;
-  const cpuLoad = perf?.cpuLoadAvg?.[0]?.toFixed?.(1) ?? "—";
-  const memMb = perf?.rssMb ?? "—";
+  const cpuLoad = perf?.cpu?.loadAvg?.[0]?.toFixed?.(1) ?? "—";
+  const memMb = perf?.node?.rssMb ?? "—";
 
   return (
     <div className="system-pulse" data-testid="pane-system-pulse">
@@ -81,7 +84,7 @@ export default function SystemPulsePanel({ payload, eventCount }: Props) {
         <div className="sp-value" title={`Ollama daemon · ${ollamaLat ?? "?"}ms last probe`}>
           {ollamaOk ? `${ollamaLat ?? "?"}ms` : "down"}
         </div>
-        <div className="sp-meta muted">{queueModels.length} models loaded</div>
+        <div className="sp-meta muted">{ollamaModels || queueModels.length} models loaded</div>
       </div>
 
       <div className="sp-card">
@@ -111,7 +114,7 @@ export default function SystemPulsePanel({ payload, eventCount }: Props) {
           <span className="sp-label">EVENTS</span>
           <span className="sp-dot sp-dot-green" aria-hidden>●</span>
         </div>
-        <div className="sp-value" title={`${eventCount} live · peak ${eventsPeak}/min · ${eventsTotal} total`}>
+        <div className="sp-value" title={`${eventCount} live · peak ${eventsPeak}/min`}>
           {eventCount}
         </div>
         <div className="sp-meta muted">peak {eventsPeak}/min</div>
