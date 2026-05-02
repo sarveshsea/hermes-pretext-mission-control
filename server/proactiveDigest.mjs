@@ -11,7 +11,7 @@ import path from "node:path";
 import { ROOTS } from "./config.mjs";
 import { getPowerMetrics } from "./powerMetrics.mjs";
 import { getPipelineStatus } from "./pipelineWorker.mjs";
-import { listSubscriptionTasks } from "./subscriptions.mjs";
+import { listSubscriptionTasks, getClaudeDispatchStatus } from "./subscriptions.mjs";
 import { sendTelegramMessage } from "./telegram.mjs";
 import { listTasks } from "./taskLedger.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
@@ -76,6 +76,8 @@ async function buildDigest() {
   const lines = [];
   lines.push(`*Hermes 4h status* — ${new Date().toISOString().slice(11, 16)}Z`);
   lines.push("");
+  const claude = getClaudeDispatchStatus();
+  lines.push(`*Claude dispatches:* ${claude.inLastHour} this hour · ${claude.remaining} remaining`);
   lines.push(`*Pipeline:* ${power.proposals_accepted_per_hour} applied, ${power.pipeline_submits} submitted, ${power.pipeline_abandons} abandoned (${power.pipeline_success_rate}% submit rate)`);
   lines.push(`*Files modified:* ${power.unique_files_modified_per_hour}`);
   if (pipeline.intervalMs > pipeline.baseIntervalMs) {

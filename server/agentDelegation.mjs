@@ -11,9 +11,9 @@ import { createPublicIntent } from "./publicIntents.mjs";
 import { createProposal } from "./proposals.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
-const ABANDON_THRESHOLD = 5;
+const ABANDON_THRESHOLD = 2;
 const WINDOW_LOOKBACK = 60;
-const COOLDOWN_MS = 30 * 60_000; // don't re-dispatch the same class within 30min
+const COOLDOWN_MS = 5 * 60_000; // 5min cooldown — fast escalation while you're at dinner
 
 let timer = null;
 let lastTickAt = null;

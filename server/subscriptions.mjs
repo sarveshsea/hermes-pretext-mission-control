@@ -6,7 +6,7 @@ import { safeSnippet } from "./redaction.mjs";
 import { appendHermesEvent } from "./hermesEvents.mjs";
 
 const CLAUDE_BIN = process.env.PRETEXT_CLAUDE_BIN || `${ROOTS.home}/.local/bin/claude`;
-const CLAUDE_DISPATCH_LIMIT_PER_HOUR = Number(process.env.PRETEXT_CLAUDE_DISPATCH_LIMIT || 12);
+const CLAUDE_DISPATCH_LIMIT_PER_HOUR = Number(process.env.PRETEXT_CLAUDE_DISPATCH_LIMIT || 30);
 const CLAUDE_TIMEOUT_MS = 5 * 60_000;
 const CLAUDE_SPEND_LOG = path.join(ROOTS.project, "data/claude-spend.jsonl");
 

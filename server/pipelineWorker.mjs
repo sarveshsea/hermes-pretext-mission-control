@@ -360,10 +360,10 @@ async function runPipelineTick() {
     // abandoned so the pipeline stops looping on broken seeds (find string
     // not unique, find string not found, etc.). The closer can also escalate
     // these to a "needs human edit" follow-up if needed.
-    if (totalAttemptsForTask >= 3) {
+    if (totalAttemptsForTask >= 2) {
       await updateTask(task.id, {
         status: "abandoned",
-        note: `hard-abandon after ${totalAttemptsForTask} pipeline attempts (last: ${task.pipelineState?.lastError || "unknown"})`,
+        note: `hard-abandon after ${totalAttemptsForTask} pipeline attempts (last: ${task.pipelineState?.lastError || "unknown"}) — claudeAgent will pick it up`,
         pipelineState: { ...(task.pipelineState || {}), phase: "abandoned", attempts: totalAttemptsForTask, abandonedAt: new Date().toISOString() }
       });
       await emit("abandon", `hard-abandon ${task.id} after ${totalAttemptsForTask} attempts`, sessionId);

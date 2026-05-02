@@ -270,6 +270,97 @@ const DOGFOOD_TASKS = [
     file_path: "src/components/panes/AgentVoicePanel.tsx",
     target_change: "when the event is < 5min old, render the time as a relative phrase like \"5s ago\" rather than HH:MM:SS"
   },
+  // === Dinner-mode tasks: high-impact UX moves Claude Code can ship ===
+  {
+    title: "Add inline expand-on-click to LiveTimeline rows showing first 240 chars of event content",
+    mission: "design",
+    file_path: "src/components/LiveTimeline.tsx",
+    target_change: "make each .tl-row expandable on click to show a 2-line preview of the full event content; collapse on second click"
+  },
+  {
+    title: "Add 24h sparkline canvas above each scoreboard row showing recent success rate",
+    mission: "design",
+    file_path: "src/components/panes/PlaybookScoreboardPanel.tsx",
+    target_change: "after the .pb-bar, add a tiny 60x14 canvas showing the last 12 outcomes as alternating 1px tall (fail) / 14px (ship) bars colored with var(--accent-go) for ships, var(--accent-warn) for fails"
+  },
+  {
+    title: "Add keyboard shortcut overlay triggered by ? key — visual map of g/p/m/Esc",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "replace the alert('g: focus hermes …') in the ? key handler with a state-controlled modal overlay rendering each shortcut as a row with key + description"
+  },
+  {
+    title: "Add Copy Prompt and Copy Output buttons to InspectorOverlay decision drawer sections",
+    mission: "design",
+    file_path: "src/components/InspectorOverlay.tsx",
+    target_change: "next to the PROMPT and RAW MODEL OUTPUT section labels, add a tiny copy button that writes that section's content to the clipboard via navigator.clipboard.writeText"
+  },
+  {
+    title: "Add 'stuck since...' caption to TASK_LEDGER rows where pipelineState.attempts >= 2",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "in the ledger cell render, when t.pipelineState?.attempts >= 2, append a span with class row-stuck showing 'stuck Xm' where X is minutes since pipelineState.updatedAt"
+  },
+  {
+    title: "Style AgentVoicePanel filter buttons as pills with prismatic accent on active",
+    mission: "design",
+    file_path: "src/styles.css",
+    target_change: "find .agent-voice-tab and .agent-voice-tab.active and update them to use rounded pill style (border-radius: 999px), padding 4px 10px, and var(--accent-think) bg on .active instead of bottom border"
+  },
+  {
+    title: "Add a 'Last shipped' chip to the topbar showing latest non-noise commit sha + relative time",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "in the bento-topbar, after the model select, add a span.last-shipped that fetches /api/hermes/improvements-log and renders the newest entry's sha + relativeTime(ts), with title set to the full subject"
+  },
+  {
+    title: "Add a theme toggle button in the topbar that flips data-theme attribute on documentElement",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "in the bento-topbar, add a small button '🌗' that toggles document.documentElement.dataset.theme between 'dark' and 'light' and persists the choice to localStorage 'pretext-theme'"
+  },
+  {
+    title: "Show inline diff (find/replace side by side) in pending PROPOSALS rows",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "in the proposal-card render, when proposal.kind === 'edit' and proposal.find is set, render a small grid showing find (red strike-through) above replace (green) so the operator sees what's about to ship"
+  },
+  {
+    title: "Add a settings button (⚙) in topbar that opens a drawer with theme, density, digest-pause toggles",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "add a topbar button that toggles a side drawer containing: theme override (light/dark/system), density (comfortable/compact), and a 'pause digest' toggle that POSTs PRETEXT_DIGEST=false"
+  },
+  {
+    title: "Auto-relative time in HermesLivePanel rows (5s ago / 3m ago) when fresh",
+    mission: "design",
+    file_path: "src/components/panes/HermesLivePanel.tsx",
+    target_change: "when the event is < 5min old render time as relative (5s ago / 3m ago); else fall back to HH:MM:SS"
+  },
+  {
+    title: "Add loading skeleton to OllamaQueuePanel when data is null",
+    mission: "design",
+    file_path: "src/components/panes/OllamaQueuePanel.tsx",
+    target_change: "replace 'probing ollama queue…' text with a skeleton: 3 stacked .ollama-row divs with className 'skeleton-pulse' and shimmer animation"
+  },
+  {
+    title: "Add data-stuck attribute on TaskLedger row when stuck so CSS can pulse-warn it",
+    mission: "design",
+    file_path: "src/App.tsx",
+    target_change: "in the ledger row, set data-stuck=\"true\" when t.pipelineState?.attempts >= 2 — pair with CSS rule [data-stuck=\"true\"] adding a left-border in var(--accent-warn)"
+  },
+  {
+    title: "Add a 'WHY' tooltip to the WhyStrip AGENT INTENT label explaining what triggers it",
+    mission: "design",
+    file_path: "src/components/WhyStrip.tsx",
+    target_change: "wrap the 'AGENT INTENT' label in a span with title=\"Pending claude-code dispatches awaiting approval (only DANGEROUS intents gate; others auto-fire)\""
+  },
+  {
+    title: "Add a 'Fire claude-agent now' button in the CONTINUOUS_IMPROVEMENTS pane header",
+    mission: "design",
+    file_path: "src/components/panes/ImprovementsLogPanel.tsx",
+    target_change: "in the .impl-counts header, add a small button that POSTs /api/hermes/claude-agent/fire and shows a brief 'fired' confirmation"
+  },
   {
     title: "Add data-testid to PlaybookScoreboardPanel root",
     mission: "design",
