@@ -146,7 +146,60 @@ export async function batchConcretizeLedger({ limit = 50 } = {}) {
   return { processed: candidates.length, concretized, designed, failed, totalOpenBefore: open.length };
 }
 
+// Dogfood seeds. All target files must:
+//  (a) currently lack data-testid (verified at seed time)
+//  (b) have a UNIQUE find anchor (the export default function signature)
+// The pipeline replaces "export default function X(...) {" with the same +
+// extra return prefix injecting data-testid. Keeps find strings unique.
 const DOGFOOD_TASKS = [
+  {
+    title: "Add data-testid pane-mission to MissionPanel",
+    mission: "design",
+    file_path: "src/components/panes/MissionPanel.tsx",
+    target_change: "in MissionPanel.tsx, find the outermost JSX <div> in the return statement and add data-testid=\"pane-mission\""
+  },
+  {
+    title: "Add data-testid pane-hermes-live to HermesLivePanel",
+    mission: "design",
+    file_path: "src/components/panes/HermesLivePanel.tsx",
+    target_change: "in HermesLivePanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-hermes-live\""
+  },
+  {
+    title: "Add data-testid pane-themed to ThemedSurfacesPanel",
+    mission: "design",
+    file_path: "src/components/panes/ThemedSurfacesPanel.tsx",
+    target_change: "in ThemedSurfacesPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-themed\""
+  },
+  {
+    title: "Add data-testid pane-changelog to ChangelogPanel",
+    mission: "design",
+    file_path: "src/components/panes/ChangelogPanel.tsx",
+    target_change: "in ChangelogPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-changelog\""
+  },
+  {
+    title: "Add data-testid pane-git to GitStatePanel",
+    mission: "design",
+    file_path: "src/components/panes/GitStatePanel.tsx",
+    target_change: "in GitStatePanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-git\""
+  },
+  {
+    title: "Add data-testid pane-improve to ImprovementLoopPanel",
+    mission: "design",
+    file_path: "src/components/panes/ImprovementLoopPanel.tsx",
+    target_change: "in ImprovementLoopPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-improve\""
+  },
+  {
+    title: "Add data-testid pane-skills to SkillsPanel",
+    mission: "design",
+    file_path: "src/components/panes/SkillsPanel.tsx",
+    target_change: "in SkillsPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-skills\""
+  },
+  {
+    title: "Add data-testid pane-memory to MemoryPanel",
+    mission: "design",
+    file_path: "src/components/panes/MemoryPanel.tsx",
+    target_change: "in MemoryPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-memory\""
+  },
   {
     title: "Add data-testid to GoalsPanel root",
     mission: "design",

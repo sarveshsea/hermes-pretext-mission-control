@@ -343,12 +343,36 @@ async function runPipelineTick() {
     if (!task) {
       lastResult = "no eligible tasks";
       outcome = "idle";
+      // Cadence heal: if there's nothing to pick, reset interval to baseline
+      // so we're ready when work shows up. Prevents 10-min cap from sticking.
+      if (currentInterval > TICK_MS) currentInterval = TICK_MS;
       return;
     }
     const sessionId = `pipeline_${task.id}`;
-    taskAttempts.set(task.id, { lastAt: Date.now(), attempts: (taskAttempts.get(task.id)?.attempts || 0) + 1 });
+    const memAttempts = (taskAttempts.get(task.id)?.attempts || 0) + 1;
+    const persistedAttempts = (task.pipelineState?.attempts || 0);
+    const totalAttemptsForTask = Math.max(memAttempts, persistedAttempts + 1);
+    taskAttempts.set(task.id, { lastAt: Date.now(), attempts: memAttempts });
     pipelineRecord.taskId = task.id;
     pipelineRecord.taskTitle = task.title;
+
+    // Hard-abandon: after 3 cumulative attempts on the same task, mark it
+    // abandoned so the pipeline stops looping on broken seeds (find string
+    // not unique, find string not found, etc.). The closer can also escalate
+    // these to a "needs human edit" follow-up if needed.
+    if (totalAttemptsForTask >= 3) {
+      await updateTask(task.id, {
+        status: "abandoned",
+        note: `hard-abandon after ${totalAttemptsForTask} pipeline attempts (last: ${task.pipelineState?.lastError || "unknown"})`,
+        pipelineState: { ...(task.pipelineState || {}), phase: "abandoned", attempts: totalAttemptsForTask, abandonedAt: new Date().toISOString() }
+      });
+      await emit("abandon", `hard-abandon ${task.id} after ${totalAttemptsForTask} attempts`, sessionId);
+      pipelineRecord.phase = "hard-abandon";
+      pipelineRecord.outcome = "abandon";
+      pipelineRecord.reason = `${totalAttemptsForTask} attempts`;
+      lastResult = `hard-abandon ${task.id}`;
+      return;
+    }
 
     const [sharedCtx, codeIndex, journalEntries] = await Promise.all([
       getSharedContext(),
