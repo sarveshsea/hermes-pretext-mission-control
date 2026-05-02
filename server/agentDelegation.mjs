@@ -11,9 +11,15 @@ import { createPublicIntent } from "./publicIntents.mjs";
 import { createProposal } from "./proposals.mjs";
 import { safeSnippet } from "./redaction.mjs";
 
-const ABANDON_THRESHOLD = 2;
+// Raised back to 5 abandons after the dinner-mode storm: the prior
+// threshold of 2 + 5min cooldown caused 200 parallel claude --print
+// dispatches to fire in 90 min and all SIGKILLed. The fix is in the
+// subscription executor (single-flight semaphore + atomic rate limit +
+// SIGKILL-streak backoff). agentDelegation now opts INTO that gate
+// conservatively — only flag truly persistent failures.
+const ABANDON_THRESHOLD = 5;
 const WINDOW_LOOKBACK = 60;
-const COOLDOWN_MS = 5 * 60_000; // 5min cooldown — fast escalation while you're at dinner
+const COOLDOWN_MS = 30 * 60_000;
 
 let timer = null;
 let lastTickAt = null;

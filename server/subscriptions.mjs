@@ -12,6 +12,35 @@ const CLAUDE_SPEND_LOG = path.join(ROOTS.project, "data/claude-spend.jsonl");
 
 const recentClaudeDispatches = []; // [{ts, taskId, ok}]
 
+// Single-flight: only ONE `claude --print` may run at a time. Without this,
+// agentDelegation fired ~200 dispatches in parallel and macOS / timeout
+// killed all of them with exit 143 (SIGTERM). The semaphore is FIFO; later
+// arrivals queue up to MAX_QUEUE then get rejected with rate-limit.
+const MAX_QUEUE = 6;
+let inFlight = false;
+const waitQueue = [];
+let consecutiveSigkills = 0;
+let backoffUntil = 0;
+
+function acquireSlot() {
+  return new Promise((resolve, reject) => {
+    if (waitQueue.length >= MAX_QUEUE) {
+      reject(new Error(`claude semaphore full (${waitQueue.length} waiting)`));
+      return;
+    }
+    const grant = () => {
+      inFlight = true;
+      resolve(() => {
+        inFlight = false;
+        const next = waitQueue.shift();
+        if (next) next();
+      });
+    };
+    if (!inFlight) grant();
+    else waitQueue.push(grant);
+  });
+}
+
 // Truly-dangerous intent predicate. Only THESE require human approval; the
 // rest auto-fire. Sarvesh explicitly said no approval needed unless something
 // is actually destructive.
@@ -146,20 +175,40 @@ export async function dispatchSubscriptionTask({ provider, intent, payload, note
 }
 
 async function executeClaudeCode(task) {
-  // Rate limit: max N dispatches per rolling hour.
+  // Atomic rate-limit check + reservation BEFORE anything async. Without
+  // pushing first, parallel callers all see the same count and bypass the cap.
   const cutoff = Date.now() - 3600_000;
-  const recent = recentClaudeDispatches.filter((r) => r.ts > cutoff);
+  const fresh = recentClaudeDispatches.filter((r) => r.ts > cutoff);
   recentClaudeDispatches.length = 0;
-  recentClaudeDispatches.push(...recent);
-  if (recent.length >= CLAUDE_DISPATCH_LIMIT_PER_HOUR) {
+  recentClaudeDispatches.push(...fresh);
+  if (fresh.length >= CLAUDE_DISPATCH_LIMIT_PER_HOUR) {
     await logSubscriptionResult(task.id, {
       status: "failed",
-      result: `rate-limited: ${recent.length} dispatches in last hour (cap ${CLAUDE_DISPATCH_LIMIT_PER_HOUR})`
+      result: `rate-limited: ${fresh.length}/${CLAUDE_DISPATCH_LIMIT_PER_HOUR} dispatches in last hour`
+    });
+    return;
+  }
+  // Back off if we're SIGKILL-storming (e.g. system overloaded).
+  if (Date.now() < backoffUntil) {
+    await logSubscriptionResult(task.id, {
+      status: "failed",
+      result: `claude-backoff: ${consecutiveSigkills} consecutive SIGKILLs; pausing dispatch ${Math.round((backoffUntil - Date.now()) / 1000)}s`
+    });
+    return;
+  }
+  // Atomic-reserve the slot. If the semaphore queue is full, fail fast.
+  let release;
+  try {
+    release = await acquireSlot();
+  } catch (error) {
+    await logSubscriptionResult(task.id, {
+      status: "failed",
+      result: `semaphore: ${error?.message || "queue full"} — try again later`
     });
     return;
   }
   recentClaudeDispatches.push({ ts: Date.now(), taskId: task.id, ok: null });
-  await logSubscriptionResult(task.id, { status: "sent", notes: ["dispatched to claude-code"] });
+  await logSubscriptionResult(task.id, { status: "sent", notes: ["dispatched to claude-code (single-flight)"] });
   const args = [
     "--print",
     "--output-format", "json",
@@ -169,9 +218,7 @@ async function executeClaudeCode(task) {
   ];
   const startedAt = Date.now();
   // Strip Claude Code parent-session env vars so the spawned `claude --print`
-  // doesn't think it's nested. This was causing every dispatch to fail with
-  // "Claude Code cannot be launched inside another Claude Code session" when
-  // the dashboard happens to be running under a Claude Code session.
+  // doesn't think it's nested.
   const cleanEnv = { ...process.env };
   for (const k of Object.keys(cleanEnv)) {
     if (k.startsWith("CLAUDE_") || k === "CLAUDECODE" || k === "CLAUDE_CODE_ENTRYPOINT") delete cleanEnv[k];
@@ -182,10 +229,27 @@ async function executeClaudeCode(task) {
         ok: !error,
         exitCode: error?.code ?? 0,
         stdout: (stdout || "").toString(),
-        stderr: (stderr || "").toString()
+        stderr: (stderr || "").toString(),
+        signal: error?.signal || null
       });
     });
   });
+  release();
+  // Track SIGKILL/SIGTERM streak — pause if we hit 3 in a row.
+  const wasSigkilled = exec.signal === "SIGTERM" || exec.signal === "SIGKILL" || exec.exitCode === 143 || exec.exitCode === 137;
+  if (wasSigkilled) {
+    consecutiveSigkills += 1;
+    if (consecutiveSigkills >= 3) {
+      backoffUntil = Date.now() + 30 * 60_000; // 30 min cooldown
+      await logSubscriptionResult(task.id, {
+        status: "failed",
+        result: `SIGKILL streak (${consecutiveSigkills}); backing off 30 min — exit ${exec.exitCode} signal ${exec.signal}`
+      });
+      return;
+    }
+  } else {
+    consecutiveSigkills = 0;
+  }
   const durationMs = Date.now() - startedAt;
   let parsed = null;
   try {
