@@ -174,19 +174,31 @@ export async function runImprovementLoopOnce({
   }
   const payload = dashboard;
   const selected = pickImprovement(payload);
+  // Anti-noise: skip the publish-and-commit cycle when this is just the
+  // default "Local Console Follow-Through" / "Surface Health Pass" with no
+  // real signal change. Those were producing 14+ "Automated Pretext
+  // improvement" commits per hour that look like activity but represent no
+  // actual code changes — only the data/* working files moving.
+  const isLowSignal = selected.title === "Pretext Surface Health Pass" || (
+    selected.title === "Local Console Follow-Through" &&
+    !payload.localMessages?.[0]?.body
+  );
   const event = {
     id: improvementId(now),
     date: now.toISOString().slice(0, 10),
     createdAt: now.toISOString(),
     status: "recorded",
     publishState: payload.publishStatus?.state || "unknown",
-    ...selected
+    ...selected,
+    lowSignal: isLowSignal
   };
 
   await writeEvents([event, ...events].slice(0, 100));
-  await appendChangelog(event);
-  await appendMarkdown(event);
-  if (autoPublish && payload.publishStatus?.state === "ready") {
+  if (!isLowSignal) {
+    await appendChangelog(event);
+    await appendMarkdown(event);
+  }
+  if (!isLowSignal && autoPublish && payload.publishStatus?.state === "ready") {
     event.publishResult = await publish({
       publishStatus: payload.publishStatus,
       message: `Automated Pretext improvement: ${event.title}`

@@ -67,6 +67,7 @@ import { getOllamaQueueStatus } from "./ollamaQueue.mjs";
 // Importing ollamaHealth registers its setHealthHook side-effect.
 import { getOllamaHealthStatus } from "./ollamaHealth.mjs";
 import { startAgentDelegation, getAgentDelegationStatus } from "./agentDelegation.mjs";
+import { startProactiveDigest, getProactiveDigestStatus, fireDigestNow } from "./proactiveDigest.mjs";
 import { getCodeIndex, getCodeIndexStatus, startCodeIndex } from "./codeIndex.mjs";
 import { readJournalTail } from "./pipelineJournal.mjs";
 import { readAllStats } from "./playbookStats.mjs";
@@ -407,6 +408,12 @@ async function apiRoute(req, res) {
   if (req.method === "GET" && url.pathname === "/api/hermes/delegation") {
     return sendJson(res, 200, await getAgentDelegationStatus());
   }
+  if (req.method === "GET" && url.pathname === "/api/hermes/digest") {
+    return sendJson(res, 200, getProactiveDigestStatus());
+  }
+  if (req.method === "POST" && url.pathname === "/api/hermes/digest/fire") {
+    return sendJson(res, 200, await fireDigestNow());
+  }
   const promoteMatch = url.pathname.match(/^\/api\/hermes\/tasks\/([^/]+)\/promote-to-plan$/);
   if (req.method === "POST" && promoteMatch) {
     const id = decodeURIComponent(promoteMatch[1]);
@@ -619,6 +626,7 @@ server.listen(DEFAULT_PORT, LOCAL_HOST, () => {
   startWorkerSwarm();
   startPipelineWorker();
   startAgentDelegation();
+  startProactiveDigest();
   startEventArchive();
 
   // Auto-generate an hourly session report on the hour, mirroring to the vault
