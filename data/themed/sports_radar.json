@@ -1,0 +1,604 @@
+{
+  "items": [
+    {
+      "id": "sports_radar_monq0xu5_s108a6",
+      "createdAt": "2026-05-02T02:27:02.093Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Radar Weekly",
+      "headline": "Star Guard's Shooting Slump: Can [Player Name] regain form before the playoff push?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monq3i5r_wyoiq1",
+      "createdAt": "2026-05-02T02:29:01.743Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Guard's late-season slump sparks debate: Is it fatigue or a confidence crisis?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monq5z9k_m40hwa",
+      "createdAt": "2026-05-02T02:30:57.224Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar Report",
+      "headline": "Star Guard's Off-Court Buzz: Is the Trade Market Heating Up Again?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monq8xou_wd0yfu",
+      "createdAt": "2026-05-02T02:33:15.150Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Guard's Off-Court Focus Could Be Key to Team's Playoff Surge",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqb4ok_huc06b",
+      "createdAt": "2026-05-02T02:34:57.524Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Insider Weekly",
+      "headline": "Star Guard's Injury Scare: Is the MVP race suddenly in jeopardy?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqdt3t_vzgau8",
+      "createdAt": "2026-05-02T02:37:02.489Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsPulse Radar",
+      "headline": "Star Guard's shooting slump continues; team needs offensive shakeup to keep pace.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqg9r8_hlhjqc",
+      "createdAt": "2026-05-02T02:38:57.380Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopSight Analytics",
+      "headline": "Star Guard's Efficiency Dip: Is the Off-Ball Movement Stalling His Scoring Spree?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqiztx_09foaj",
+      "createdAt": "2026-05-02T02:41:04.485Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Player's Injury Status Remains Question Mark for Key Rivalry Matchup.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqm495_edgk1e",
+      "createdAt": "2026-05-02T02:43:30.185Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar Report",
+      "headline": "Star Player X's recent slump sparks trade speculation; is a big move coming this week?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqo342_ft7wdu",
+      "createdAt": "2026-05-02T02:45:02.018Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsWire Insider",
+      "headline": "Star Guard's Injury Scare Sparks Trade Rumors: Is the Offseason Already Heating Up?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqt4u4_x2jsqj",
+      "createdAt": "2026-05-02T02:48:57.532Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Sports Radar",
+      "headline": "Star Guard's Injury Status: Will it derail the team's playoff push?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqvu73_babfh2",
+      "createdAt": "2026-05-02T02:51:03.711Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsWire Radar",
+      "headline": "Star Guard's shooting slump continues: Can he rediscover his elite range before the All-Star break?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monqzhyl_i1s66w",
+      "createdAt": "2026-05-02T02:53:54.477Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Player X's recent slump signals potential trade deadline pivot for his team.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monr0uwi_lqix1c",
+      "createdAt": "2026-05-02T02:54:57.906Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar Insider",
+      "headline": "Star Guard's Minutes Creeping: Is Load Management Becoming the New Normal for All-Stars?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monr3ufn_n45ald",
+      "createdAt": "2026-05-02T02:57:17.267Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Insider Report",
+      "headline": "Star Guard's shooting slump sparks debate: Is it fatigue or a confidence crisis?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monr62xt_6glqo4",
+      "createdAt": "2026-05-02T02:59:01.601Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Pulse",
+      "headline": "Star Guard's Playoff Form: Can He Carry the Offensive Load Next Round?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrdzg0_1ghjk7",
+      "createdAt": "2026-05-02T03:05:10.320Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The SportScope Report",
+      "headline": "Star Guard's ankle scare raises questions about his playoff readiness for the final push.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrgaci_rswfep",
+      "createdAt": "2026-05-02T03:06:57.762Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Insider",
+      "headline": "Star Guard's Injury Status: Will it derail playoff hopes or spark a trade bid?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrr6mr_n3gbbp",
+      "createdAt": "2026-05-02T03:15:26.163Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Insight Daily",
+      "headline": "Star Player's Late-Season Slump: Is the MVP Candidate Overthinking the Shot?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrt917_fh48bn",
+      "createdAt": "2026-05-02T03:17:02.587Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopWire Radar",
+      "headline": "Star Guard's shooting slump continues despite team's hot streak. Can he find his rhythm?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrvt70_ngee7p",
+      "createdAt": "2026-05-02T03:19:02.028Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Intel Report",
+      "headline": "Star Player X's Efficiency Dip: Is the All-Star Season Already Showing Cracks?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monrydrn_ckd1ow",
+      "createdAt": "2026-05-02T03:21:02.003Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsPulse Insider",
+      "headline": "Star Guard's Usage Rate Spike: Is it an Injury Concern or a New Offensive Apex?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mons0zm1_32bkpx",
+      "createdAt": "2026-05-02T03:23:03.625Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Wire",
+      "headline": "Star Guard's Injury Scare Sparks Trade Rumors & Team Uncertainty",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mons3j6p_5qimrb",
+      "createdAt": "2026-05-02T03:25:02.305Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Beat",
+      "headline": "Star Guard's Off-Court Focus Could Shift Team Dynamics This Season",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mons8pd4_53qac9",
+      "createdAt": "2026-05-02T03:29:03.592Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Intel Report",
+      "headline": "Star Guard's Off-Court Buzz: Can His Spotlight Shine on the Court This Season?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monsdywp_gntnuh",
+      "createdAt": "2026-05-02T03:33:09.241Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Court Report",
+      "headline": "Star Guard's 3-Point Surge Signals Offensive Shift for His Team This Season.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monsgb52_164mg1",
+      "createdAt": "2026-05-02T03:34:58.406Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Pulse",
+      "headline": "Star Guard's Shooting Slump Sparks Debate: Is it Fatigue or a System Issue?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monslnfd_3vf6eu",
+      "createdAt": "2026-05-02T03:39:07.609Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Insider",
+      "headline": "Star Player's Injury Status: Is the comeback timeline realistic for the playoffs?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monso3ri_gnb8yj",
+      "createdAt": "2026-05-02T03:41:02.094Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopWire Insider",
+      "headline": "Star Guard's Off-Court Buzz: Can Chemistry Trump Injury Concerns?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monst7xz_u1ijlk",
+      "createdAt": "2026-05-02T03:45:00.791Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Guard's Shooting Slump Continues: Can He Re-Find His Rhythm?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monsvt48_lmf4nm",
+      "createdAt": "2026-05-02T03:47:01.544Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Guard's Off-Court Buzz: Is His Playmaking Slump a Confidence Issue or a System Problem?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monsyc0w_l9xq95",
+      "createdAt": "2026-05-02T03:48:59.360Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopSight Weekly",
+      "headline": "Star Guard's Late-Game Jumpshot Streak: Is It Clutch Magic or Overconfidence?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mont0xph_g0r7aq",
+      "createdAt": "2026-05-02T03:51:00.773Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Guard's efficiency dip raises questions as team struggles to find consistent scoring rhythm.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mont45jw_911p87",
+      "createdAt": "2026-05-02T03:53:30.908Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Intel Report",
+      "headline": "Rookie Stars Shine: Which young guard is ready to take over a franchise next season?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_mont8wq0_c96zew",
+      "createdAt": "2026-05-02T03:57:12.744Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Guard's shooting slump continues despite team's offensive surge.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montbxfv_2wnsag",
+      "createdAt": "2026-05-02T03:59:33.643Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Guard's Off-Court Buzz: Can X Player's Focus Shift Back to Court Dominance?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monteoak_8mq8f0",
+      "createdAt": "2026-05-02T04:01:41.756Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Beat",
+      "headline": "Star Guard's Off-Court Buzz: Is the Trade Rumor a distraction or a genuine shakeup?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montgdx9_dsk46g",
+      "createdAt": "2026-05-02T04:03:01.629Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Guard's Rookie Year Surge: Is He the NBA's Next Scoring Threat?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montiyh4_5h97yf",
+      "createdAt": "2026-05-02T04:05:01.576Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Wire",
+      "headline": "Star Guard's Injury Scare Sparks Trade Rumors: Is a Big Move Brewing?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montlgg4_itf9ul",
+      "createdAt": "2026-05-02T04:06:58.180Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar Insider",
+      "headline": "Star Player's Off-Court Focus: How it's impacting on-court chemistry and team synergy.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monto0hx_p9v17q",
+      "createdAt": "2026-05-02T04:08:57.477Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsWire Daily",
+      "headline": "Star Player X's late-game heroics continue to define playoff narratives.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montqx5v_csj2ge",
+      "createdAt": "2026-05-02T04:11:13.123Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Pulse",
+      "headline": "Star Guard's Off-Court Buzz: Is the Trade Rumor Heating Up Before the All-Star Break?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monttfn1_66rzdv",
+      "createdAt": "2026-05-02T04:13:10.381Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Insider Daily",
+      "headline": "Rookie Guard's Unexpected Scoring Surge: Can He Become a Star?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montvtjh_k7ednd",
+      "createdAt": "2026-05-02T04:15:01.709Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Radar",
+      "headline": "Star Player's Efficiency Dip Sparks Debate: Is it a Slump or a System Issue?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_montygtm_bjnse0",
+      "createdAt": "2026-05-02T04:17:05.194Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Hoop Report",
+      "headline": "Star Guard's Chemistry Questions Loom After Off-Court Tension.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monu3juk_yvqnxc",
+      "createdAt": "2026-05-02T04:21:02.396Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar",
+      "headline": "Star Player X's recent slump raises questions about team chemistry or role fit.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monu61wp_6pv7bo",
+      "createdAt": "2026-05-02T04:22:59.113Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Sports Radar Daily",
+      "headline": "🚨 Trade Watch: Which star player is suddenly on the market? Analyzing the latest rumors.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monu8p5i_itdg6p",
+      "createdAt": "2026-05-02T04:25:02.550Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopSight Daily",
+      "headline": "Star Player X's efficiency dip raises questions as team struggles to find consistent scoring rhythm.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monugc34_9xuiup",
+      "createdAt": "2026-05-02T04:30:58.864Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopSight Analytics",
+      "headline": "Star Guard's Usage Rate Spike: Is it Efficiency or Overload?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monuj1od_xjzctw",
+      "createdAt": "2026-05-02T04:33:05.341Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar",
+      "headline": "Star Guard's Off-Court Buzz Could Impact Playoff Focus.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monulgy0_i55tym",
+      "createdAt": "2026-05-02T04:34:58.440Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "Hoops Intel Daily",
+      "headline": "Star Guard's Shooting Slump Sparks Trade Rumors as Team Faces Mid-Season Slump.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monuoeyy_583w6r",
+      "createdAt": "2026-05-02T04:37:15.850Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NFL",
+      "source": "Gridiron Insights",
+      "headline": "Draft Day fallout: Which rookie QB is already facing sophomore-year questions?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monutghi_0w6m3j",
+      "createdAt": "2026-05-02T04:41:11.094Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Sports Radar",
+      "headline": "Star Player X's off-court focus sparks debate: Is it distraction or necessary reset?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monuv64r_0w6or2",
+      "createdAt": "2026-05-02T04:42:30.987Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Court Report",
+      "headline": "Star Player's Clutch Performance Signals New Offensive Apex for Team",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monuxv8d_ukvq97",
+      "createdAt": "2026-05-02T04:44:36.829Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopWire Insider",
+      "headline": "Star Guard's Shooting Slump: Can He Re-Find Rhythm Before the All-Star Break?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monv09fz_gyh1e1",
+      "createdAt": "2026-05-02T04:46:28.559Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Pulse",
+      "headline": "Star Guard's Injury Scare Sparks Trade Rumors: Is the Offseason Shakeup Already Happening?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monv2x55_l91k92",
+      "createdAt": "2026-05-02T04:48:32.585Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "HoopsPulse Daily",
+      "headline": "Star Guard's Shooting Slump: Can [Player Name] rediscover elite range before the All-Stars?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monv5fnh_xtnprw",
+      "createdAt": "2026-05-02T04:50:29.885Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Sports Radar Report",
+      "headline": "Star Player X's Injury Status: Will it derail playoff hopes or prove nothing?",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monvb33c_vllebv",
+      "createdAt": "2026-05-02T04:54:53.544Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Insider",
+      "headline": "Star Guard's Off-Court Focus: How NIL deals are changing player brand power.",
+      "link": ""
+    },
+    {
+      "id": "sports_radar_monvdnd1_grq7lq",
+      "createdAt": "2026-05-02T04:56:53.125Z",
+      "surface": "sports_radar",
+      "kind": "headline",
+      "league": "NBA",
+      "source": "The Athletic Beat",
+      "headline": "Star Guard's unexpected 3-point surge signals a potential shift in team offensive identity.",
+      "link": ""
+    }
+  ]
+}

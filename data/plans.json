@@ -1,0 +1,228 @@
+{
+  "plans": [
+    {
+      "id": "plan_monclutk_c7sag9",
+      "intent": "Audit Material Design 3 + record findings + write Obsidian note",
+      "mission": "design",
+      "sessionId": null,
+      "createdAt": "2026-05-01T20:11:23.336Z",
+      "updatedAt": "2026-05-01T20:48:27.147Z",
+      "status": "complete",
+      "currentStep": 3,
+      "steps": [
+        {
+          "idx": 0,
+          "text": "code_search 'material' across src to see what already references it",
+          "result": "pipeline advance — see step 2",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:14:26.991Z"
+        },
+        {
+          "idx": 1,
+          "text": "read existing Antimetal.md + Raycast.md notes for shape",
+          "result": "pipeline advance — see step 3",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:29:04.890Z"
+        },
+        {
+          "idx": 2,
+          "text": "write Agent/Design Library/Material-3.md with Posture/Color/Type/Spacing/Motion sections",
+          "result": "pipeline advance — see step 4",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:39:26.938Z"
+        },
+        {
+          "idx": 3,
+          "text": "commit with title 'Material 3 design audit note'",
+          "result": "final step reached",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:48:27.147Z"
+        }
+      ],
+      "reflection": "completed via pipeline planAdvance",
+      "reflectedAt": "2026-05-01T20:48:27.148Z"
+    },
+    {
+      "id": "plan_monclutr_iwvo1r",
+      "intent": "Drain task ledger duplicates and tag survivors",
+      "mission": "general",
+      "sessionId": null,
+      "createdAt": "2026-05-01T20:11:23.343Z",
+      "updatedAt": "2026-05-01T20:40:56.959Z",
+      "status": "complete",
+      "currentStep": 2,
+      "steps": [
+        {
+          "idx": 0,
+          "text": "list all open tasks; bucket by first 5 lowercased title tokens",
+          "result": "pipeline advance — see step 2",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:15:57.003Z"
+        },
+        {
+          "idx": 1,
+          "text": "abandon all but oldest in each bucket >2",
+          "result": "pipeline advance — see step 3",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:30:34.910Z"
+        },
+        {
+          "idx": 2,
+          "text": "tag survivors as edit-shaped or needs_design",
+          "result": "final step reached",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:40:56.959Z"
+        }
+      ],
+      "reflection": "completed via pipeline planAdvance",
+      "reflectedAt": "2026-05-01T20:40:56.966Z"
+    },
+    {
+      "id": "plan_monclutu_d7xc9h",
+      "intent": "Buzzr launch readiness sweep",
+      "mission": "buzzr",
+      "sessionId": null,
+      "createdAt": "2026-05-01T20:11:23.346Z",
+      "updatedAt": "2026-05-01T20:49:57.216Z",
+      "status": "complete",
+      "currentStep": 3,
+      "steps": [
+        {
+          "idx": 0,
+          "text": "list 5 underserved micro-fan communities (NCAA conference fans, NHL niche, MLS supporter groups)",
+          "result": "pipeline advance — see step 2",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:17:27.013Z"
+        },
+        {
+          "idx": 1,
+          "text": "draft tweet for each via post_buzzr_draft",
+          "result": "pipeline advance — see step 3",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:32:04.918Z"
+        },
+        {
+          "idx": 2,
+          "text": "compile shortlist into Agent/Buzzr/Launch-Shortlist.md",
+          "result": "pipeline advance — see step 4",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:42:26.977Z"
+        },
+        {
+          "idx": 3,
+          "text": "open contact-add tasks for top 10 handles",
+          "result": "final step reached",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:49:57.216Z"
+        }
+      ],
+      "reflection": "completed via pipeline planAdvance",
+      "reflectedAt": "2026-05-01T20:49:57.217Z"
+    },
+    {
+      "id": "plan_monclutz_er1gtq",
+      "intent": "Memoire app: 5 design system audits",
+      "mission": "memoire",
+      "sessionId": null,
+      "createdAt": "2026-05-01T20:11:23.351Z",
+      "updatedAt": "2026-05-01T20:56:43.733Z",
+      "status": "complete",
+      "currentStep": 4,
+      "steps": [
+        {
+          "idx": 0,
+          "text": "audit Day One (journaling)",
+          "result": "pipeline advance — see step 2",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:20:27.083Z"
+        },
+        {
+          "idx": 1,
+          "text": "audit Notion (capture)",
+          "result": "pipeline advance — see step 3",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:35:04.999Z"
+        },
+        {
+          "idx": 2,
+          "text": "audit Obsidian (linking)",
+          "result": "pipeline advance — see step 4",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:43:56.987Z"
+        },
+        {
+          "idx": 3,
+          "text": "audit Daylio (mood tracking)",
+          "result": "pipeline advance — see step 5",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:51:27.287Z"
+        },
+        {
+          "idx": 4,
+          "text": "synthesize Agent/Memoire Audits/Synthesis.md",
+          "result": "final step reached",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:56:43.733Z"
+        }
+      ],
+      "reflection": "completed via pipeline planAdvance",
+      "reflectedAt": "2026-05-01T20:56:43.740Z"
+    },
+    {
+      "id": "plan_moncluu3_qghs97",
+      "intent": "Add data-testid to 6 remaining panes for E2E",
+      "mission": "design",
+      "sessionId": null,
+      "createdAt": "2026-05-01T20:11:23.355Z",
+      "updatedAt": "2026-05-01T20:58:36.809Z",
+      "status": "complete",
+      "currentStep": 5,
+      "steps": [
+        {
+          "idx": 0,
+          "text": "edit ThemedSurfacesPanel — add data-testid",
+          "result": "pipeline advance — see step 2",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:26:27.102Z"
+        },
+        {
+          "idx": 1,
+          "text": "edit MissionPanel — add data-testid",
+          "result": "pipeline advance — see step 3",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:37:56.913Z"
+        },
+        {
+          "idx": 2,
+          "text": "edit MemoryPanel — add data-testid",
+          "result": "pipeline advance — see step 4",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:45:27.051Z"
+        },
+        {
+          "idx": 3,
+          "text": "edit GitStatePanel — add data-testid",
+          "result": "pipeline advance — see step 5",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:52:57.298Z"
+        },
+        {
+          "idx": 4,
+          "text": "edit ChangelogPanel — add data-testid",
+          "result": "pipeline advance — see step 6",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:58:13.757Z"
+        },
+        {
+          "idx": 5,
+          "text": "edit ImprovementLoopPanel — add data-testid",
+          "result": "final step reached",
+          "decision": "next",
+          "completedAt": "2026-05-01T20:58:36.809Z"
+        }
+      ],
+      "reflection": "completed via pipeline planAdvance",
+      "reflectedAt": "2026-05-01T20:58:36.812Z"
+    }
+  ]
+}

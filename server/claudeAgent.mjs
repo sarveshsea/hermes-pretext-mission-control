@@ -66,26 +66,24 @@ async function pickTask() {
   return candidates[0] || null;
 }
 
-function buildPrompt(task, fileText, filePath) {
+function buildPrompt(task, _fileText, filePath) {
   const change = task.pipelineState?.concretize?.target_change || task.title;
+  // Slim prompt: Claude has Read + Edit tools, no need to inline 60KB.
+  // The previous version ate 5 min just processing the inline content.
   return [
-    `Edit ${filePath} to: ${task.title}.`,
-    "",
-    `Specific change: ${change}`,
-    "",
-    "RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape:",
-    `{"filePath": "${filePath}", "find": "<a UNIQUE substring of ≥ 20 chars taken VERBATIM from the file contents below>", "replace": "<the replacement string>"}`,
-    "",
-    "Rules:",
-    `- "find" MUST appear EXACTLY ONCE in the file contents below.`,
-    `- "find" MUST be ≥ 20 characters and copied byte-for-byte from the contents.`,
-    `- "replace" MUST preserve syntactic validity (typescript/tsx). Do not break JSX.`,
-    `- Do not add em dashes (—) or en dashes (–); use a hyphen.`,
-    `- Do not include explanations. JSON only.`,
-    "",
-    `File contents (length ${fileText.length}):`,
-    "",
-    fileText
+    `Edit ${filePath}: ${task.title}.`,
+    `Concrete change: ${change}.`,
+    ``,
+    `Use Read to inspect the file then RETURN JSON ONLY in this exact shape (no markdown, no preamble, no commentary):`,
+    `{"filePath":"${filePath}","find":"<unique ≥20-char substring copied verbatim from the file>","replace":"<replacement>"}`,
+    ``,
+    `Rules:`,
+    `- find MUST appear EXACTLY ONCE in the file.`,
+    `- find MUST be ≥20 chars copied byte-for-byte.`,
+    `- replace MUST preserve TypeScript/TSX validity.`,
+    `- Use plain hyphens, never em-dash or en-dash.`,
+    `- DO NOT use Edit/Write tools yourself; only Read. The dashboard applies the edit via its own validator.`,
+    `- Output JSON only.`
   ].join("\n");
 }
 

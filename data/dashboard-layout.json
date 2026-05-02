@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "panes": {
+    "health": {
+      "x": 40,
+      "y": 80,
+      "w": 480,
+      "h": 96
+    }
+  },
+  "nodes": {},
+  "obsidianNodes": {},
+  "updatedAt": "2026-05-01T20:30:02.237Z"
+}

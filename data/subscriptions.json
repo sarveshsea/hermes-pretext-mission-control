@@ -1,0 +1,1908 @@
+{
+  "tasks": [
+    {
+      "id": "sub_monq1hdx_l41lv9",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:27:27.429Z",
+      "updatedAt": "2026-05-02T02:27:27.440Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecai_jn89wl",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.354Z",
+      "updatedAt": "2026-05-02T02:37:27.357Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecan_jz7y47",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.359Z",
+      "updatedAt": "2026-05-02T02:37:27.364Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecat_6067r7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.365Z",
+      "updatedAt": "2026-05-02T02:37:27.369Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecay_ru22bi",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.370Z",
+      "updatedAt": "2026-05-02T02:37:27.373Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecb2_hti5ja",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.374Z",
+      "updatedAt": "2026-05-02T02:37:27.377Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecb6_r5ao9u",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.378Z",
+      "updatedAt": "2026-05-02T02:37:27.380Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecb9_dg22bq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.381Z",
+      "updatedAt": "2026-05-02T02:37:27.386Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecbg_0gtrab",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.388Z",
+      "updatedAt": "2026-05-02T02:37:27.393Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqecbm_zp4jws",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:37:27.394Z",
+      "updatedAt": "2026-05-02T02:37:27.397Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr78a_umqjm9",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 11× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.322Z",
+      "updatedAt": "2026-05-02T02:47:27.331Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 11 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr78m_uz7zgj",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 10× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.334Z",
+      "updatedAt": "2026-05-02T02:47:27.340Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 10 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr78u_mbre7r",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 4× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.342Z",
+      "updatedAt": "2026-05-02T02:47:27.346Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 4 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr790_eha01d",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.348Z",
+      "updatedAt": "2026-05-02T02:47:27.352Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr796_gg1yh6",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.354Z",
+      "updatedAt": "2026-05-02T02:47:27.357Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79a_rlraws",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.358Z",
+      "updatedAt": "2026-05-02T02:47:27.361Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79e_n1du8a",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.362Z",
+      "updatedAt": "2026-05-02T02:47:27.365Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79j_hwox40",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.367Z",
+      "updatedAt": "2026-05-02T02:47:27.370Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79n_z7463c",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.371Z",
+      "updatedAt": "2026-05-02T02:47:27.374Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79s_p6p94w",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.376Z",
+      "updatedAt": "2026-05-02T02:47:27.379Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr79w_fqf4ia",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.380Z",
+      "updatedAt": "2026-05-02T02:47:27.383Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monqr7a0_aihxpd",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:47:27.384Z",
+      "updatedAt": "2026-05-02T02:47:27.387Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr4273_61gkao",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 10× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.327Z",
+      "updatedAt": "2026-05-02T02:57:27.336Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 10 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr427g_2m9qsw",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 4× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.340Z",
+      "updatedAt": "2026-05-02T02:57:27.347Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 4 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr427q_bi8ui4",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 10× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.350Z",
+      "updatedAt": "2026-05-02T02:57:27.354Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 10 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr427w_x5qzv8",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.356Z",
+      "updatedAt": "2026-05-02T02:57:27.360Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr4282_wkii5m",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.362Z",
+      "updatedAt": "2026-05-02T02:57:27.366Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr4287_hkxmrc",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.367Z",
+      "updatedAt": "2026-05-02T02:57:27.370Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428b_rblybj",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.371Z",
+      "updatedAt": "2026-05-02T02:57:27.374Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428f_6y8qer",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.375Z",
+      "updatedAt": "2026-05-02T02:57:27.378Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428j_jteor8",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.379Z",
+      "updatedAt": "2026-05-02T02:57:27.381Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428m_yfdk38",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.382Z",
+      "updatedAt": "2026-05-02T02:57:27.386Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428r_d3075d",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.387Z",
+      "updatedAt": "2026-05-02T02:57:27.390Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monr428v_6klum9",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T02:57:27.391Z",
+      "updatedAt": "2026-05-02T02:57:27.394Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx5v_6s23o7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 4× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.331Z",
+      "updatedAt": "2026-05-02T03:07:27.338Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 4 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx66_qv5l5d",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 10× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.342Z",
+      "updatedAt": "2026-05-02T03:07:27.348Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 10 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx6e_3f80zp",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 9× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.350Z",
+      "updatedAt": "2026-05-02T03:07:27.354Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 9 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx6l_zt6c4h",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.357Z",
+      "updatedAt": "2026-05-02T03:07:27.360Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx6q_hlk920",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.362Z",
+      "updatedAt": "2026-05-02T03:07:27.365Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx6u_06gg56",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.366Z",
+      "updatedAt": "2026-05-02T03:07:27.369Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx6z_ey4u4w",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.371Z",
+      "updatedAt": "2026-05-02T03:07:27.374Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx73_xcnask",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.375Z",
+      "updatedAt": "2026-05-02T03:07:27.378Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx77_a6xhn5",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.379Z",
+      "updatedAt": "2026-05-02T03:07:27.382Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx7b_bnn59r",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.383Z",
+      "updatedAt": "2026-05-02T03:07:27.385Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx7e_0f1j00",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.386Z",
+      "updatedAt": "2026-05-02T03:07:27.389Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monrgx7j_n9m630",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:07:27.391Z",
+      "updatedAt": "2026-05-02T03:07:27.393Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mons6n40_986xet",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:27:27.360Z",
+      "updatedAt": "2026-05-02T03:27:27.364Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mons6n4b_e1fiom",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:27:27.371Z",
+      "updatedAt": "2026-05-02T03:27:27.374Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2ll_3h90zs",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.369Z",
+      "updatedAt": "2026-05-02T03:32:27.395Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2mj_818dlg",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 9× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.403Z",
+      "updatedAt": "2026-05-02T03:32:27.424Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 9 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2ni_g3wgqp",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.438Z",
+      "updatedAt": "2026-05-02T03:32:27.448Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2nt_9fu4ad",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.449Z",
+      "updatedAt": "2026-05-02T03:32:27.463Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2o8_camm0n",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.464Z",
+      "updatedAt": "2026-05-02T03:32:27.467Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2oc_dugfxf",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.468Z",
+      "updatedAt": "2026-05-02T03:32:27.471Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2og_3ulwba",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.472Z",
+      "updatedAt": "2026-05-02T03:32:27.475Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2ol_spe5ci",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.477Z",
+      "updatedAt": "2026-05-02T03:32:27.479Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2op_lmjiyp",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.481Z",
+      "updatedAt": "2026-05-02T03:32:27.484Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2ot_dsr7p4",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.485Z",
+      "updatedAt": "2026-05-02T03:32:27.488Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monsd2ox_6268yy",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:32:27.489Z",
+      "updatedAt": "2026-05-02T03:32:27.492Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxkq_xgranm",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.386Z",
+      "updatedAt": "2026-05-02T03:42:27.391Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxkw_vf74d9",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.392Z",
+      "updatedAt": "2026-05-02T03:42:27.396Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxl3_iju033",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.399Z",
+      "updatedAt": "2026-05-02T03:42:27.404Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxla_xt47iz",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.406Z",
+      "updatedAt": "2026-05-02T03:42:27.408Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxle_8bzjey",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.410Z",
+      "updatedAt": "2026-05-02T03:42:27.413Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxli_wz8raq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.414Z",
+      "updatedAt": "2026-05-02T03:42:27.417Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxlm_zd9vry",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.418Z",
+      "updatedAt": "2026-05-02T03:42:27.420Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxlp_iz7eei",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.421Z",
+      "updatedAt": "2026-05-02T03:42:27.424Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monspxlt_8goldd",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:42:27.425Z",
+      "updatedAt": "2026-05-02T03:42:27.427Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sim_xz9z1n",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 9× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.358Z",
+      "updatedAt": "2026-05-02T03:52:27.366Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 9 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2six_9pqczq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 8× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.369Z",
+      "updatedAt": "2026-05-02T03:52:27.372Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 8 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sj1_vzv471",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.373Z",
+      "updatedAt": "2026-05-02T03:52:27.376Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sj5_50ha5o",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.377Z",
+      "updatedAt": "2026-05-02T03:52:27.381Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjc_fqib2v",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.384Z",
+      "updatedAt": "2026-05-02T03:52:27.387Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjg_zg53sl",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.388Z",
+      "updatedAt": "2026-05-02T03:52:27.392Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjm_kg3kmz",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.394Z",
+      "updatedAt": "2026-05-02T03:52:27.397Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjq_p1qj6m",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.398Z",
+      "updatedAt": "2026-05-02T03:52:27.400Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjt_b0ftft",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.401Z",
+      "updatedAt": "2026-05-02T03:52:27.403Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sjx_vfzn7c",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.405Z",
+      "updatedAt": "2026-05-02T03:52:27.407Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sk0_lqks5z",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.408Z",
+      "updatedAt": "2026-05-02T03:52:27.411Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_mont2sk5_nix958",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T03:52:27.413Z",
+      "updatedAt": "2026-05-02T03:52:27.415Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnhg_0nygy6",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 8× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.364Z",
+      "updatedAt": "2026-05-02T04:02:27.370Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 8 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnhp_v781mk",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.373Z",
+      "updatedAt": "2026-05-02T04:02:27.377Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnhv_sv24q7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 8× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.379Z",
+      "updatedAt": "2026-05-02T04:02:27.383Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 8 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfni1_n0ew88",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.385Z",
+      "updatedAt": "2026-05-02T04:02:27.389Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfni7_cxmpsy",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.391Z",
+      "updatedAt": "2026-05-02T04:02:27.395Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnid_qjshp7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.397Z",
+      "updatedAt": "2026-05-02T04:02:27.400Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnii_lip0sq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.402Z",
+      "updatedAt": "2026-05-02T04:02:27.405Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnim_zcu7iw",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.406Z",
+      "updatedAt": "2026-05-02T04:02:27.409Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfniq_vqdihq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.410Z",
+      "updatedAt": "2026-05-02T04:02:27.413Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfniu_guwvub",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.414Z",
+      "updatedAt": "2026-05-02T04:02:27.417Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfniy_45tvk7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.418Z",
+      "updatedAt": "2026-05-02T04:02:27.421Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montfnj2_ik6gs7",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:02:27.422Z",
+      "updatedAt": "2026-05-02T04:02:27.425Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigd_au3ehe",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: find equals replace (no-op). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuo_511x9g\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"find equals replace (no-op)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.373Z",
+      "updatedAt": "2026-05-02T04:12:27.376Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigh_udf918",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 8× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.377Z",
+      "updatedAt": "2026-05-02T04:12:27.379Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 8 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigl_9jglp8",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 7× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.381Z",
+      "updatedAt": "2026-05-02T04:12:27.383Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 7 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigp_olnd2m",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.385Z",
+      "updatedAt": "2026-05-02T04:12:27.388Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigu_ue1yw5",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.390Z",
+      "updatedAt": "2026-05-02T04:12:27.392Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsigy_08j2fn",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.394Z",
+      "updatedAt": "2026-05-02T04:12:27.396Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsih1_c6gpej",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.397Z",
+      "updatedAt": "2026-05-02T04:12:27.400Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsih5_t984pn",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.401Z",
+      "updatedAt": "2026-05-02T04:12:27.403Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsih8_rfqv15",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.404Z",
+      "updatedAt": "2026-05-02T04:12:27.406Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsihb_ooigmn",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.407Z",
+      "updatedAt": "2026-05-02T04:12:27.409Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsihe_xymnhm",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.410Z",
+      "updatedAt": "2026-05-02T04:12:27.415Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_montsihm_grrqne",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:12:27.418Z",
+      "updatedAt": "2026-05-02T04:12:27.422Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonvn_zpv37q",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.395Z",
+      "updatedAt": "2026-05-02T04:37:27.401Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonvv_zo2dyh",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add data-testid pane-mission to MissionPanel\". Last reason: edit preview failed: find string not found in src/components/panes/MissionPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltizu_b8oi83\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/MissionPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.403Z",
+      "updatedAt": "2026-05-02T04:37:27.405Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonvz_266tzl",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.407Z",
+      "updatedAt": "2026-05-02T04:37:27.409Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonw2_jkmqip",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 3× on task: \"Add aria-label to refresh button in CodeSearchPanel\". Last reason: edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0t_zjcbm3\",\"taskTitle\":\"Add aria-label to refresh button in CodeSearchPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/CodeSearchPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.410Z",
+      "updatedAt": "2026-05-02T04:37:27.413Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 3 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonw7_wplpsf",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to LocalConsolePanel for #pane-local\". Last reason: typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): …. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...…",
+      "payload": "{\"taskId\":\"task_monltj0u_0sap1d\",\"taskTitle\":\"Add id anchor to LocalConsolePanel for #pane-local\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/LocalConsolePanel.tsx(3,97): error TS17008: JSX element 'div' has no corresponding closing tag. src/components/panes/LocalConsolePanel.tsx(5,5): error TS1109: Expression expected. src/components/panes/LocalConsolePanel.tsx(6,3): error TS1381: Unexpected…",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.415Z",
+      "updatedAt": "2026-05-02T04:37:27.418Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonwc_fhq66q",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0x_7n0t3n\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 41350 and 44460)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.420Z",
+      "updatedAt": "2026-05-02T04:37:27.422Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonwg_w34p0b",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0y_7v6oao\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.424Z",
+      "updatedAt": "2026-05-02T04:37:27.427Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonwk_62it6w",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add empty-state to SubscriptionLedgerPanel when array is empty\". Last reason: typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, r…",
+      "payload": "{\"taskId\":\"task_monltj10_ac63gt\",\"taskTitle\":\"Add empty-state to SubscriptionLedgerPanel when array is empty\",\"lastReason\":\"typecheck regression in sandbox: src/components/panes/SubscriptionLedgerPanel.tsx(31,1): error TS1128: Declaration or statement expected.\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.428Z",
+      "updatedAt": "2026-05-02T04:37:27.431Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonwo_gvmsou",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add data-testid pane-themed to ThemedSurfacesPanel\". Last reason: edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rp1_femlc1\",\"taskTitle\":\"Add data-testid pane-themed to ThemedSurfacesPanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/ThemedSurfacesPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.432Z",
+      "updatedAt": "2026-05-02T04:37:27.437Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monuonwv_llbybl",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 2× on task: \"Add a helpful empty-state caption to GoalsPanel when goals are empty\". Last reason: edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monn6rpg_7tyu51\",\"taskTitle\":\"Add a helpful empty-state caption to GoalsPanel when goals are empty\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/GoalsPanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:37:27.439Z",
+      "updatedAt": "2026-05-02T04:37:27.442Z",
+      "completedAt": null,
+      "result": "rate-limited: 30 dispatches in last hour (cap 30)",
+      "notes": [
+        "auto-delegated after 2 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monut5no_yfrvow",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 7× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:40:57.060Z",
+      "updatedAt": "2026-05-02T04:45:57.137Z",
+      "completedAt": null,
+      "result": "exit 143",
+      "notes": [
+        "auto-delegated after 7 abandons",
+        "auto-fire (non-dangerous)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monut5nx_cm8tmq",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:40:57.069Z",
+      "updatedAt": "2026-05-02T04:50:57.219Z",
+      "completedAt": null,
+      "result": "exit 143",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monut5o1_injmyp",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:40:57.073Z",
+      "updatedAt": "2026-05-02T04:55:57.312Z",
+      "completedAt": null,
+      "result": "SIGKILL streak (3); backing off 30 min — exit 143 signal null",
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monux29e_pnluiw",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/MissionPanel.tsx to: Add data-testid pane-mission to MissionPanel. Specific change: in MissionPanel.tsx, find the outermost JSX <div> in the return statement and add data-testid=\"pane-mission\" RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape: {\"filePath\": \"src/components/panes/MissionPanel.tsx\", \"find\": \"<a UNIQUE substring of ≥ 20 chars taken VERBA…",
+      "payload": "{\"taskId\":\"task_monux261_u67aey\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"filePath\":\"src/components/panes/MissionPanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:43:59.282Z",
+      "updatedAt": "2026-05-02T05:00:57.394Z",
+      "completedAt": null,
+      "result": "SIGKILL streak (4); backing off 30 min — exit 143 signal null",
+      "notes": [
+        "claudeAgent dispatch (file full)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monv25qe_4y7zbp",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/HermesLivePanel.tsx to: Add data-testid pane-hermes-live to HermesLivePanel. Specific change: in HermesLivePanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-hermes-live\" RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape: {\"filePath\": \"src/components/panes/HermesLivePanel.tsx\", \"find\": \"<a UNIQUE substring of …",
+      "payload": "{\"taskId\":\"task_monux263_j2hfm0\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"filePath\":\"src/components/panes/HermesLivePanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "sent",
+      "createdAt": "2026-05-02T04:47:57.062Z",
+      "updatedAt": "2026-05-02T05:00:57.394Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "claudeAgent dispatch (file full)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monv7ax3_y2z2sl",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/ChangelogPanel.tsx to: Add data-testid pane-changelog to ChangelogPanel. Specific change: in ChangelogPanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-changelog\" RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape: {\"filePath\": \"src/components/panes/ChangelogPanel.tsx\", \"find\": \"<a UNIQUE substring of ≥ 20 cha…",
+      "payload": "{\"taskId\":\"task_monux269_i48hm4\",\"taskTitle\":\"Add data-testid pane-changelog to ChangelogPanel\",\"filePath\":\"src/components/panes/ChangelogPanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "queued",
+      "createdAt": "2026-05-02T04:51:57.063Z",
+      "updatedAt": "2026-05-02T04:51:57.063Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "claudeAgent dispatch (file full)"
+      ]
+    },
+    {
+      "id": "sub_monvcg3t_aibqfy",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/GoalsPanel.tsx to: Add data-testid to GoalsPanel root. Specific change: add data-testid=\"pane-goals\" to the outer .goals-pane div RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape: {\"filePath\": \"src/components/panes/GoalsPanel.tsx\", \"find\": \"<a UNIQUE substring of ≥ 20 chars taken VERBATIM from the file contents below>\", \"replace\": \"<the replacement …",
+      "payload": "{\"taskId\":\"task_monux26m_waemoe\",\"taskTitle\":\"Add data-testid to GoalsPanel root\",\"filePath\":\"src/components/panes/GoalsPanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "queued",
+      "createdAt": "2026-05-02T04:55:57.065Z",
+      "updatedAt": "2026-05-02T04:55:57.065Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "claudeAgent dispatch (file full)"
+      ]
+    },
+    {
+      "id": "sub_monvhlak_1wd67b",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/PowerMetricsPanel.tsx to: Add aria-label to refresh button in PowerMetricsPanel. Specific change: add aria-label to any unlabeled <button> describing the refresh action RESPOND WITH JSON ONLY (no markdown, no preamble), in this exact shape: {\"filePath\": \"src/components/panes/PowerMetricsPanel.tsx\", \"find\": \"<a UNIQUE substring of ≥ 20 chars taken VERBATIM from the file c…",
+      "payload": "{\"taskId\":\"task_monux26p_dfz6f1\",\"taskTitle\":\"Add aria-label to refresh button in PowerMetricsPanel\",\"filePath\":\"src/components/panes/PowerMetricsPanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "failed",
+      "createdAt": "2026-05-02T04:59:57.068Z",
+      "updatedAt": "2026-05-02T04:59:57.077Z",
+      "completedAt": null,
+      "result": "claude-backoff: 3 consecutive SIGKILLs; pausing dispatch 1560s",
+      "notes": [
+        "claudeAgent dispatch (file full)"
+      ]
+    },
+    {
+      "id": "sub_monvl5v1_2rynwm",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/MissionPanel.tsx: Add data-testid pane-mission to MissionPanel. Concrete change: in MissionPanel.tsx, find the outermost JSX <div> in the return statement and add data-testid=\"pane-mission\". Use Read to inspect the file then RETURN JSON ONLY in this exact shape (no markdown, no preamble, no commentary): {\"filePath\":\"src/components/panes/MissionPanel.tsx\",\"find\":\"<unique …",
+      "payload": "{\"taskId\":\"task_monux261_u67aey\",\"taskTitle\":\"Add data-testid pane-mission to MissionPanel\",\"filePath\":\"src/components/panes/MissionPanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "sent",
+      "createdAt": "2026-05-02T05:02:43.693Z",
+      "updatedAt": "2026-05-02T05:02:43.697Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "claudeAgent dispatch (file full)",
+        "dispatched to claude-code (single-flight)"
+      ]
+    },
+    {
+      "id": "sub_monvlsfn_qohxps",
+      "provider": "claude-code",
+      "intent": "Edit src/components/panes/HermesLivePanel.tsx: Add data-testid pane-hermes-live to HermesLivePanel. Concrete change: in HermesLivePanel.tsx, find the outermost JSX element in the return statement and add data-testid=\"pane-hermes-live\". Use Read to inspect the file then RETURN JSON ONLY in this exact shape (no markdown, no preamble, no commentary): {\"filePath\":\"src/components/panes/HermesLivePanel…",
+      "payload": "{\"taskId\":\"task_monux263_j2hfm0\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"filePath\":\"src/components/panes/HermesLivePanel.tsx\",\"source\":\"claudeAgent\"}",
+      "status": "queued",
+      "createdAt": "2026-05-02T05:03:12.947Z",
+      "updatedAt": "2026-05-02T05:03:12.947Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "claudeAgent dispatch (file full)"
+      ]
+    },
+    {
+      "id": "sub_monvmfkz_4oh0eo",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 5× on task: \"Add id anchor to PerformancePanel for #pane-perf deep link\". Last reason: edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuv_t560lv\",\"taskTitle\":\"Add id anchor to PerformancePanel for #pane-perf deep link\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/PerformancePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "queued",
+      "createdAt": "2026-05-02T05:03:42.947Z",
+      "updatedAt": "2026-05-02T05:03:42.947Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "auto-delegated after 5 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monvmfla_py457c",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 5× on task: \"Extract chartreuse rgb to CSS variable in styles.css\". Last reason: edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553). Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_moncluuu_elgi1z\",\"taskTitle\":\"Extract chartreuse rgb to CSS variable in styles.css\",\"lastReason\":\"edit preview failed: find string is not unique in src/styles.css (matches at 36349 and 37553)\",\"danger\":{\"dangerous\":false}}",
+      "status": "queued",
+      "createdAt": "2026-05-02T05:03:42.958Z",
+      "updatedAt": "2026-05-02T05:03:42.958Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "auto-delegated after 5 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    },
+    {
+      "id": "sub_monvmfld_306oty",
+      "provider": "claude-code",
+      "intent": "Hermes pipeline abandoned 6× on task: \"Add data-testid pane-hermes-live to HermesLivePanel\". Last reason: edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx. Please produce the concrete edit as JSON: {\"filePath\": \"...\", \"find\": \"...\", \"replace\": \"...\"}. If the task is too abstract to map to a file, return {\"needs_design\": true, \"reason\": \"...\"}.",
+      "payload": "{\"taskId\":\"task_monltj0k_0iwcq6\",\"taskTitle\":\"Add data-testid pane-hermes-live to HermesLivePanel\",\"lastReason\":\"edit preview failed: find string not found in src/components/panes/HermesLivePanel.tsx\",\"danger\":{\"dangerous\":false}}",
+      "status": "queued",
+      "createdAt": "2026-05-02T05:03:42.961Z",
+      "updatedAt": "2026-05-02T05:03:42.961Z",
+      "completedAt": null,
+      "result": null,
+      "notes": [
+        "auto-delegated after 6 abandons",
+        "auto-fire (non-dangerous)"
+      ]
+    }
+  ]
+}

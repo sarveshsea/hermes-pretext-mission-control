@@ -1,0 +1,604 @@
+{
+  "items": [
+    {
+      "id": "buzzr_drafts_monboqf0_s8ces6",
+      "createdAt": "2026-05-01T19:45:37.980Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr is built for the true fan. Deep dives, niche talk, and community built around your favorite corner of the league. We're launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbpmfe_b5zxb9",
+      "createdAt": "2026-05-01T19:46:19.466Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the micro-community you actually care about. NFL, NBA, MLS—your team's pulse, right in your pocket. Get ready for the real talk.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbqdy3_hcd6zu",
+      "createdAt": "2026-05-01T19:46:55.131Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports noise? Buzzr is building the signal for micro-fan communities. NFL, NBA, MLS—your niche conversations, finally in one place. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbrdzr_sxxc0a",
+      "createdAt": "2026-05-01T19:47:41.847Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage? Buzzr is built for the deep-dive fan. We connect you directly with the micro-communities that actually care about the details. Your corner of the sport, finally.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbsc2t_c3su97",
+      "createdAt": "2026-05-01T19:48:26.021Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage? Buzzr is building the dedicated feed for your micro-fandoms—NFL, NBA, MLS. Real talk, for the real fans. Coming soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbt9ty_bu33dp",
+      "createdAt": "2026-05-01T19:49:09.766Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports coverage? Buzzr builds the feed *you* actually want. Deep dives, micro-communities, real talk for NFL, NBA, & MLS fanatics. We're building the fan hub.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbuebc_snxtq2",
+      "createdAt": "2026-05-01T19:50:02.232Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of sports fandom being scattered across Reddit, Twitter, and Discord? We built Buzzr. The dedicated mobile hub for your favorite micro-communities. Finally, everything in one place.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbv8bg_9b8dmm",
+      "createdAt": "2026-05-01T19:50:41.116Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr builds micro-communities for NFL, NBA, & MLS fanatics. Finally, the dedicated feed for your obsession. We're launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbw3tg_fpa5ue",
+      "createdAt": "2026-05-01T19:51:21.940Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr builds the digital HQ for your micro-fandom. NFL, NBA, MLS—we connect the real conversations. Get in the game.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbx4ys_qt8yig",
+      "createdAt": "2026-05-01T19:52:10.084Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports coverage? Buzzr builds the real talk for your favorite micro-communities. NFL, NBA, MLS—we're where the actual fans connect. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monby65d_5prxsr",
+      "createdAt": "2026-05-01T19:52:58.273Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports takes? Buzzr builds the dedicated hub for your niche fandom. Real talk, deep stats, built for the micro-community. We're changing how sports fans connect.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbyys6_3st4qn",
+      "createdAt": "2026-05-01T19:53:35.382Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage? Buzzr builds your feed around the micro-communities that actually matter. NFL, NBA, MLS—your corner of the action, built by fans, for fans. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monbzwlw_uplf8z",
+      "createdAt": "2026-05-01T19:54:19.220Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr builds the feed for *your* squad. Deep dives, micro-communities, real-time hype for NFL, NBA, MLS fans. Stop scrolling, start connecting.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc0vxl_5y2nw8",
+      "createdAt": "2026-05-01T19:55:05.001Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports feeds? Buzzr builds the signal for your specific squad. We’re the dedicated hub for micro-fan communities, built by fans, for fans. Get in the game.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc1uq0_wx8dv0",
+      "createdAt": "2026-05-01T19:55:50.088Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr connects you directly to the micro-communities that actually care. Your team, your league, your moment. We built the feed for the true fans.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc3o2p_prymab",
+      "createdAt": "2026-05-01T19:57:14.785Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the signal for your micro-fandom. NFL, NBA, MLS—we're building where the real conversations happen. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc529s_mn1m96",
+      "createdAt": "2026-05-01T19:58:19.840Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports coverage? Buzzr builds the feed around *your* corner of the league. Real conversations. Real moments. We're building the micro-fan HQ.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc5spu_coqry5",
+      "createdAt": "2026-05-01T19:58:54.114Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage? Buzzr is building the feed for your actual squad. Deep dives, micro-communities, real talk. We're building the ultimate fan hub.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc6uow_acnw57",
+      "createdAt": "2026-05-01T19:59:43.328Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports coverage? Buzzr connects you directly to the micro-fan communities that *actually* know the game. NFL, NBA, MLS—we built the feed for the obsessed. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc7xe6_2vcmf8",
+      "createdAt": "2026-05-01T20:00:33.486Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the mobile home for your specific squad. We’re building the micro-community layer for NFL, NBA, & MLS fanatics. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc8ssu_9pulmv",
+      "createdAt": "2026-05-01T20:01:14.190Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of sports content that talks to everyone? We built Buzzr: the mobile app for the micro-fan. Finally, the deep dives you actually want for your favorite teams. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monc9sqq_sjh2jo",
+      "createdAt": "2026-05-01T20:02:00.770Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage missing the real community vibe? Buzzr is building the mobile hub where micro-fan passion meets real-time action for NFL, NBA, & MLS. Get ready to connect.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncasea_y7foo3",
+      "createdAt": "2026-05-01T20:02:46.978Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the micro-communities you actually talk to. NFL, NBA, MLS—your squad, your feed. Finally, sports built for the real fans.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncbm5h_rhjlqu",
+      "createdAt": "2026-05-01T20:03:25.541Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr connects you directly to the micro-communities that *actually* get the game. We built the playbook for real fan talk. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monccoa1_zle757",
+      "createdAt": "2026-05-01T20:04:14.953Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop doom-scrolling generic sports feeds. Buzzr builds the dedicated micro-community hub for your favorite NFL, NBA, or MLS fandom. Real talk, real stats. We're building the signal, not the noise.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncdqmj_tb0mnx",
+      "createdAt": "2026-05-01T20:05:04.651Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr is building the mobile home for true micro-fan communities. NFL, NBA, MLS—your squad deserves a dedicated space. We're launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncer5s_n9p0us",
+      "createdAt": "2026-05-01T20:05:52.000Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through 10 different feeds for your favorite teams. Buzzr brings your micro-fan community—NFL, NBA, MLS—into one place. Real-time, focused. Game on.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncflx3_1tyeu9",
+      "createdAt": "2026-05-01T20:06:31.863Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr is built for the micro-fan. We’re ditching the noise to connect you directly with the communities that actually matter. Get ready for the real game.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncgejc_ezj9cp",
+      "createdAt": "2026-05-01T20:07:08.952Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr builds the digital town square for your favorite micro-communities. NFL, NBA, MLS—we're building where the real talk happens. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monchk73_9jcgnf",
+      "createdAt": "2026-05-01T20:08:02.943Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports apps that treat NFL, NBA, and MLS like separate tabs? We built Buzzr: the dedicated feed for your micro-fandom. Finally, the signal you actually want.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncimso_zz27hi",
+      "createdAt": "2026-05-01T20:08:52.968Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr builds the dedicated hub for your micro-fandom. NFL, NBA, MLS—connect with the people who *get* it. Game day just got smarter.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncjegk_qzxahn",
+      "createdAt": "2026-05-01T20:09:28.820Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr builds the dedicated digital water cooler for your favorite micro-communities. Real talk, real teams. We're launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monckgyi_cvmjm1",
+      "createdAt": "2026-05-01T20:10:18.714Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr builds the feed for *your* corner of the league. Real-time comms for the micro-fan. We're building where the real talk happens.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncm69g_ii054b",
+      "createdAt": "2026-05-01T20:11:38.164Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports coverage? Buzzr is building the mobile hub for deep, micro-fan communities. Real talk, real stats, built for the obsessed. Get ready to connect.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncqyod_fl29mh",
+      "createdAt": "2026-05-01T20:15:21.613Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr builds the feed for *your* corner of the fandom. Real talk, for the real diehards. We're launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncsjb2_cs3rrl",
+      "createdAt": "2026-05-01T20:16:35.006Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through general sports feeds. Buzzr builds the dedicated space for your micro-fan community—NFL, NBA, MLS, and beyond. Your passion, finally centralized.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncwax6_abkiyv",
+      "createdAt": "2026-05-01T20:19:30.762Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds your micro-community around the teams you actually care about. Real talk, real moments. This is where the conversation lives.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_moncy1wd_n8cxka",
+      "createdAt": "2026-05-01T20:20:52.381Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports coverage? Buzzr is built for the micro-fan. Deep dives, real talk, and the communities you actually care about. NFL, NBA, MLS—your corner of the sport, finally.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mond6b93_bl3bpi",
+      "createdAt": "2026-05-01T20:27:17.751Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr builds your micro-community around the games you actually care about—NFL, NBA, MLS, and more. Your corner of the sports world, finally built.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mond8omu_ojwu82",
+      "createdAt": "2026-05-01T20:29:08.406Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling generic highlights. Buzzr builds the micro-communities where real sports talk happens. We're building the playbook for the dedicated fan. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondbv04_mq1e06",
+      "createdAt": "2026-05-01T20:31:36.628Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports coverage? Buzzr builds your micro-community around the niche you actually care about. NFL, NBA, MLS—your corner of the sport, built for fans like us.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monde61q_yo74ob",
+      "createdAt": "2026-05-01T20:33:24.254Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through endless feeds. Buzzr builds the dedicated hub for your favorite niche sports community. Real-time talk, zero noise. This is where the real action happens.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondirtu_8ab07i",
+      "createdAt": "2026-05-01T20:36:59.106Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports apps? Buzzr builds micro-communities for the die-hard fan. Real conversations, right where the action is. We're changing how fans connect. Coming soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondk330_f5dwlq",
+      "createdAt": "2026-05-01T20:38:00.348Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the digital town square for your favorite micro-communities. NFL, NBA, MLS—your passion, dialed in. Launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondotja_vhuztc",
+      "createdAt": "2026-05-01T20:41:41.254Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of general sports noise? Buzzr cuts through the clutter. We built the dedicated feed for *your* specific squad. Finally, the micro-community experience you actually want.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondrh0n_uie730",
+      "createdAt": "2026-05-01T20:43:44.999Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the network for micro-fan communities. NFL, NBA, MLS—your corner of the action, built by fans, for fans. Ready to talk shop.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondsnir_8uhmoo",
+      "createdAt": "2026-05-01T20:44:40.083Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr builds real micro-communities for NFL, NBA, & MLS fans. Deep dives, instant connection. We're building where the real conversation happens.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mondvrkt_wmsqtm",
+      "createdAt": "2026-05-01T20:47:05.309Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of generic sports feeds? Buzzr builds the digital town square for your favorite niche sports communities. Finally, where the real talk happens. Get ready.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mone48ts_26d0hr",
+      "createdAt": "2026-05-01T20:53:40.912Z",
+      "surface": "buzzr_drafts",
+      "text": "Tired of surface-level sports talk? Buzzr builds the dedicated feed for your micro-fandom. NFL, NBA, MLS—where the real conversations happen. We built it for the die-hards.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mone6kag_7nho46",
+      "createdAt": "2026-05-01T20:55:29.080Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through generic sports feeds. Buzzr is building the dedicated hub for your micro-fandom—the NFL corner, the NBA deep dive, the MLS squad. Finally, the community you actually care about. Launching soon.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_mone90k1_9aqt7l",
+      "createdAt": "2026-05-01T20:57:23.473Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling general sports news. Buzzr is building the dedicated feed for your *actual* favorite corner of the NFL, NBA, or MLS. Real talk, zero noise.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, unverified)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monhon79_igmfri",
+      "createdAt": "2026-05-01T22:33:31.509Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop doomscrolling generic sports feeds. Buzzr builds the micro-communities you actually care about—NFL, NBA, MLS deep dives, built for real fans. This is where the conversation lives.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monhwwlh_30w7oa",
+      "createdAt": "2026-05-01T22:39:56.933Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling generic scores. Buzzr builds the dedicated hub for your specific sports obsession—NFL, NBA, MLS. Real-time comms for the micro-fan. We built it for the deep dive.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monj5lwj_32y292",
+      "createdAt": "2026-05-01T23:14:42.595Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling highlight reels. Buzzr builds the micro-communities for true sports fanatics—the deep dives, the niche rivalries, the actual conversation. We built the sports hub you actually need.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monjy40b_9ptwct",
+      "createdAt": "2026-05-01T23:36:52.427Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling generic feeds. Buzzr builds the micro-community layer for sports fans. NFL, NBA, MLS—we connect you to the *actual* conversations happening around your team. Built for fanatics. Period.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monl6c8l_i0n31m",
+      "createdAt": "2026-05-02T00:11:15.957Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop doomscrolling general sports news. Buzzr builds the micro-communities you actually care about—NFL, NBA, MLS deep dives, built by fans, for fans. Game on.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monr3kwd_sn6zzo",
+      "createdAt": "2026-05-02T02:57:04.909Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through generic sports noise. Buzzr builds the dedicated feed for your micro-community—the real conversation for NFL, NBA, & MLS fanatics. Built for the obsessed.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monrs6cq_49gx1o",
+      "createdAt": "2026-05-02T03:16:12.458Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through generic sports feeds. Buzzr builds the real-time hubs for your favorite micro-communities—NFL, NBA, MLS. Your corner of the action, built for fans who know better. Join us.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_monsplxa_yg40lh",
+      "createdAt": "2026-05-02T03:42:12.286Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through generic feeds. Buzzr builds the micro-communities you actually care about—the real talk for your favorite NFL, NBA, or MLS squad. We built it for the diehards.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    },
+    {
+      "id": "buzzr_drafts_montveef_zzc8eu",
+      "createdAt": "2026-05-02T04:14:42.087Z",
+      "surface": "buzzr_drafts",
+      "text": "Stop scrolling through endless feeds. Buzzr builds the real-time comms layer for your favorite micro-communities. NFL, NBA, MLS—your squad, your feed. We built it.",
+      "audience": "sports fans",
+      "hashtags": [],
+      "worstCase": "(swarm draft, gate-passed)",
+      "publicIntentId": null
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "design_lab_momxcceb_4chtro",
+      "createdAt": "2026-05-01T13:04:05.315Z",
+      "surface": "design_lab",
+      "title": "Quick visual tweak",
+      "description": "Add subtle background color change to console for better visibility",
+      "previewCss": "background-color:#f0f0f0",
+      "appliesTo": "PretextConsole.tsx",
+      "sourceProposalId": null
+    }
+  ]
+}

@@ -1,0 +1,404 @@
+{
+  "agents": [
+    {
+      "id": "sub_mon3eeq5_dwagl8",
+      "parentId": null,
+      "intent": "observer swarm worker — You are the OBSERVER worker",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:39.341Z",
+      "updatedAt": "2026-05-01T15:58:05.650Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 30s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3egnj_fp9fjo",
+      "parentId": null,
+      "intent": "design swarm worker — You are the DESIGN worker",
+      "mission": "design",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:41.839Z",
+      "updatedAt": "2026-05-01T15:57:31.114Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 60s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3eil0_g1do6y",
+      "parentId": null,
+      "intent": "buzzr swarm worker — You are the BUZZR copywriter",
+      "mission": "buzzr",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:44.340Z",
+      "updatedAt": "2026-05-01T15:57:58.836Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 75s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3ekig_y685z3",
+      "parentId": null,
+      "intent": "memoire swarm worker — You are the MEMOIRE audit worker",
+      "mission": "memoire",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:46.840Z",
+      "updatedAt": "2026-05-01T15:56:01.124Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 90s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3emfw_tl866g",
+      "parentId": null,
+      "intent": "autofix swarm worker — You are the AUTOFIX worker",
+      "mission": "autofix",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:49.340Z",
+      "updatedAt": "2026-05-01T15:56:40.401Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 60s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3eodc_gft5wj",
+      "parentId": null,
+      "intent": "obsidian swarm worker — You are the OBSIDIAN gardener",
+      "mission": "obsidian",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:53:51.840Z",
+      "updatedAt": "2026-05-01T15:56:12.762Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 90s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no json",
+      "error": null
+    },
+    {
+      "id": "sub_mon3kg7k_82zy42",
+      "parentId": null,
+      "intent": "observer swarm worker — You are the OBSERVER worker",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:21.200Z",
+      "updatedAt": "2026-05-02T05:03:10.410Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 30s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "observe dashboard: Four distinct, overlapping tasks require immediate consolid…",
+      "error": null
+    },
+    {
+      "id": "sub_mon3ki4z_31xqgp",
+      "parentId": null,
+      "intent": "design swarm worker — You are the DESIGN worker",
+      "mission": "design",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:23.699Z",
+      "updatedAt": "2026-05-02T05:03:32.969Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 60s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ task task_monvm7vj_ykaqk2 [design]: Highlight Master Task Consolidation Focus",
+      "error": null
+    },
+    {
+      "id": "sub_mon3kk2e_lyzo7k",
+      "parentId": null,
+      "intent": "buzzr swarm worker — You are the BUZZR copywriter",
+      "mission": "buzzr",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:26.198Z",
+      "updatedAt": "2026-05-02T05:04:10.293Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 75s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "✗ buzzr draft (gate): lazy opener/cliché: matched /\\btired of\\b/i — text: Tired of generic sports coverage? Buzzr is buildi…",
+      "error": null
+    },
+    {
+      "id": "sub_mon3km01_gwllod",
+      "parentId": null,
+      "intent": "memoire swarm worker — You are the MEMOIRE audit worker",
+      "mission": "memoire",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:28.705Z",
+      "updatedAt": "2026-05-02T05:04:27.684Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 90s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "✗ memoire audit (gate): summary too short (87 chars; min 200)",
+      "error": null
+    },
+    {
+      "id": "sub_mon3knxb_68ro3p",
+      "parentId": null,
+      "intent": "autofix swarm worker — You are the AUTOFIX worker",
+      "mission": "autofix",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:31.199Z",
+      "updatedAt": "2026-05-02T05:04:34.831Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 60s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ task task_monvnjm6_6lcmzs [autofix]: Consolidate redundant master tasks into one primary task",
+      "error": null
+    },
+    {
+      "id": "sub_mon3kpur_88wbsu",
+      "parentId": null,
+      "intent": "obsidian swarm worker — You are the OBSIDIAN gardener",
+      "mission": "obsidian",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T15:58:33.699Z",
+      "updatedAt": "2026-05-02T05:04:44.395Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 90s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ task task_monvnqzt_tbbr3a [obsidian]: Create Master Task Index Note",
+      "error": null
+    },
+    {
+      "id": "sub_mon47amv_kotc9w",
+      "parentId": null,
+      "intent": "planner swarm worker — You are the PLANNER",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T16:16:07.063Z",
+      "updatedAt": "2026-05-02T05:03:01.943Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 50s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ plan task_monvh9wn_nsq2d2 (4 subtasks): Master Cleanup Task Consolidation",
+      "error": null
+    },
+    {
+      "id": "sub_mon47ck9_zdihqt",
+      "parentId": null,
+      "intent": "critic swarm worker — You are the CRITIC",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T16:16:09.561Z",
+      "updatedAt": "2026-05-02T05:03:04.444Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 40s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "critique [The list of top open tasks]: There are four distinct, overlapping tasks concerning maste…",
+      "error": null
+    },
+    {
+      "id": "sub_mon47eht_o2jzno",
+      "parentId": null,
+      "intent": "sports swarm worker — You are the SPORTS RADAR worker",
+      "mission": "sports",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T16:16:12.065Z",
+      "updatedAt": "2026-05-02T05:03:06.944Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 40s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "✗ sports headline (gate): no recognized team or two-name player",
+      "error": null
+    },
+    {
+      "id": "sub_mon47gf5_4zzdpb",
+      "parentId": null,
+      "intent": "executor swarm worker — You are the EXECUTOR worker",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T16:16:14.561Z",
+      "updatedAt": "2026-05-01T17:43:11.166Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 55s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ proposal prop_mon7b9fq_gym5el rejected: Revise draft audit document for formatting and re…",
+      "error": null
+    },
+    {
+      "id": "sub_mon47icm_u2tc15",
+      "parentId": null,
+      "intent": "selfimprove swarm worker — You are the SELFIMPROVE worker",
+      "mission": "pretext",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T16:16:17.062Z",
+      "updatedAt": "2026-05-01T17:43:24.664Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 70s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "+ proposal prop_mon7bjvk_xv3yjd rejected: Group Open Tasks by Phase",
+      "error": null
+    },
+    {
+      "id": "sub_mon7dsco_pijmzb",
+      "parentId": null,
+      "intent": "closer swarm worker — Deterministic worker — no LLM call",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T17:45:08.808Z",
+      "updatedAt": "2026-05-02T05:04:39.477Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 30s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "closer closed=0 abandoned=0 (of 153 open)",
+      "error": null
+    },
+    {
+      "id": "sub_mon7dua4_l9v6j5",
+      "parentId": null,
+      "intent": "dedup swarm worker — Deterministic worker — no LLM call",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T17:45:11.308Z",
+      "updatedAt": "2026-05-02T05:04:12.086Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 60s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "dedup merged=0+semantic=1 (of 153 open, 153 word-buckets)",
+      "error": null
+    },
+    {
+      "id": "sub_mon94dxz_djy8sg",
+      "parentId": null,
+      "intent": "runner swarm worker — Deterministic worker — no LLM call",
+      "mission": "general",
+      "modelHint": "gemma4:e4b",
+      "status": "running",
+      "createdAt": "2026-05-01T18:33:49.463Z",
+      "updatedAt": "2026-05-02T05:03:14.449Z",
+      "steps": [
+        {
+          "idx": 0,
+          "text": "tick every 180s",
+          "result": null,
+          "completedAt": null
+        }
+      ],
+      "result": "no long_running tasks pending",
+      "error": null
+    }
+  ]
+}
