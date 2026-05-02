@@ -141,9 +141,15 @@ async function pickTask() {
   }
 
   // 3) Otherwise: oldest concrete task (skip ones tagged needs_design).
+  //    But always prefer manual-priority tasks first — they came from the dashboard operator.
   const sorted = open
     .filter((t) => !(t.tags || []).includes("needs_design"))
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    .sort((a, b) => {
+      const aPri = (a.tags || []).includes("manual-priority") ? 1 : 0;
+      const bPri = (b.tags || []).includes("manual-priority") ? 1 : 0;
+      if (aPri !== bPri) return bPri - aPri;
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    });
   for (const task of sorted) {
     const rec = taskAttempts.get(task.id);
     if (rec && now - rec.lastAt < ATTEMPT_COOLDOWN_MS) continue;

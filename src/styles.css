@@ -2979,3 +2979,190 @@ option {
     display: none;
   }
 }
+
+/* ===== Command palette (⌘K) ===== */
+
+.cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8, 12, 22, 0.62);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+.cmdk-card {
+  width: min(640px, 92vw);
+  background: var(--surface-1, #0c1220);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 24px 60px -16px rgba(0, 0, 0, 0.7),
+              0 0 0 1px rgba(63, 205, 255, 0.10),
+              0 0 22px rgba(63, 205, 255, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+.cmdk-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: var(--s-4) var(--s-5);
+  color: var(--text-strong);
+  font-size: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  letter-spacing: 0.01em;
+}
+.cmdk-input::placeholder {
+  color: var(--text-muted);
+}
+.cmdk-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--s-2) 0;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+.cmdk-empty {
+  padding: var(--s-4) var(--s-5);
+  font-size: var(--t-meta);
+  color: var(--text-muted);
+}
+.cmdk-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-5);
+  cursor: pointer;
+  font-size: var(--t-row);
+  color: var(--text-base);
+  border-left: 2px solid transparent;
+}
+.cmdk-row:hover, .cmdk-selected {
+  background: rgba(63, 205, 255, 0.06);
+  border-left-color: var(--accent-info);
+}
+.cmdk-action  { /* default */ }
+.cmdk-action.cmdk-selected   { border-left-color: var(--accent-go); }
+.cmdk-task.cmdk-selected     { border-left-color: var(--accent-warn); }
+.cmdk-event.cmdk-selected    { border-left-color: var(--accent-think); }
+.cmdk-kind {
+  font-size: var(--t-label);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+.cmdk-row.cmdk-action .cmdk-kind  { color: var(--accent-go); }
+.cmdk-row.cmdk-task .cmdk-kind    { color: var(--accent-warn); }
+.cmdk-row.cmdk-event .cmdk-kind   { color: var(--accent-think); }
+.cmdk-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.cmdk-hint {
+  font-size: var(--t-meta);
+  font-family: var(--mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+.cmdk-footer {
+  padding: var(--s-2) var(--s-5);
+  font-size: var(--t-label);
+  border-top: 1px solid var(--line);
+  letter-spacing: 0.04em;
+}
+
+/* Topbar trigger buttons */
+.focus-toggle, .cmdk-trigger {
+  font-size: 12px;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: var(--s-2);
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+}
+.focus-toggle:hover, .cmdk-trigger:hover {
+  border-color: var(--accent-glow);
+  color: var(--text-strong);
+}
+.focus-toggle.is-on {
+  color: var(--accent-go);
+  border-color: var(--accent-go);
+  background: rgba(63, 205, 255, 0.06);
+}
+
+/* Focus mode: hide tier-3 panes, expand tier-1+2 to fill */
+:root[data-focus="on"] .bento-cell[data-tier="3"] {
+  display: none !important;
+}
+:root[data-focus="on"] .ops-stage {
+  /* keep ops surface visible — it's tier-1 by purpose */
+}
+
+/* Priority dock — operator-typed high-priority tasks */
+.priority-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 116px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  background: rgba(12, 18, 32, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(208, 241, 0, 0.30);
+  border-radius: 999px;
+  padding: 4px 8px 4px 14px;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6),
+              0 0 18px rgba(208, 241, 0, 0.12);
+  z-index: 90;
+  width: min(720px, 86vw);
+}
+.priority-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  color: var(--accent-warn);
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.priority-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-family: var(--mono);
+  padding: 4px 6px;
+  min-width: 0;
+}
+.priority-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Glow-on-event: SSE highlight */
+@keyframes pretext-glow {
+  0%   { box-shadow: 0 0 0 0 rgba(63, 205, 255, 0.55); }
+  60%  { box-shadow: 0 0 0 6px rgba(63, 205, 255, 0.0); }
+  100% { box-shadow: 0 0 0 0 rgba(63, 205, 255, 0.0); }
+}
+.bento-cell[data-glow="on"] {
+  animation: pretext-glow 700ms ease-out;
+  border-color: var(--accent-glow) !important;
+}

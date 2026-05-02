@@ -56,6 +56,10 @@ async function pickTask() {
       return true;
     })
     .sort((a, b) => {
+      // Manual-priority (operator-typed in the dashboard) jumps the queue.
+      const aPri = (a.tags || []).includes("manual-priority") ? 1 : 0;
+      const bPri = (b.tags || []).includes("manual-priority") ? 1 : 0;
+      if (aPri !== bPri) return bPri - aPri;
       // Prefer tasks the gemma pipeline already gave up on (attempts ≥ 1)
       const aAttempts = (a.pipelineState?.attempts || 0);
       const bAttempts = (b.pipelineState?.attempts || 0);

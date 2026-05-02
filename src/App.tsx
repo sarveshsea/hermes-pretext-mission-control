@@ -56,6 +56,7 @@ import LastShippedChip from "./components/LastShippedChip";
 import DelegationInboxPanel from "./components/panes/DelegationInboxPanel";
 import AgentVoicePanel from "./components/panes/AgentVoicePanel";
 import WhyStrip from "./components/WhyStrip";
+import CommandPalette from "./components/CommandPalette";
 
 const POLL_MS = 12_000;
 const DEFAULT_NODE: ConsoleNodeId = "hermes";
@@ -155,6 +156,9 @@ export default function App() {
   const [diffProposal, setDiffProposal] = useState<Proposal | null>(null);
   const [paneSummaries, setPaneSummaries] = useState<Record<string, string>>({});
   const [paneDots, setPaneDots] = useState<Record<string, "green" | "amber" | "red">>({});
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState<boolean>(() => document.documentElement.getAttribute("data-focus") === "on");
+  const [priorityPrompt, setPriorityPrompt] = useState("");
 
   const refresh = useCallback(async () => {
     try {
@@ -207,8 +211,29 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const glowArea = (area: string) => {
+      const el = document.querySelector(`.bento-cell[style*="grid-area: ${area}"]`)
+        || document.querySelector(`.bento-cell[style*="${area}"]`);
+      if (!el) return;
+      el.setAttribute("data-glow", "on");
+      window.setTimeout(() => el.removeAttribute("data-glow"), 720);
+    };
+    const eventToArea = (type: string): string => {
+      if (!type) return "live";
+      if (type.startsWith("proposal_") || type === "proposal") return "proposals";
+      if (type.startsWith("task_") || type === "pickTask" || type === "concretize" || type === "playbook") return "ledger";
+      if (type.startsWith("subscription_") || type === "claude_dispatch") return "subscriptions";
+      if (type === "improvement" || type === "improvement_log" || type === "commit") return "improvements";
+      if (type === "delegation" || type.startsWith("delegation_")) return "delegation";
+      if (type === "draft" || type.startsWith("draft_")) return "drafts";
+      if (type === "thinking" || type === "memory") return "thinking";
+      return "live";
+    };
     const off = subscribeHermesStream({
-      onEvent: (event) => setLiveEvents((prev) => [event, ...prev].slice(0, 80)),
+      onEvent: (event) => {
+        setLiveEvents((prev) => [event, ...prev].slice(0, 80));
+        glowArea(eventToArea(event.type));
+      },
       onPublicIntent: (intent) => {
         setLiveIntents((prev) =>
           intent.status === "pending"
@@ -222,11 +247,18 @@ export default function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Cmd/Ctrl+K opens the palette regardless of focus context
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+        return;
+      }
       const target = e.target as HTMLElement | null;
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
       if (e.key === "Escape") {
         setInspectedEvent(null);
         setDiffProposal(null);
+        setPaletteOpen(false);
       } else if (e.key === "g") {
         setActiveNode("hermes");
       } else if (e.key === "p") {
@@ -235,8 +267,14 @@ export default function App() {
       } else if (e.key === "m") {
         const latestEvent = liveEvents[0];
         if (latestEvent) setInspectedEvent(latestEvent);
+      } else if (e.key === "f" || e.key === "F") {
+        setFocusMode((cur) => {
+          const next = !cur;
+          document.documentElement.setAttribute("data-focus", next ? "on" : "off");
+          return next;
+        });
       } else if (e.key === "?") {
-        alert("g: focus hermes · p: preview top proposal · m: inspect latest event · Esc: close overlays");
+        alert("⌘K: command palette · g: focus hermes · p: preview top proposal · m: inspect latest event · F: focus mode · Esc: close overlays");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -357,7 +395,24 @@ export default function App() {
           title="toggle dark/light theme"
           aria-label="toggle theme"
         >🌗</button>
-        <span className="kbd-hint muted">g focus · p propose · m inspect · ? help</span>
+        <button
+          className={`button button-ghost focus-toggle ${focusMode ? "is-on" : ""}`}
+          onClick={() => {
+            setFocusMode((cur) => {
+              const next = !cur;
+              document.documentElement.setAttribute("data-focus", next ? "on" : "off");
+              return next;
+            });
+          }}
+          title="focus mode (F) — hide tier-3 panes"
+          aria-pressed={focusMode}
+        >{focusMode ? "◉ focus" : "○ focus"}</button>
+        <button
+          className="button button-ghost cmdk-trigger"
+          onClick={() => setPaletteOpen(true)}
+          title="open command palette (⌘K)"
+        >⌘K</button>
+        <span className="kbd-hint muted">⌘K palette · g focus · p propose · m inspect · F focus mode · ? help</span>
       </header>
 
       <aside className="bento-rail">
@@ -508,6 +563,46 @@ export default function App() {
         </aside>
       )}
 
+      <form
+        className="priority-dock"
+        aria-label="Send a high-priority task to Hermes"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const title = priorityPrompt.trim();
+          if (!title) return;
+          setBusy("priority");
+          try {
+            await fetch("/api/hermes/tasks", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title,
+                mission: "general",
+                createdBy: "operator",
+                tags: ["manual-priority"],
+                notes: ["queued from dashboard priority input"]
+              })
+            });
+            setPriorityPrompt("");
+            await refresh();
+          } catch (err) {
+            setError(err instanceof Error ? err.message : "priority task failed");
+          } finally {
+            setBusy("");
+          }
+        }}
+      >
+        <span className="priority-label muted">PRIORITY ▸</span>
+        <input
+          className="priority-input"
+          aria-label="Priority task title"
+          value={priorityPrompt}
+          onChange={(e) => setPriorityPrompt(e.target.value)}
+          placeholder="tell hermes what to ship next…"
+        />
+        <button className="native-submit-button" disabled={busy === "priority" || !priorityPrompt.trim()}>queue priority</button>
+      </form>
+
       <form className="message-dock" onSubmit={handleLocalMessage} aria-label="Send local message to Hermes">
         <PretextDock mode="message" value={localMessage} busy={busy === "message"} />
         <input className="native-message-input" aria-label="Local message" value={localMessage} onChange={(e) => setLocalMessage(e.target.value)} placeholder="message hermes locally..." />
@@ -524,6 +619,7 @@ export default function App() {
 
       <InspectorOverlay event={inspectedEvent} onClose={() => setInspectedEvent(null)} />
       <DiffPreviewOverlay proposal={diffProposal} onClose={() => setDiffProposal(null)} />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </main>
   );
 }
