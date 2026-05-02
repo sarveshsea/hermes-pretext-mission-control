@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// Add data-testid to the root pane element
+
 type Goal = { title: string; deadline: string | null; target: string; progress: string };
 
 export default function GoalsPanel() {
